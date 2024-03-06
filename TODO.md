@@ -1,0 +1,21 @@
+# TODO
+
+## tools
+
+* strace
+* sscov
+* addr2line
+* gcov
+* ltrace
+* mmck
+* dbg
+* ld
+* ld.so
+* ...
+
+## infra
+
+* testing
+* coding style
+* proper README
+* support more architectures
