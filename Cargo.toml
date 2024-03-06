@@ -1,0 +1,11 @@
+[package]
+name = "sys-rs"
+version = "0.1.0"
+edition = "2021"
+license = "MIT"
+authors = ["yrakcaz <zackaryayoun@gmail.com>"]
+repository = "https://github.com/yrakcaz/sys-rs"
+
+[[bin]]
+name = "strace-rs"
+path = "src/strace.rs"
