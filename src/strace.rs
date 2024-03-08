@@ -1,9 +1,10 @@
 extern crate nix;
 
+// FIXME is there a way to make all the nix use look cleaner?
 use nix::errno::Errno;
+use nix::sys::ptrace;
+use nix::sys::wait::{waitpid, WaitStatus};
 use nix::unistd::{execve, fork, ForkResult};
-use nix::sys::wait::{waitpid, WaitPidFlag};
-//use nix::sys::ptrace;
 use std::env;
 use std::ffi::CString;
 
@@ -35,12 +36,35 @@ fn get_env() -> SysResult<Vec<CString>> {
     Ok(env)
 }
 
+enum SyscallState {
+    Enter,
+    Exit,
+}
+
 fn do_fork_exec(args: &Vec<CString>, env: &Vec<CString>) -> SysResult<()> {
-    match unsafe{ fork()? } {
+    match unsafe{ fork() }? {
         ForkResult::Parent { child, .. } => {
-            waitpid(child, Some(WaitPidFlag::empty()))?;
+            waitpid(child, None)?;
+            let mut syscall_state = SyscallState::Enter;
+            loop {
+                ptrace::syscall(child, None)?;
+                if let WaitStatus::Exited(_, _) = waitpid(child, None)? {
+                    break;
+                }
+
+                let regs = ptrace::getregs(child)?;
+                if let SyscallState::Enter = syscall_state {
+                    println!("syscall={}", regs.orig_rax);
+                    // FIXME we could also inspect args here
+                    syscall_state = SyscallState::Exit;
+                } else {
+                    println!("retval={}", regs.rax);
+                    syscall_state = SyscallState::Enter;
+                }
+            }
         }
         ForkResult::Child => {
+            ptrace::traceme()?;
             execve(&args[0], &args, &env)?;
         }
     }
