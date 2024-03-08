@@ -9,3 +9,6 @@ repository = "https://github.com/yrakcaz/sys-rs"
 [[bin]]
 name = "strace-rs"
 path = "src/strace.rs"
+
+[dependencies]
+nix = { version = "0.28.0", features = ["process", "ptrace"] }
