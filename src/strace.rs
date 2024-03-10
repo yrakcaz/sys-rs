@@ -3,32 +3,18 @@ extern crate lazy_static;
 #[macro_use]
 extern crate maplit;
 
-use std::{
-    env,
-    ffi::CString,
-};
+use std::{env, ffi::CString};
 
 use nix::{
     sys::{
         ptrace,
-        wait::{
-            WaitStatus,
-            waitpid,
-        },
+        wait::{waitpid, WaitStatus},
     },
-    unistd::{
-        ForkResult,
-        Pid,
-        execve,
-        fork,
-    },
+    unistd::{execve, fork, ForkResult, Pid},
 };
 
 mod error;
-use error::{
-    SysResult,
-    invalid_argument,
-};
+use error::{invalid_argument, SysResult};
 
 mod syscall;
 use syscall::SyscallData;
@@ -53,7 +39,8 @@ fn get_env() -> SysResult<Vec<CString>> {
             let mut env_str = key.into_string().expect("Invalid env var key");
             env_str.push('=');
             env_str.push_str(&value.into_string().expect("Invalid env var value"));
-            CString::new(env_str).expect("Failed to convert env var to CString") })
+            CString::new(env_str).expect("Failed to convert env var to CString")
+        })
         .collect();
 
     Ok(env)
