@@ -11,4 +11,7 @@ name = "strace-rs"
 path = "src/strace.rs"
 
 [dependencies]
+lazy_static = "1.4.0"
+libc = "0.2.153"
+maplit = "1.0.2"
 nix = { version = "0.28.0", features = ["process", "ptrace"] }
