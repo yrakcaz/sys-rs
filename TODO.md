@@ -2,7 +2,7 @@
 
 ## tools
 
-* strace
+* strace - DONE
 * sscov
 * addr2line
 * gcov
