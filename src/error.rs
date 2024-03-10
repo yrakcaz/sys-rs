@@ -6,6 +6,6 @@ pub fn invalid_argument() -> SysResult<()> {
     Err(Errno::EINVAL)
 }
 
-pub fn invalid_io() -> SysResult<()> {
-    Err(Errno::EIO)
+pub fn operation_not_permitted() -> SysResult<()> {
+    Err(Errno::EPERM)
 }

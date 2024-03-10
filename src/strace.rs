@@ -62,7 +62,7 @@ fn tracer(child: Pid) -> SysResult<()> {
             continue;
         }
 
-        println!("{}", syscall_data);
+        println!("{}", syscall_data.to_string()?);
         syscall_data = SyscallData::new(child);
     }
 
