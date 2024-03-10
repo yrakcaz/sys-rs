@@ -33,8 +33,6 @@ use error::{
 mod syscall;
 use syscall::SyscallData;
 
-mod syscall_defs;
-
 fn get_args() -> SysResult<Vec<CString>> {
     let args: Vec<CString> = env::args()
         .skip(1)
@@ -63,7 +61,7 @@ fn get_env() -> SysResult<Vec<CString>> {
 
 fn tracer(child: Pid) -> SysResult<()> {
     waitpid(child, None)?;
-    let mut syscall_data = SyscallData::new();
+    let mut syscall_data = SyscallData::new(child);
     loop {
         ptrace::syscall(child, None)?;
         if let WaitStatus::Exited(_, _) = waitpid(child, None)? {
@@ -78,7 +76,7 @@ fn tracer(child: Pid) -> SysResult<()> {
         }
 
         println!("{}", syscall_data);
-        syscall_data = SyscallData::new();
+        syscall_data = SyscallData::new(child);
     }
 
     Ok(())
@@ -89,7 +87,6 @@ fn tracee() -> SysResult<()> {
     let env = get_env()?;
 
     ptrace::traceme()?;
-    // FIXME we need to do someting with stdout/stderr?
     execve(&args[0], &args, &env)?;
 
     Ok(())

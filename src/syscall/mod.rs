@@ -1,12 +1,19 @@
-use std::fmt;
+use core::ffi::c_void;
 use libc::user_regs_struct;
+use std::fmt;
+
+use nix::{
+    sys::ptrace,
+    unistd::Pid,
+};
 
 use crate::error::{
     SysResult,
     invalid_io,
 };
 
-use crate::syscall_defs::SYSCALL;
+mod def;
+use def::SYSCALL;
 
 pub enum SyscallType {
     INT,
@@ -15,20 +22,36 @@ pub enum SyscallType {
     UINT,
 }
 
+// FIXME havin to pass the pid all the way here seems antipattern
+fn read_str(pid: Pid, addr: u64) -> SysResult<String> {
+    let mut ret = String::new();
+    let mut offset = 0;
+    loop {
+        let c = ptrace::read(pid, (addr + offset) as *mut c_void)? as u8 as char;
+        if c == '\0' {
+            break;
+        }
+        ret.push(c);
+        offset += 1;
+    }
+
+    Ok(ret)
+}
+
 impl SyscallType {
-    fn parse_value(&self, val: u64) -> String {
+    fn parse_value(&self, val: u64, pid: Pid) -> String {
         match &self {
             SyscallType::INT => {
-                format!{"{}", val as i64}
+                format!("{}", val as i64)
             }
             SyscallType::PTR => {
-                format!{"{:x}", val}
+                format!("0x{:x}", val)
             }
             SyscallType::STR => {
-                format!{"0x{:x}", val} // FIXME
+                format!("\"{}\"", read_str(pid, val).unwrap()) // FIXME incorrect, we should use `?`
             }
             SyscallType::UINT => {
-                format!{"{}", val}
+                format!("{}", val)
             }
         }
     }
@@ -62,20 +85,21 @@ impl SyscallDef {
 pub struct SyscallData<'a> {
     def: Option<&'a SyscallDef>,
     regs: Option<user_regs_struct>,
+    pid : Pid,
 }
 
 impl SyscallData<'_> {
-    pub fn new() -> Self {
-        Self { def: None, regs: None }
+    pub fn new( pid: Pid ) -> Self {
+        Self { def: None, regs: None, pid }
     }
 
     pub fn push(&mut self, regs: user_regs_struct) -> SysResult<()> {
         match self {
-            Self { def: None, regs: None } => {
+            Self { def: None, regs: None, pid: _ } => {
                 self.def = Some(&SYSCALL[&regs.orig_rax]);
                 Ok(())
             }
-            Self { def: _, regs: None } => {
+            Self { def: _, regs: None, pid: _ } => {
                 self.regs = Some(regs);
                 Ok(())
             }
@@ -87,7 +111,7 @@ impl SyscallData<'_> {
         self.def.is_some() && self.regs.is_some()
     }
 
-    fn validate(&self) { // FIXME is this the correct way??
+    fn validate(&self) { // FIXME is this the correct way?? better error handling? use SysResult<> everywhere?
         if !self.complete() {
             panic!("Syscall didn't complete");
         }
@@ -101,7 +125,7 @@ impl SyscallData<'_> {
     fn get_return(&self) -> String {
         self.validate();
         let return_type = &self.def.unwrap().return_type;
-        return_type.parse_value(self.regs.unwrap().rax)
+        return_type.parse_value(self.regs.unwrap().rax, self.pid)
     }
 
     fn get_args(&self) -> String { // FIXME this function is correct wrt refs!! use as an example
@@ -121,8 +145,8 @@ impl SyscallData<'_> {
             .enumerate()
             .map(|(i, arg)| {
                 let mut ret = arg.arg_name.clone();
-                ret.push('=');
-                ret.push_str(&arg.arg_type.parse_value(reg_vals[i]));
+                ret.push_str(" = ");
+                ret.push_str(&arg.arg_type.parse_value(reg_vals[i], self.pid));
                 ret
             })
             .collect::<Vec<String>>()
@@ -135,6 +159,6 @@ impl fmt::Display for SyscallData<'_> {
         let syscall_name = self.get_name();
         let return_val = self.get_return();
         let syscall_args = self.get_args();
-        write!(f, "{}({})={}", syscall_name, syscall_args, return_val)
+        write!(f, "{}({}) = {}", syscall_name, syscall_args, return_val)
     }
 }
