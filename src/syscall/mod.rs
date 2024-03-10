@@ -2,15 +2,9 @@ use core::ffi::c_void;
 use libc::user_regs_struct;
 use std::fmt;
 
-use nix::{
-    sys::ptrace,
-    unistd::Pid,
-};
+use nix::{sys::ptrace, unistd::Pid};
 
-use crate::error::{
-    SysResult,
-    invalid_io,
-};
+use crate::error::{invalid_io, SysResult};
 
 mod def;
 use def::SYSCALL;
@@ -66,7 +60,10 @@ pub struct SyscallArg {
 
 impl SyscallArg {
     pub fn new(arg_name: &str, arg_type: SyscallType) -> Self {
-        Self { arg_name: String::from( arg_name ), arg_type }
+        Self {
+            arg_name: String::from(arg_name),
+            arg_type,
+        }
     }
 }
 
@@ -78,32 +75,48 @@ pub struct SyscallDef {
 
 impl SyscallDef {
     pub fn new(name: &str, return_type: SyscallType, syscall_args: Vec<SyscallArg>) -> Self {
-        Self { syscall_name: String::from( name ), return_type, syscall_args }
+        Self {
+            syscall_name: String::from(name),
+            return_type,
+            syscall_args,
+        }
     }
 }
 
 pub struct SyscallData<'a> {
     def: Option<&'a SyscallDef>,
     regs: Option<user_regs_struct>,
-    pid : Pid,
+    pid: Pid,
 }
 
 impl SyscallData<'_> {
-    pub fn new( pid: Pid ) -> Self {
-        Self { def: None, regs: None, pid }
+    pub fn new(pid: Pid) -> Self {
+        Self {
+            def: None,
+            regs: None,
+            pid,
+        }
     }
 
     pub fn push(&mut self, regs: user_regs_struct) -> SysResult<()> {
         match self {
-            Self { def: None, regs: None, pid: _ } => {
+            Self {
+                def: None,
+                regs: None,
+                pid: _,
+            } => {
                 self.def = Some(&SYSCALL[&regs.orig_rax]);
                 Ok(())
             }
-            Self { def: _, regs: None, pid: _ } => {
+            Self {
+                def: _,
+                regs: None,
+                pid: _,
+            } => {
                 self.regs = Some(regs);
                 Ok(())
             }
-            _ => invalid_io()
+            _ => invalid_io(),
         }
     }
 
@@ -111,7 +124,8 @@ impl SyscallData<'_> {
         self.def.is_some() && self.regs.is_some()
     }
 
-    fn validate(&self) { // FIXME is this the correct way?? better error handling? use SysResult<> everywhere?
+    fn validate(&self) {
+        // FIXME is this the correct way?? better error handling? use SysResult<> everywhere?
         if !self.complete() {
             panic!("Syscall didn't complete");
         }
@@ -128,19 +142,17 @@ impl SyscallData<'_> {
         return_type.parse_value(self.regs.unwrap().rax, self.pid)
     }
 
-    fn get_args(&self) -> String { // FIXME this function is correct wrt refs!! use as an example
+    fn get_args(&self) -> String {
+        // FIXME this function is correct wrt refs!! use as an example
         self.validate();
         let regs = self.regs.as_ref().expect("Regs not initialized");
-        let reg_vals = vec![
-            regs.rdi,
-            regs.rsi,
-            regs.rdx,
-            regs.r10,
-            regs.r8,
-            regs.r9,
-        ];
+        let reg_vals = vec![regs.rdi, regs.rsi, regs.rdx, regs.r10, regs.r8, regs.r9];
 
-        let args = &self.def.as_ref().expect("Definition not initialized").syscall_args;
+        let args = &self
+            .def
+            .as_ref()
+            .expect("Definition not initialized")
+            .syscall_args;
         args.iter()
             .enumerate()
             .map(|(i, arg)| {

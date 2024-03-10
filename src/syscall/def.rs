@@ -1,10 +1,6 @@
 use std::collections::HashMap;
 
-use crate::syscall::{
-    SyscallArg,
-    SyscallDef,
-    SyscallType,
-};
+use crate::syscall::{SyscallArg, SyscallDef, SyscallType};
 
 lazy_static! {
     pub static ref SYSCALL: HashMap<u64, SyscallDef> = hashmap![

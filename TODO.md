@@ -16,6 +16,5 @@
 ## infra
 
 * testing
-* coding style
 * proper README
 * support more architectures
