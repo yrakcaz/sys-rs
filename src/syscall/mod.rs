@@ -1,18 +1,17 @@
 use core::ffi::c_void;
 use libc::user_regs_struct;
-
 use nix::{sys::ptrace, unistd::Pid};
+use serde_derive::Deserialize;
+use std::collections::HashMap;
 
 use crate::error::{operation_not_permitted, SysResult};
 
-mod def;
-use def::SYSCALL;
-
-pub enum SyscallType {
-    INT,
-    PTR,
-    STR,
-    UINT,
+#[derive(Clone, Deserialize)]
+enum SyscallType {
+    Int,
+    Ptr,
+    Str,
+    Uint,
 }
 
 fn read_str(addr: u64, pid: Pid) -> SysResult<String> {
@@ -33,51 +32,59 @@ fn read_str(addr: u64, pid: Pid) -> SysResult<String> {
 impl SyscallType {
     fn parse_value(&self, val: u64, pid: Pid) -> SysResult<String> {
         match &self {
-            SyscallType::INT => Ok(format!("{}", val as i64)),
-            SyscallType::PTR => Ok(format!("0x{:x}", val)),
-            SyscallType::STR => Ok(format!("\"{}\"", read_str(val, pid)?)),
-            SyscallType::UINT => Ok(format!("{}", val)),
+            SyscallType::Int => Ok(format!("{}", val as i64)),
+            SyscallType::Ptr => Ok(format!("0x{:x}", val)),
+            SyscallType::Str => Ok(format!("\"{}\"", read_str(val, pid)?)),
+            SyscallType::Uint => Ok(format!("{}", val)),
         }
     }
 }
 
-pub struct SyscallArg {
+#[derive(Clone, Deserialize)]
+struct SyscallArg {
     arg_name: String,
     arg_type: SyscallType,
 }
 
-impl SyscallArg {
-    pub fn new(arg_name: &str, arg_type: SyscallType) -> Self {
-        Self {
-            arg_name: String::from(arg_name),
-            arg_type,
-        }
-    }
-}
-
-pub struct SyscallDef {
+#[derive(Clone, Deserialize)]
+struct SyscallDef {
     syscall_name: String,
-    return_type: SyscallType,
-    syscall_args: Vec<SyscallArg>,
+    syscall_type: SyscallType,
+    syscall_args: Option<Vec<SyscallArg>>,
 }
 
-impl SyscallDef {
-    pub fn new(name: &str, return_type: SyscallType, syscall_args: Vec<SyscallArg>) -> Self {
+struct SyscallDefs {
+    map: HashMap<u64, SyscallDef>,
+}
+
+impl SyscallDefs {
+    fn new() -> Self {
+        let json = include_str!("def.json");
         Self {
-            syscall_name: String::from(name),
-            return_type,
-            syscall_args,
+            map: serde_json::from_str(&json).expect("Failed to parse JSON file"),
         }
+    }
+
+    fn get(&self, id: &u64) -> SyscallDef {
+        self.map.get(id).cloned().unwrap_or_else(|| SyscallDef {
+            syscall_name: String::from("unknown"),
+            syscall_type: SyscallType::Int,
+            syscall_args: None,
+        })
     }
 }
 
-pub struct SyscallData<'a> {
-    def: Option<&'a SyscallDef>,
+lazy_static! {
+    static ref SYSCALL: SyscallDefs = SyscallDefs::new();
+}
+
+pub struct SyscallData {
+    def: Option<SyscallDef>,
     regs: Option<user_regs_struct>,
     pid: Pid,
 }
 
-impl SyscallData<'_> {
+impl SyscallData {
     pub fn new(pid: Pid) -> Self {
         Self {
             def: None,
@@ -93,7 +100,7 @@ impl SyscallData<'_> {
                 regs: None,
                 pid: _,
             } => {
-                self.def = Some(&SYSCALL[&regs.orig_rax]);
+                self.def = Some(SYSCALL.get(&regs.orig_rax));
                 Ok(())
             }
             Self {
@@ -104,7 +111,7 @@ impl SyscallData<'_> {
                 self.regs = Some(regs);
                 Ok(())
             }
-            _ => operation_not_permitted(),
+            _ => Err(operation_not_permitted()),
         }
     }
 
@@ -114,21 +121,31 @@ impl SyscallData<'_> {
 
     fn validate(&self) -> SysResult<()> {
         if !self.complete() {
-            operation_not_permitted()?;
+            return Err(operation_not_permitted());
         }
 
         Ok(())
     }
 
-    fn get_name(&self) -> SysResult<&String> {
+    fn get_name(&self) -> SysResult<String> {
         self.validate()?;
-        Ok(&self.def.unwrap().syscall_name)
+        Ok(self
+            .def
+            .as_ref()
+            .ok_or_else(|| operation_not_permitted())?
+            .syscall_name
+            .clone())
     }
 
     fn get_return(&self) -> SysResult<String> {
         self.validate()?;
-        let return_type = &self.def.unwrap().return_type;
-        return_type.parse_value(self.regs.unwrap().rax, self.pid)
+        let syscall_type = self
+            .def
+            .as_ref()
+            .ok_or_else(|| operation_not_permitted())?
+            .syscall_type
+            .clone();
+        syscall_type.parse_value(self.regs.unwrap().rax, self.pid)
     }
 
     fn get_args(&self) -> SysResult<String> {
@@ -136,37 +153,24 @@ impl SyscallData<'_> {
         let regs = self.regs.as_ref().expect("Regs not initialized");
         let reg_vals = vec![regs.rdi, regs.rsi, regs.rdx, regs.r10, regs.r8, regs.r9];
 
-        let args = &self
+        Ok(self
             .def
             .as_ref()
             .expect("Definition not initialized")
-            .syscall_args;
-        let arg_strings = args
-            .iter()
-            .enumerate()
-            .map(|(i, arg)| {
-                let mut ret = arg.arg_name.clone();
-                ret.push_str(" = ");
-                ret.push_str(&arg.arg_type.parse_value(reg_vals[i], self.pid)?);
-                Ok(ret)
-            })
-            .collect::<Vec<SysResult<String>>>();
-
-        let mut iter = arg_strings.into_iter();
-        let mut ret = String::new();
-        while let Some(arg) = iter.next() {
-            match arg {
-                Ok(s) => {
-                    if !ret.is_empty() {
-                        ret.push_str(", ");
-                    }
-                    ret.push_str(&s);
-                }
-                Err(errno) => return Err(errno),
-            }
-        }
-
-        Ok(ret)
+            .syscall_args
+            .as_ref()
+            .map_or(Ok(String::new()), |args| {
+                args.iter()
+                    .enumerate()
+                    .map(|(i, arg)| {
+                        let mut ret = arg.arg_name.clone();
+                        ret.push('=');
+                        ret.push_str(&arg.arg_type.parse_value(reg_vals[i], self.pid)?);
+                        Ok(ret)
+                    })
+                    .collect::<SysResult<Vec<String>>>()
+                    .map(|v| v.join(", "))
+            })?)
     }
 
     pub fn to_string(&self) -> SysResult<String> {
