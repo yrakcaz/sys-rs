@@ -1,8 +1,3 @@
-#[macro_use]
-extern crate lazy_static;
-
-use std::{env, ffi::CString};
-
 use nix::{
     sys::{
         ptrace,
@@ -10,12 +5,13 @@ use nix::{
     },
     unistd::{execve, fork, ForkResult, Pid},
 };
+use std::{env, ffi::CString};
 
 mod error;
 use error::{invalid_argument, SysResult};
 
 mod syscall;
-use syscall::SyscallData;
+use syscall::SyscallPrinter;
 
 fn get_args() -> SysResult<Vec<CString>> {
     let args: Vec<CString> = env::args()
@@ -25,7 +21,7 @@ fn get_args() -> SysResult<Vec<CString>> {
 
     if args.is_empty() {
         eprintln!("Usage: strace <command> <params...>");
-        return Err(invalid_argument());
+        invalid_argument()?;
     }
 
     Ok(args)
@@ -45,8 +41,9 @@ fn get_env() -> SysResult<Vec<CString>> {
 }
 
 fn tracer(child: Pid) -> SysResult<()> {
+    let mut syscall_printer = SyscallPrinter::new(child);
+
     waitpid(child, None)?;
-    let mut syscall_data = SyscallData::new(child);
     loop {
         ptrace::syscall(child, None)?;
         if let WaitStatus::Exited(_, code) = waitpid(child, None)? {
@@ -55,36 +52,30 @@ fn tracer(child: Pid) -> SysResult<()> {
         }
 
         let regs = ptrace::getregs(child)?;
-        syscall_data.push(regs)?;
-
-        if !syscall_data.complete() {
-            continue;
-        }
-
-        println!("{}", syscall_data.to_string()?);
-        syscall_data = SyscallData::new(child);
+        syscall_printer.maybe_print(&regs)?;
     }
 
     Ok(())
 }
 
-fn tracee() -> SysResult<()> {
-    let args = get_args()?;
+fn tracee(args: &Vec<CString>) -> SysResult<()> {
     let env = get_env()?;
 
     ptrace::traceme()?;
-    execve(&args[0], &args, &env)?;
+    execve(&args[0], args, &env)?;
 
     Ok(())
 }
 
 fn do_fork() -> SysResult<()> {
+    let args = get_args()?;
+
     match unsafe { fork() }? {
         ForkResult::Parent { child, .. } => {
             tracer(child)?;
         }
         ForkResult::Child => {
-            tracee()?;
+            tracee(&args)?;
         }
     }
 
