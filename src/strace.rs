@@ -1,7 +1,5 @@
 #[macro_use]
 extern crate lazy_static;
-#[macro_use]
-extern crate maplit;
 
 use std::{env, ffi::CString};
 
@@ -27,7 +25,7 @@ fn get_args() -> SysResult<Vec<CString>> {
 
     if args.is_empty() {
         eprintln!("Usage: strace <command> <params...>");
-        invalid_argument()?;
+        return Err(invalid_argument());
     }
 
     Ok(args)
