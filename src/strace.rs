@@ -5,43 +5,44 @@ use nix::{
     },
     unistd::{execve, fork, ForkResult, Pid},
 };
-use std::{env, ffi::CString};
+use std::{
+    env,
+    ffi::{CString, NulError},
+};
 
 mod error;
-use error::{invalid_argument, SysResult};
+use error::{SysError, SysResult};
 
 mod syscall;
 use syscall::SyscallPrinter;
 
 fn get_args() -> SysResult<Vec<CString>> {
-    let args: Vec<CString> = env::args()
-        .skip(1)
-        .map(|arg| CString::new(arg).expect("Failed to convert argument to CString"))
-        .collect();
+    let args: Result<Vec<CString>, NulError> =
+        env::args().skip(1).map(|arg| CString::new(arg)).collect();
 
-    if args.is_empty() {
-        eprintln!("Usage: strace <command> <params...>");
-        invalid_argument()?;
+    match args {
+        Err(e) => Err(SysError::CString(e)),
+        Ok(args) if args.is_empty() => {
+            eprintln!("Usage: strace <command> <params...>");
+            Err(SysError::InvalidArgument)
+        }
+        Ok(args) => Ok(args),
     }
-
-    Ok(args)
 }
 
 fn get_env() -> SysResult<Vec<CString>> {
-    let env: Vec<CString> = env::vars_os()
-        .map(|(key, value)| {
-            let mut env_str = key.into_string().expect("Invalid env var key");
-            env_str.push('=');
-            env_str.push_str(&value.into_string().expect("Invalid env var value"));
-            CString::new(env_str).expect("Failed to convert env var to CString")
+    env::vars_os()
+        .map(|(key, val)| {
+            let key_str = key.into_string().map_err(|_| SysError::EnvVar)?;
+            let val_str = val.into_string().map_err(|_| SysError::EnvVar)?;
+            let env_str = format!("{}={}", key_str, val_str);
+            CString::new(env_str).map_err(SysError::CString)
         })
-        .collect();
-
-    Ok(env)
+        .collect()
 }
 
 fn tracer(child: Pid) -> SysResult<()> {
-    let mut syscall_printer = SyscallPrinter::new(child);
+    let mut syscall_printer = SyscallPrinter::new(child)?;
 
     waitpid(child, None)?;
     loop {
@@ -58,34 +59,23 @@ fn tracer(child: Pid) -> SysResult<()> {
     Ok(())
 }
 
-fn tracee(args: &Vec<CString>) -> SysResult<()> {
+fn tracee(args: &Vec<CString>, env: &Vec<CString>) -> SysResult<()> {
+    ptrace::traceme()?;
+    execve(&args[0], args, env)?;
+
+    Ok(())
+}
+
+fn do_fork(args: &Vec<CString>, env: &Vec<CString>) -> SysResult<()> {
+    match unsafe { fork() }? {
+        ForkResult::Parent { child, .. } => tracer(child),
+        ForkResult::Child => tracee(args, env),
+    }
+}
+
+fn main() -> SysResult<()> {
+    let args = get_args()?;
     let env = get_env()?;
 
-    ptrace::traceme()?;
-    execve(&args[0], args, &env)?;
-
-    Ok(())
-}
-
-fn do_fork() -> SysResult<()> {
-    let args = get_args()?;
-
-    match unsafe { fork() }? {
-        ForkResult::Parent { child, .. } => {
-            tracer(child)?;
-        }
-        ForkResult::Child => {
-            tracee(&args)?;
-        }
-    }
-
-    Ok(())
-}
-
-fn main() -> Result<(), &'static str> {
-    if let Err(errno) = do_fork() {
-        Err(errno.desc())?;
-    }
-
-    Ok(())
+    do_fork(&args, &env)
 }

@@ -1,6 +1,8 @@
 use serde_derive::Deserialize;
 use std::collections::HashMap;
 
+use crate::error::SysResult;
+
 #[derive(Clone, Deserialize)]
 pub enum SyscallType {
     Int,
@@ -27,11 +29,10 @@ pub struct SyscallDefs {
 }
 
 impl SyscallDefs {
-    pub fn new() -> Self {
+    pub fn new() -> SysResult<Self> {
         let json = include_str!("def.json");
-        Self {
-            map: serde_json::from_str(&json).expect("Failed to parse JSON file"),
-        }
+        let map = serde_json::from_str(&json)?;
+        Ok(Self { map })
     }
 
     pub fn get(&self, id: &u64) -> SyscallDef {

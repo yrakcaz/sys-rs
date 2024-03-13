@@ -3,7 +3,7 @@ use libc::user_regs_struct;
 use nix::{sys::ptrace, unistd::Pid};
 
 use super::def::{SyscallDefs, SyscallType};
-use crate::error::{operation_not_permitted, SysResult};
+use crate::error::SysResult;
 
 enum SyscallState {
     Enter,
@@ -14,7 +14,6 @@ pub struct SyscallPrinter {
     pid: Pid,
     defs: SyscallDefs,
     current_state: SyscallState,
-    current_syscall: Option<u64>,
 }
 
 fn trace_str(addr: &u64, pid: &Pid) -> SysResult<String> {
@@ -46,41 +45,52 @@ fn parse_value(
 }
 
 impl SyscallPrinter {
-    pub fn new(pid: Pid) -> Self {
-        Self {
+    pub fn new(pid: Pid) -> SysResult<Self> {
+        let defs = SyscallDefs::new()?;
+
+        Ok(Self {
             pid,
-            defs: SyscallDefs::new(),
+            defs,
             current_state: SyscallState::Enter,
-            current_syscall: None,
-        }
+        })
     }
 
-    fn do_print(&self, regs: &user_regs_struct) -> SysResult<()> {
-        let def = self.defs.get(&self.current_syscall.unwrap());
+    fn to_string(&self, regs: &user_regs_struct) -> SysResult<String> {
+        let def = self.defs.get(&regs.orig_rax);
         let syscall_name = def.syscall_name;
         let syscall_type = def.syscall_type;
         let syscall_return = parse_value(&syscall_type, &regs.rax, &self.pid)?;
 
         let reg_vals =
             vec![regs.rdi, regs.rsi, regs.rdx, regs.r10, regs.r8, regs.r9];
-        let syscall_args = def.syscall_args.map_or(Ok(String::new()), |args| {
-            args.iter()
-                .enumerate()
-                .map(|(i, arg)| {
-                    let mut ret = arg.arg_name.clone();
-                    ret.push('=');
-                    ret.push_str(&parse_value(
-                        &arg.arg_type,
-                        &reg_vals[i],
-                        &self.pid,
-                    )?);
-                    Ok(ret)
-                })
+        let syscall_args =
+            def.syscall_args.map_or(Ok(String::new()), |args| {
+                args.iter()
+                    .enumerate()
+                    .map(|(i, arg)| {
+                        let mut ret = arg.arg_name.clone();
+                        ret.push('=');
+                        ret.push_str(&parse_value(
+                                &arg.arg_type,
+                                &reg_vals[i],
+                                &self.pid,
+                        )?);
+                        Ok(ret)
+                    })
                 .collect::<SysResult<Vec<String>>>()
-                .map(|v| v.join(", "))
-        })?;
+                    .map(|v| v.join(", "))
+            })?;
 
-        println!("{}({}) = {}", syscall_name, syscall_args, syscall_return);
+        Ok(format!(
+                "{}({}) = {}",
+                syscall_name, syscall_args, syscall_return
+        ))
+    }
+
+    fn do_print(&self, regs: &user_regs_struct) -> SysResult<()> {
+        let syscall_str = self.to_string(regs)?;
+        println!("{}", syscall_str);
+
         Ok(())
     }
 
@@ -88,16 +98,11 @@ impl SyscallPrinter {
         match self.current_state {
             SyscallState::Enter => {
                 self.current_state = SyscallState::Exit;
-                self.current_syscall = Some(regs.orig_rax);
                 Ok(())
             }
             SyscallState::Exit => {
                 self.current_state = SyscallState::Enter;
-                match self.current_syscall {
-                    None => operation_not_permitted(),
-                    Some(v) if v != regs.orig_rax => operation_not_permitted(),
-                    _ => self.do_print(regs),
-                }
+                self.do_print(regs)
             }
         }
     }
