@@ -2,8 +2,8 @@ use core::ffi::c_void;
 use libc::user_regs_struct;
 use nix::{sys::ptrace, unistd::Pid};
 
-use crate::error::{operation_not_permitted, SysResult};
 use super::def::{SyscallDefs, SyscallType};
+use crate::error::{operation_not_permitted, SysResult};
 
 enum SyscallState {
     Enter,
@@ -32,7 +32,11 @@ fn trace_str(addr: &u64, pid: &Pid) -> SysResult<String> {
     Ok(ret)
 }
 
-fn parse_value(syscall_type: &SyscallType, val: &u64, pid: &Pid) -> SysResult<String> {
+fn parse_value(
+    syscall_type: &SyscallType,
+    val: &u64,
+    pid: &Pid,
+) -> SysResult<String> {
     match syscall_type {
         SyscallType::Int => Ok(format!("{}", *val as i64)),
         SyscallType::Ptr => Ok(format!("0x{:x}", val)),
@@ -57,14 +61,19 @@ impl SyscallPrinter {
         let syscall_type = def.syscall_type;
         let syscall_return = parse_value(&syscall_type, &regs.rax, &self.pid)?;
 
-        let reg_vals = vec![regs.rdi, regs.rsi, regs.rdx, regs.r10, regs.r8, regs.r9];
+        let reg_vals =
+            vec![regs.rdi, regs.rsi, regs.rdx, regs.r10, regs.r8, regs.r9];
         let syscall_args = def.syscall_args.map_or(Ok(String::new()), |args| {
             args.iter()
                 .enumerate()
                 .map(|(i, arg)| {
                     let mut ret = arg.arg_name.clone();
                     ret.push('=');
-                    ret.push_str(&parse_value(&arg.arg_type, &reg_vals[i], &self.pid)?);
+                    ret.push_str(&parse_value(
+                        &arg.arg_type,
+                        &reg_vals[i],
+                        &self.pid,
+                    )?);
                     Ok(ret)
                 })
                 .collect::<SysResult<Vec<String>>>()
