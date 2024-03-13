@@ -2,7 +2,7 @@
 
 ## tools
 
-* strace - DONE
+* strace - DONE (although this could also trace signals for completeness)
 * sscov
 * addr2line
 * gcov
