@@ -16,11 +16,12 @@ pub struct SyscallPrinter {
     current_state: SyscallState,
 }
 
-fn trace_str(addr: &u64, pid: &Pid) -> SysResult<String> {
+fn trace_str(addr: u64, pid: Pid) -> SysResult<String> {
     let mut ret = String::new();
     let mut offset = 0;
     loop {
-        let c = ptrace::read(*pid, (addr + offset) as *mut c_void)? as u8 as char;
+        let c = u8::try_from(ptrace::read(pid, (addr + offset) as *mut c_void)?)?
+            as char;
         if c == '\0' {
             break;
         }
@@ -31,16 +32,12 @@ fn trace_str(addr: &u64, pid: &Pid) -> SysResult<String> {
     Ok(ret)
 }
 
-fn parse_value(
-    syscall_type: &SyscallType,
-    val: &u64,
-    pid: &Pid,
-) -> SysResult<String> {
+fn parse_value(syscall_type: &SyscallType, val: u64, pid: Pid) -> SysResult<String> {
     match syscall_type {
-        SyscallType::Int => Ok(format!("{}", *val as i64)),
-        SyscallType::Ptr => Ok(format!("0x{:x}", val)),
+        SyscallType::Int => Ok(format!("{}", i64::try_from(val)?)),
+        SyscallType::Ptr => Ok(format!("0x{val:x}")),
         SyscallType::Str => Ok(format!("\"{}\"", trace_str(val, pid)?)),
-        SyscallType::Uint => Ok(format!("{}", val)),
+        SyscallType::Uint => Ok(format!("{val}")),
     }
 }
 
@@ -56,40 +53,35 @@ impl SyscallPrinter {
     }
 
     fn to_string(&self, regs: &user_regs_struct) -> SysResult<String> {
-        let def = self.defs.get(&regs.orig_rax);
+        let def = self.defs.get(regs.orig_rax);
         let syscall_name = def.syscall_name;
         let syscall_type = def.syscall_type;
-        let syscall_return = parse_value(&syscall_type, &regs.rax, &self.pid)?;
+        let syscall_return = parse_value(&syscall_type, regs.rax, self.pid)?;
 
-        let reg_vals =
-            vec![regs.rdi, regs.rsi, regs.rdx, regs.r10, regs.r8, regs.r9];
-        let syscall_args =
-            def.syscall_args.map_or(Ok(String::new()), |args| {
-                args.iter()
-                    .enumerate()
-                    .map(|(i, arg)| {
-                        let mut ret = arg.arg_name.clone();
-                        ret.push('=');
-                        ret.push_str(&parse_value(
-                                &arg.arg_type,
-                                &reg_vals[i],
-                                &self.pid,
-                        )?);
-                        Ok(ret)
-                    })
+        let reg_vals = [regs.rdi, regs.rsi, regs.rdx, regs.r10, regs.r8, regs.r9];
+        let syscall_args = def.syscall_args.map_or(Ok(String::new()), |args| {
+            args.iter()
+                .enumerate()
+                .map(|(i, arg)| {
+                    let mut ret = arg.arg_name.clone();
+                    ret.push('=');
+                    ret.push_str(&parse_value(
+                        &arg.arg_type,
+                        reg_vals[i],
+                        self.pid,
+                    )?);
+                    Ok(ret)
+                })
                 .collect::<SysResult<Vec<String>>>()
-                    .map(|v| v.join(", "))
-            })?;
+                .map(|v| v.join(", "))
+        })?;
 
-        Ok(format!(
-                "{}({}) = {}",
-                syscall_name, syscall_args, syscall_return
-        ))
+        Ok(format!("{syscall_name}({syscall_args}) = {syscall_return}"))
     }
 
     fn do_print(&self, regs: &user_regs_struct) -> SysResult<()> {
         let syscall_str = self.to_string(regs)?;
-        println!("{}", syscall_str);
+        println!("{syscall_str}");
 
         Ok(())
     }

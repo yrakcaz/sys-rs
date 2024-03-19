@@ -1,10 +1,13 @@
 [package]
-name = "sys-rs"
-version = "0.2.0"
-edition = "2021"
-license = "MIT"
 authors = ["yrakcaz <zackaryayoun@gmail.com>"]
+categories = ["Development tools", "Operating systems"]
+description = "Re-writing some of the Linux system tools in Rust as a toy project"
+edition = "2021"
+keywords = ["Linux", "system", "tools"]
+license = "MIT"
+name = "sys-rs"
 repository = "https://github.com/yrakcaz/sys-rs"
+version = "0.2.0"
 
 [[bin]]
 name = "strace-rs"
