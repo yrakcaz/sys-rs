@@ -47,8 +47,8 @@ fn tracer(child: Pid) -> SysResult<()> {
     waitpid(child, None)?;
     loop {
         ptrace::syscall(child, None)?;
-        if let WaitStatus::Exited(_, code) = waitpid(child, None)? {
-            println!("program exited with code {code}");
+        if let WaitStatus::Exited(_, status) = waitpid(child, None)? {
+            println!("+++ exited with {status} +++");
             break;
         }
 

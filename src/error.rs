@@ -1,10 +1,9 @@
 use nix::errno::Errno;
 use serde_json::Error as SerdeJsonError;
-use std::{ffi::NulError, fmt, num::TryFromIntError};
+use std::{ffi::NulError, fmt};
 
 pub enum SysError {
     CString(NulError),
-    IntConversion(TryFromIntError),
     Json(SerdeJsonError),
     Nix(Errno),
     EnvVar,
@@ -16,9 +15,6 @@ impl fmt::Debug for SysError {
         match self {
             Self::CString(e) => {
                 write!(f, "CString conversion error: {e}")
-            }
-            Self::IntConversion(e) => {
-                write!(f, "Integer conversion error: {e}")
             }
             Self::Json(e) => {
                 write!(f, "JSON parsing error: {e}")
@@ -33,12 +29,6 @@ impl fmt::Debug for SysError {
                 write!(f, "Invalid argument")
             }
         }
-    }
-}
-
-impl From<TryFromIntError> for SysError {
-    fn from(e: TryFromIntError) -> SysError {
-        SysError::IntConversion(e)
     }
 }
 
