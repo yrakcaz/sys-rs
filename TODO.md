@@ -2,19 +2,22 @@
 
 ## tools
 
-* strace - DONE (although this could also trace signals for completeness)
-* sscov
-* addr2line
-* gcov
-* ltrace
-* mmck
-* dbg
-* ld
-* ld.so
-* ...
+[x] strace  
+&nbsp;&nbsp;&nbsp;&nbsp;[ ] handle signals  
+&nbsp;&nbsp;&nbsp;&nbsp;[ ] add missing syscalls in syscall/info.json  
+&nbsp;&nbsp;&nbsp;&nbsp;[ ] syscall filtering  
+[ ] sscov  
+[ ] addr2line  
+[ ] gcov  
+[ ] ltrace  
+[ ] mmck  
+[ ] dbg  
+[ ] ld  
+[ ] ld.so  
+[ ] ...  
 
 ## infra
 
-* testing
-* proper README
-* support more architectures
+[ ] testing  
+[ ] proper README  
+[ ] support more architectures  
