@@ -18,25 +18,25 @@ pub struct SyscallArg {
 }
 
 #[derive(Clone, Deserialize)]
-pub struct SyscallDef {
+pub struct SyscallInfo {
     pub syscall_name: String,
     pub syscall_type: SyscallType,
     pub syscall_args: Option<Vec<SyscallArg>>,
 }
 
-pub struct SyscallDefs {
-    map: HashMap<u64, SyscallDef>,
+pub struct SyscallInfos {
+    map: HashMap<u64, SyscallInfo>,
 }
 
-impl SyscallDefs {
+impl SyscallInfos {
     pub fn new() -> SysResult<Self> {
-        let json = include_str!("def.json");
+        let json = include_str!("info.json");
         let map = serde_json::from_str(json)?;
         Ok(Self { map })
     }
 
-    pub fn get(&self, id: u64) -> SyscallDef {
-        self.map.get(&id).cloned().unwrap_or_else(|| SyscallDef {
+    pub fn get(&self, id: u64) -> SyscallInfo {
+        self.map.get(&id).cloned().unwrap_or_else(|| SyscallInfo {
             syscall_name: String::from("unknown"),
             syscall_type: SyscallType::Int,
             syscall_args: None,
