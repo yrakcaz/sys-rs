@@ -14,4 +14,4 @@ Let's kill two birds with one stone :)
 This works the same way as Linux's `strace` command and can be used to trace
 the system calls invoked by a process.  
 
-Usage: strace <command> <params...>  
+Usage: `strace-rs command [args]`  

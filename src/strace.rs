@@ -23,7 +23,7 @@ fn get_args() -> SysResult<Vec<CString>> {
     match args {
         Err(e) => Err(SysError::CString(e)),
         Ok(args) if args.is_empty() => {
-            eprintln!("Usage: strace <command> <params...>");
+            eprintln!("Usage: `strace-rs command [args]`");
             Err(SysError::InvalidArgument)
         }
         Ok(args) => Ok(args),
