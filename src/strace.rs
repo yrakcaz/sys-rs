@@ -18,7 +18,7 @@ use syscall::SyscallPrinter;
 
 fn get_args() -> SysResult<Vec<CString>> {
     let args: Result<Vec<CString>, NulError> =
-        env::args().skip(1).map(|arg| CString::new(arg)).collect();
+        env::args().skip(1).map(CString::new).collect();
 
     match args {
         Err(e) => Err(SysError::CString(e)),
@@ -35,7 +35,7 @@ fn get_env() -> SysResult<Vec<CString>> {
         .map(|(key, val)| {
             let key_str = key.into_string().map_err(|_| SysError::EnvVar)?;
             let val_str = val.into_string().map_err(|_| SysError::EnvVar)?;
-            let env_str = format!("{}={}", key_str, val_str);
+            let env_str = format!("{key_str}={val_str}");
             CString::new(env_str).map_err(SysError::CString)
         })
         .collect()
@@ -48,7 +48,7 @@ fn tracer(child: Pid) -> SysResult<()> {
     loop {
         ptrace::syscall(child, None)?;
         if let WaitStatus::Exited(_, code) = waitpid(child, None)? {
-            println!("program exited with code {}", code);
+            println!("program exited with code {code}");
             break;
         }
 
@@ -59,14 +59,14 @@ fn tracer(child: Pid) -> SysResult<()> {
     Ok(())
 }
 
-fn tracee(args: &Vec<CString>, env: &Vec<CString>) -> SysResult<()> {
+fn tracee(args: &[CString], env: &[CString]) -> SysResult<()> {
     ptrace::traceme()?;
     execve(&args[0], args, env)?;
 
     Ok(())
 }
 
-fn do_fork(args: &Vec<CString>, env: &Vec<CString>) -> SysResult<()> {
+fn do_fork(args: &[CString], env: &[CString]) -> SysResult<()> {
     match unsafe { fork() }? {
         ForkResult::Parent { child, .. } => tracer(child),
         ForkResult::Child => tracee(args, env),

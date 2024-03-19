@@ -31,12 +31,12 @@ pub struct SyscallDefs {
 impl SyscallDefs {
     pub fn new() -> SysResult<Self> {
         let json = include_str!("def.json");
-        let map = serde_json::from_str(&json)?;
+        let map = serde_json::from_str(json)?;
         Ok(Self { map })
     }
 
-    pub fn get(&self, id: &u64) -> SyscallDef {
-        self.map.get(id).cloned().unwrap_or_else(|| SyscallDef {
+    pub fn get(&self, id: u64) -> SyscallDef {
+        self.map.get(&id).cloned().unwrap_or_else(|| SyscallDef {
             syscall_name: String::from("unknown"),
             syscall_type: SyscallType::Int,
             syscall_args: None,
