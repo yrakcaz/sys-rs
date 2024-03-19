@@ -20,8 +20,7 @@ fn trace_str(addr: u64, pid: Pid) -> SysResult<String> {
     let mut ret = String::new();
     let mut offset = 0;
     loop {
-        let c = u8::try_from(ptrace::read(pid, (addr + offset) as *mut c_void)?)?
-            as char;
+        let c = ptrace::read(pid, (addr + offset) as *mut c_void)? as u8 as char;
         if c == '\0' {
             break;
         }
@@ -34,7 +33,7 @@ fn trace_str(addr: u64, pid: Pid) -> SysResult<String> {
 
 fn parse_value(syscall_type: &SyscallType, val: u64, pid: Pid) -> SysResult<String> {
     match syscall_type {
-        SyscallType::Int => Ok(format!("{}", i64::try_from(val)?)),
+        SyscallType::Int => Ok(format!("{}", val as i64)),
         SyscallType::Ptr => Ok(format!("0x{val:x}")),
         SyscallType::Str => Ok(format!("\"{}\"", trace_str(val, pid)?)),
         SyscallType::Uint => Ok(format!("{val}")),
