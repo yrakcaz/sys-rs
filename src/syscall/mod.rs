@@ -1,4 +1,5 @@
 mod info;
+pub use info::SyscallInfos;
 
-mod printer;
-pub use printer::SyscallPrinter;
+mod wrapper;
+pub use wrapper::SyscallWrapper;
