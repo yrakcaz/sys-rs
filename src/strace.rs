@@ -1,9 +1,14 @@
+use libc::PTRACE_SYSCALL_INFO_EXIT;
 use nix::{
+    fcntl::{open, OFlag},
+    libc::{STDERR_FILENO, STDOUT_FILENO},
     sys::{
         ptrace,
-        wait::{waitpid, WaitStatus},
+        signal::Signal,
+        stat::Mode,
+        wait::{wait, WaitStatus},
     },
-    unistd::{execve, fork, ForkResult, Pid},
+    unistd::{close, dup2, execve, fork, ForkResult, Pid},
 };
 use std::{
     env,
@@ -14,16 +19,17 @@ mod error;
 use error::{SysError, SysResult};
 
 mod syscall;
-use syscall::SyscallPrinter;
+use syscall::{SyscallInfos, SyscallWrapper};
 
 fn get_args() -> SysResult<Vec<CString>> {
-    let args: Result<Vec<CString>, NulError> =
-        env::args().skip(1).map(CString::new).collect();
+    let mut args_iter = env::args();
+    let this = args_iter.next().unwrap_or_default();
+    let args: Result<Vec<CString>, NulError> = args_iter.map(CString::new).collect();
 
     match args {
         Err(e) => Err(SysError::CString(e)),
         Ok(args) if args.is_empty() => {
-            eprintln!("Usage: `strace-rs command [args]`");
+            eprintln!("Usage: `{this} command [args]`");
             Err(SysError::InvalidArgument)
         }
         Ok(args) => Ok(args),
@@ -42,18 +48,54 @@ fn get_env() -> SysResult<Vec<CString>> {
 }
 
 fn tracer(child: Pid) -> SysResult<()> {
-    let mut syscall_printer = SyscallPrinter::new(child)?;
+    let syscall_infos = SyscallInfos::new()?;
 
-    waitpid(child, None)?;
+    let mut status = wait()?;
+    ptrace::setoptions(
+        child,
+        ptrace::Options::PTRACE_O_TRACESYSGOOD
+            | ptrace::Options::PTRACE_O_TRACEEXEC
+            | ptrace::Options::PTRACE_O_TRACEEXIT,
+    )?;
+
     loop {
-        ptrace::syscall(child, None)?;
-        if let WaitStatus::Exited(_, status) = waitpid(child, None)? {
-            println!("+++ exited with {status} +++");
-            break;
+        match status {
+            WaitStatus::PtraceSyscall(_) => {
+                if ptrace::getevent(child)? as u8 == PTRACE_SYSCALL_INFO_EXIT {
+                    println!("{}", SyscallWrapper::build(child, &syscall_infos)?);
+                }
+                ptrace::syscall(child, None)?;
+            }
+            WaitStatus::PtraceEvent(_, _, status) => {
+                if status == ptrace::Event::PTRACE_EVENT_EXIT as i32 {
+                    let syscall = SyscallWrapper::build(child, &syscall_infos)?;
+                    if syscall.is_exit() {
+                        println!("{syscall}");
+                    }
+                }
+                ptrace::syscall(child, None)?;
+            }
+            WaitStatus::Stopped(_, signal) => {
+                if signal == Signal::SIGTRAP {
+                    println!("{}", SyscallWrapper::build(child, &syscall_infos)?);
+                    ptrace::syscall(child, None)?;
+                } else {
+                    println!("--- {signal:?} ---");
+                    ptrace::cont(child, signal)?;
+                }
+            }
+            WaitStatus::Signaled(_, signal, coredump) => {
+                let coredump_str = if coredump { " (core dumped)" } else { "" };
+                println!("+++ killed by {signal:?}{coredump_str} +++");
+                break;
+            }
+            WaitStatus::Exited(_, status) => {
+                println!("+++ exited with {status} +++");
+                break;
+            }
+            _ => {}
         }
-
-        let regs = ptrace::getregs(child)?;
-        syscall_printer.maybe_print(&regs)?;
+        status = wait()?;
     }
 
     Ok(())
@@ -61,6 +103,12 @@ fn tracer(child: Pid) -> SysResult<()> {
 
 fn tracee(args: &[CString], env: &[CString]) -> SysResult<()> {
     ptrace::traceme()?;
+
+    let null = open("/dev/null", OFlag::O_WRONLY, Mode::empty())?;
+    dup2(null, STDERR_FILENO)?;
+    dup2(null, STDOUT_FILENO)?;
+    close(null)?;
+
     execve(&args[0], args, env)?;
 
     Ok(())

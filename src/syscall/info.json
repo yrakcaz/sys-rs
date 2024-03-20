@@ -27,7 +27,7 @@
          },
          {
             "arg_name": "buf",
-            "arg_type": "Ptr"
+            "arg_type": "Str"
          },
          {
             "arg_name": "count",
@@ -754,12 +754,30 @@
    "59": {
       "syscall_name": "execve",
       "syscall_type": "Int",
-      "syscall_args": []
+      "syscall_args": [
+         {
+            "arg_name": "filename", 
+            "arg_type": "Str"
+         },
+         {
+            "arg_name": "argv", 
+            "arg_type": "Str"
+         },
+         {
+            "arg_name": "envp", 
+            "arg_type": "Str"
+         }
+      ]
    },
    "60": {
       "syscall_name": "exit",
       "syscall_type": "Int",
-      "syscall_args": []
+      "syscall_args": [
+         {
+            "arg_name": "status", 
+            "arg_type": "Int"
+         }
+      ]
    },
    "61": {
       "syscall_name": "wait4",
