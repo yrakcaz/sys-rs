@@ -12,10 +12,6 @@ pub struct SyscallRepr {
 }
 
 fn trace_str(addr: u64, pid: Pid) -> SysResult<String> {
-    if addr == 0 {
-        return Ok(String::from("?"));
-    }
-
     let mut ret = String::new();
     let mut offset = 0;
     loop {
@@ -34,14 +30,18 @@ fn parse_value(syscall_type: &SyscallType, val: u64, pid: Pid) -> SysResult<Stri
     match syscall_type {
         SyscallType::Int => Ok(format!("{}", val as i64)),
         SyscallType::Ptr => {
-            let ptr_str = if val == 0 {
-                String::from("NULL")
+            let ptr_str = if val == 0x0 {
+                "NULL".to_string()
             } else {
                 format!("0x{val:x}")
             };
             Ok(ptr_str)
         }
-        SyscallType::Str => Ok(trace_str(val, pid)?),
+        SyscallType::Str => Ok(if val == 0x0 {
+            "?".to_string()
+        } else {
+            trace_str(val, pid)?
+        }),
         SyscallType::Uint => Ok(format!("{val}")),
     }
 }
@@ -53,13 +53,13 @@ impl SyscallRepr {
         let syscall_name = info.syscall_name;
         let syscall_type = info.syscall_type;
         let syscall_return = if regs.rax as i64 == -(Errno::ENOSYS as i64) {
-            String::from("?")
+            "?".to_string()
         } else {
             parse_value(&syscall_type, regs.rax, pid)?
         };
 
         let reg_vals = [regs.rdi, regs.rsi, regs.rdx, regs.r10, regs.r8, regs.r9];
-        let syscall_args = info.syscall_args.map_or(Ok(String::new()), |args| {
+        let syscall_args = info.syscall_args.map_or(Ok("".to_string()), |args| {
             args.iter()
                 .enumerate()
                 .map(|(i, arg)| {

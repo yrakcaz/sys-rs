@@ -1,46 +1,36 @@
-use nix::errno::Errno;
-use serde_json::Error as SerdeJsonError;
-use std::{ffi::NulError, fmt};
+use std::{
+    backtrace::{Backtrace, BacktraceStatus},
+    fmt,
+};
 
-pub enum SysError {
-    CString(NulError),
-    Json(SerdeJsonError),
-    Nix(Errno),
-    EnvVar,
-    InvalidArgument,
+pub struct SysError {
+    error: String,
+    backtrace: Backtrace,
 }
 
-impl fmt::Debug for SysError {
-    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        match self {
-            Self::CString(e) => {
-                write!(f, "CString conversion error: {e}")
-            }
-            Self::Json(e) => {
-                write!(f, "JSON parsing error: {e}")
-            }
-            Self::Nix(e) => {
-                write!(f, "System error: {e}")
-            }
-            Self::EnvVar => {
-                write!(f, "Environment variable conversion error")
-            }
-            Self::InvalidArgument => {
-                write!(f, "Invalid argument")
-            }
+impl SysError {
+    fn new(error: String) -> Self {
+        Self {
+            error,
+            backtrace: Backtrace::capture(),
         }
     }
 }
 
-impl From<SerdeJsonError> for SysError {
-    fn from(e: SerdeJsonError) -> SysError {
-        SysError::Json(e)
+impl fmt::Debug for SysError {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        write!(f, "{}", self.error)?;
+        if self.backtrace.status() == BacktraceStatus::Captured {
+            write!(f, "\nBacktrace:\n{}", self.backtrace)
+        } else {
+            Ok(())
+        }
     }
 }
 
-impl From<Errno> for SysError {
-    fn from(e: Errno) -> SysError {
-        SysError::Nix(e)
+impl<E: fmt::Display> From<E> for SysError {
+    fn from(e: E) -> SysError {
+        SysError::new(e.to_string())
     }
 }
 

@@ -37,7 +37,7 @@ impl SyscallInfos {
 
     pub fn get(&self, id: u64) -> SyscallInfo {
         self.map.get(&id).cloned().unwrap_or_else(|| SyscallInfo {
-            syscall_name: String::from("unknown"),
+            syscall_name: "unknown".to_string(),
             syscall_type: SyscallType::Int,
             syscall_args: None,
         })
