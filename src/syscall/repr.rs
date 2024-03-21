@@ -5,6 +5,12 @@ use std::fmt;
 use super::info::{SyscallInfos, SyscallType};
 use crate::error::SysResult;
 
+pub struct SyscallRepr {
+    syscall_name: String,
+    syscall_return: String,
+    syscall_args: String,
+}
+
 fn trace_str(addr: u64, pid: Pid) -> SysResult<String> {
     if addr == 0 {
         return Ok(String::from("?"));
@@ -40,13 +46,7 @@ fn parse_value(syscall_type: &SyscallType, val: u64, pid: Pid) -> SysResult<Stri
     }
 }
 
-pub struct SyscallWrapper {
-    syscall_name: String,
-    syscall_return: String,
-    syscall_args: String,
-}
-
-impl SyscallWrapper {
+impl SyscallRepr {
     pub fn build(pid: Pid, infos: &SyscallInfos) -> SysResult<Self> {
         let regs = ptrace::getregs(pid)?;
         let info = infos.get(regs.orig_rax);
@@ -84,7 +84,7 @@ impl SyscallWrapper {
     }
 }
 
-impl fmt::Display for SyscallWrapper {
+impl fmt::Display for SyscallRepr {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         write!(
             f,
