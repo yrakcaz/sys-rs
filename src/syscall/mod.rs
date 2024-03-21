@@ -1,5 +1,5 @@
 mod info;
 pub use info::SyscallInfos;
 
-mod wrapper;
-pub use wrapper::SyscallWrapper;
+mod repr;
+pub use repr::SyscallRepr;

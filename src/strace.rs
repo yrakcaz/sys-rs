@@ -19,7 +19,7 @@ mod error;
 use error::{SysError, SysResult};
 
 mod syscall;
-use syscall::{SyscallInfos, SyscallWrapper};
+use syscall::{SyscallInfos, SyscallRepr};
 
 fn get_args() -> SysResult<Vec<CString>> {
     let mut args_iter = env::args();
@@ -62,13 +62,13 @@ fn tracer(child: Pid) -> SysResult<()> {
         match status {
             WaitStatus::PtraceSyscall(_) => {
                 if ptrace::getevent(child)? as u8 == PTRACE_SYSCALL_INFO_EXIT {
-                    println!("{}", SyscallWrapper::build(child, &syscall_infos)?);
+                    println!("{}", SyscallRepr::build(child, &syscall_infos)?);
                 }
                 ptrace::syscall(child, None)?;
             }
             WaitStatus::PtraceEvent(_, _, status) => {
                 if status == ptrace::Event::PTRACE_EVENT_EXIT as i32 {
-                    let syscall = SyscallWrapper::build(child, &syscall_infos)?;
+                    let syscall = SyscallRepr::build(child, &syscall_infos)?;
                     if syscall.is_exit() {
                         println!("{syscall}");
                     }
@@ -77,7 +77,7 @@ fn tracer(child: Pid) -> SysResult<()> {
             }
             WaitStatus::Stopped(_, signal) => {
                 if signal == Signal::SIGTRAP {
-                    println!("{}", SyscallWrapper::build(child, &syscall_infos)?);
+                    println!("{}", SyscallRepr::build(child, &syscall_infos)?);
                     ptrace::syscall(child, None)?;
                 } else {
                     println!("--- {signal:?} ---");
