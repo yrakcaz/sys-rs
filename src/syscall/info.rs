@@ -1,10 +1,10 @@
 use serde_derive::Deserialize;
 use std::collections::HashMap;
 
-use crate::error::SysResult;
+use crate::diag::Result;
 
 #[derive(Clone, Deserialize)]
-pub enum SyscallType {
+pub enum Type {
     Int,
     Ptr,
     Str,
@@ -12,34 +12,34 @@ pub enum SyscallType {
 }
 
 #[derive(Clone, Deserialize)]
-pub struct SyscallArg {
-    pub arg_name: String,
-    pub arg_type: SyscallType,
+pub struct Arg {
+    pub name: String,
+    pub arg_type: Type,
 }
 
 #[derive(Clone, Deserialize)]
-pub struct SyscallInfo {
-    pub syscall_name: String,
-    pub syscall_type: SyscallType,
-    pub syscall_args: Option<Vec<SyscallArg>>,
+pub struct Entry {
+    pub name: String,
+    pub ret_type: Type,
+    pub args: Option<Vec<Arg>>,
 }
 
-pub struct SyscallInfos {
-    map: HashMap<u64, SyscallInfo>,
+pub struct Entries {
+    map: HashMap<u64, Entry>,
 }
 
-impl SyscallInfos {
-    pub fn new() -> SysResult<Self> {
+impl Entries {
+    pub fn new() -> Result<Self> {
         let json = include_str!("info.json");
         let map = serde_json::from_str(json)?;
         Ok(Self { map })
     }
 
-    pub fn get(&self, id: u64) -> SyscallInfo {
-        self.map.get(&id).cloned().unwrap_or_else(|| SyscallInfo {
-            syscall_name: "unknown".to_string(),
-            syscall_type: SyscallType::Int,
-            syscall_args: None,
+    pub fn get(&self, id: u64) -> Entry {
+        self.map.get(&id).cloned().unwrap_or_else(|| Entry {
+            name: "unknown".to_string(),
+            ret_type: Type::Int,
+            args: None,
         })
     }
 }

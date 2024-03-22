@@ -19,7 +19,7 @@
 
 ## infra
 
-[ ] apply clippy::pedantic lints  
+[x] apply clippy::pedantic lints  
 [ ] testing  
 [ ] proper README  
 [ ] support more architectures  

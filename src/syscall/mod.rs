@@ -1,5 +1,2 @@
-mod info;
-pub use info::SyscallInfos;
-
-mod repr;
-pub use repr::SyscallRepr;
+pub mod info;
+pub mod model;

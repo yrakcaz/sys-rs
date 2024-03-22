@@ -1,14 +1,14 @@
 use std::{
     backtrace::{Backtrace, BacktraceStatus},
-    fmt,
+    fmt, result,
 };
 
-pub struct SysError {
+pub struct Error {
     error: String,
     backtrace: Backtrace,
 }
 
-impl SysError {
+impl Error {
     fn new(error: String) -> Self {
         Self {
             error,
@@ -17,7 +17,7 @@ impl SysError {
     }
 }
 
-impl fmt::Debug for SysError {
+impl fmt::Debug for Error {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         write!(f, "{}", self.error)?;
         if self.backtrace.status() == BacktraceStatus::Captured {
@@ -28,10 +28,10 @@ impl fmt::Debug for SysError {
     }
 }
 
-impl<E: fmt::Display> From<E> for SysError {
-    fn from(e: E) -> SysError {
-        SysError::new(e.to_string())
+impl<E: fmt::Display> From<E> for Error {
+    fn from(e: E) -> Error {
+        Error::new(e.to_string())
     }
 }
 
-pub type SysResult<T> = Result<T, SysError>;
+pub type Result<T> = result::Result<T, Error>;
