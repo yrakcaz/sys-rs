@@ -1,3338 +1,3338 @@
 {
    "0": {
-      "syscall_name": "read",
-      "syscall_type": "Uint",
-      "syscall_args": [
+      "name": "read",
+      "ret_type": "Uint",
+      "args": [
          {
-            "arg_name": "fd",
+            "name": "fd",
             "arg_type": "Int"
          },
          {
-            "arg_name": "buf",
+            "name": "buf",
             "arg_type": "Ptr"
          },
          {
-            "arg_name": "count",
+            "name": "count",
             "arg_type": "Uint"
          }
       ]
    },
    "1": {
-      "syscall_name": "write",
-      "syscall_type": "Uint",
-      "syscall_args": [
+      "name": "write",
+      "ret_type": "Uint",
+      "args": [
          {
-            "arg_name": "fd",
+            "name": "fd",
             "arg_type": "Int"
          },
          {
-            "arg_name": "buf",
+            "name": "buf",
             "arg_type": "Str"
          },
          {
-            "arg_name": "count",
+            "name": "count",
             "arg_type": "Uint"
          }
       ]
    },
    "2": {
-      "syscall_name": "open",
-      "syscall_type": "Int",
-      "syscall_args": [
+      "name": "open",
+      "ret_type": "Int",
+      "args": [
          {
-            "arg_name": "pathname",
+            "name": "pathname",
             "arg_type": "Str"
          },
          {
-            "arg_name": "flags",
+            "name": "flags",
             "arg_type": "Int"
          }
       ]
    },
    "3": {
-      "syscall_name": "close",
-      "syscall_type": "Int",
-      "syscall_args": [
+      "name": "close",
+      "ret_type": "Int",
+      "args": [
          {
-            "arg_name": "fd",
+            "name": "fd",
             "arg_type": "Int"
          }
       ]
    },
    "4": {
-      "syscall_name": "stat",
-      "syscall_type": "Int",
-      "syscall_args": [
+      "name": "stat",
+      "ret_type": "Int",
+      "args": [
          {
-            "arg_name": "path",
+            "name": "path",
             "arg_type": "Str"
          },
          {
-            "arg_name": "buf",
+            "name": "buf",
             "arg_type": "Ptr"
          }
       ]
    },
    "5": {
-      "syscall_name": "fstat",
-      "syscall_type": "Int",
-      "syscall_args": [
+      "name": "fstat",
+      "ret_type": "Int",
+      "args": [
          {
-            "arg_name": "fd",
+            "name": "fd",
             "arg_type": "Int"
          },
          {
-            "arg_name": "buf",
+            "name": "buf",
             "arg_type": "Ptr"
          }
       ]
    },
    "6": {
-      "syscall_name": "lstat",
-      "syscall_type": "Int",
-      "syscall_args": [
+      "name": "lstat",
+      "ret_type": "Int",
+      "args": [
          {
-            "arg_name": "path",
+            "name": "path",
             "arg_type": "Str"
          },
          {
-            "arg_name": "buf",
+            "name": "buf",
             "arg_type": "Ptr"
          }
       ]
    },
    "7": {
-      "syscall_name": "poll",
-      "syscall_type": "Int",
-      "syscall_args": [
+      "name": "poll",
+      "ret_type": "Int",
+      "args": [
          {
-            "arg_name": "fds",
+            "name": "fds",
             "arg_type": "Ptr"
          },
          {
-            "arg_name": "nfds",
+            "name": "nfds",
             "arg_type": "Int"
          },
          {
-            "arg_name": "timeout",
+            "name": "timeout",
             "arg_type": "Int"
          }
       ]
    },
    "8": {
-      "syscall_name": "lseek",
-      "syscall_type": "Int",
-      "syscall_args": [
+      "name": "lseek",
+      "ret_type": "Int",
+      "args": [
          {
-            "arg_name": "fd",
+            "name": "fd",
             "arg_type": "Int"
          },
          {
-            "arg_name": "offset",
+            "name": "offset",
             "arg_type": "Int"
          },
          {
-            "arg_name": "whence",
+            "name": "whence",
             "arg_type": "Int"
          }
       ]
    },
    "9": {
-      "syscall_name": "mmap",
-      "syscall_type": "Int",
-      "syscall_args": []
+      "name": "mmap",
+      "ret_type": "Int",
+      "args": []
    },
    "10": {
-      "syscall_name": "mprotect",
-      "syscall_type": "Int",
-      "syscall_args": [
+      "name": "mprotect",
+      "ret_type": "Int",
+      "args": [
          {
-            "arg_name": "addr",
+            "name": "addr",
             "arg_type": "Ptr"
          },
          {
-            "arg_name": "len",
+            "name": "len",
             "arg_type": "Uint"
          },
          {
-            "arg_name": "prot",
+            "name": "prot",
             "arg_type": "Int"
          }
       ]
    },
    "11": {
-      "syscall_name": "munmap",
-      "syscall_type": "Int",
-      "syscall_args": [
+      "name": "munmap",
+      "ret_type": "Int",
+      "args": [
          {
-            "arg_name": "addr",
+            "name": "addr",
             "arg_type": "Ptr"
          },
          {
-            "arg_name": "length",
+            "name": "length",
             "arg_type": "Uint"
          }
       ]
    },
    "12": {
-      "syscall_name": "brk",
-      "syscall_type": "Int",
-      "syscall_args": [
+      "name": "brk",
+      "ret_type": "Int",
+      "args": [
          {
-            "arg_name": "addr",
+            "name": "addr",
             "arg_type": "Ptr"
          }
       ]
    },
    "13": {
-      "syscall_name": "rt_sigaction",
-      "syscall_type": "Int",
-      "syscall_args": [
+      "name": "rt_sigaction",
+      "ret_type": "Int",
+      "args": [
          {
-            "arg_name": "signum",
+            "name": "signum",
             "arg_type": "Int"
          },
          {
-            "arg_name": "act",
+            "name": "act",
             "arg_type": "Ptr"
          },
          {
-            "arg_name": "oldact",
+            "name": "oldact",
             "arg_type": "Ptr"
          }
       ]
    },
    "14": {
-      "syscall_name": "rt_sigprocmask",
-      "syscall_type": "Int",
-      "syscall_args": [
+      "name": "rt_sigprocmask",
+      "ret_type": "Int",
+      "args": [
          {
-            "arg_name": "how",
+            "name": "how",
             "arg_type": "Int"
          },
          {
-            "arg_name": "set",
+            "name": "set",
             "arg_type": "Ptr"
          },
          {
-            "arg_name": "oldset",
+            "name": "oldset",
             "arg_type": "Ptr"
          }
       ]
    },
    "15": {
-      "syscall_name": "rt_sigreturn",
-      "syscall_type": "Int",
-      "syscall_args": []
+      "name": "rt_sigreturn",
+      "ret_type": "Int",
+      "args": []
    },
    "16": {
-      "syscall_name": "ioctl",
-      "syscall_type": "Int",
-      "syscall_args": [
+      "name": "ioctl",
+      "ret_type": "Int",
+      "args": [
          {
-            "arg_name": "d",
+            "name": "d",
             "arg_type": "Int"
          },
          {
-            "arg_name": "request",
+            "name": "request",
             "arg_type": "Int"
          }
       ]
    },
    "17": {
-      "syscall_name": "pread64",
-      "syscall_type": "Int",
-      "syscall_args": []
+      "name": "pread64",
+      "ret_type": "Int",
+      "args": []
    },
    "18": {
-      "syscall_name": "pwrite64",
-      "syscall_type": "Int",
-      "syscall_args": []
+      "name": "pwrite64",
+      "ret_type": "Int",
+      "args": []
    },
    "19": {
-      "syscall_name": "readv",
-      "syscall_type": "Uint",
-      "syscall_args": [
+      "name": "readv",
+      "ret_type": "Uint",
+      "args": [
          {
-            "arg_name": "fd",
+            "name": "fd",
             "arg_type": "Int"
          },
          {
-            "arg_name": "iov",
+            "name": "iov",
             "arg_type": "Ptr"
          },
          {
-            "arg_name": "iovcnt",
+            "name": "iovcnt",
             "arg_type": "Int"
          }
       ]
    },
    "20": {
-      "syscall_name": "writev",
-      "syscall_type": "Uint",
-      "syscall_args": [
+      "name": "writev",
+      "ret_type": "Uint",
+      "args": [
          {
-            "arg_name": "fd",
+            "name": "fd",
             "arg_type": "Int"
          },
          {
-            "arg_name": "iov",
+            "name": "iov",
             "arg_type": "Ptr"
          },
          {
-            "arg_name": "iovcnt",
+            "name": "iovcnt",
             "arg_type": "Int"
          }
       ]
    },
    "21": {
-      "syscall_name": "access",
-      "syscall_type": "Int",
-      "syscall_args": [
+      "name": "access",
+      "ret_type": "Int",
+      "args": [
          {
-            "arg_name": "pathname",
+            "name": "pathname",
             "arg_type": "Str"
          },
          {
-            "arg_name": "mode",
+            "name": "mode",
             "arg_type": "Int"
          }
       ]
    },
    "22": {
-      "syscall_name": "pipe",
-      "syscall_type": "Int",
-      "syscall_args": [
+      "name": "pipe",
+      "ret_type": "Int",
+      "args": [
          {
-            "arg_name": "pipefd",
+            "name": "pipefd",
             "arg_type": "Ptr"
          }
       ]
    },
    "23": {
-      "syscall_name": "select",
-      "syscall_type": "Int",
-      "syscall_args": []
+      "name": "select",
+      "ret_type": "Int",
+      "args": []
    },
    "24": {
-      "syscall_name": "sched_yield",
-      "syscall_type": "Int",
-      "syscall_args": []
+      "name": "sched_yield",
+      "ret_type": "Int",
+      "args": []
    },
    "25": {
-      "syscall_name": "mremap",
-      "syscall_type": "Int",
-      "syscall_args": []
+      "name": "mremap",
+      "ret_type": "Int",
+      "args": []
    },
    "26": {
-      "syscall_name": "msync",
-      "syscall_type": "Int",
-      "syscall_args": [
+      "name": "msync",
+      "ret_type": "Int",
+      "args": [
          {
-            "arg_name": "addr",
+            "name": "addr",
             "arg_type": "Ptr"
          },
          {
-            "arg_name": "length",
+            "name": "length",
             "arg_type": "Uint"
          },
          {
-            "arg_name": "flags",
+            "name": "flags",
             "arg_type": "Int"
          }
       ]
    },
    "27": {
-      "syscall_name": "mincore",
-      "syscall_type": "Int",
-      "syscall_args": [
+      "name": "mincore",
+      "ret_type": "Int",
+      "args": [
          {
-            "arg_name": "addr",
+            "name": "addr",
             "arg_type": "Ptr"
          },
          {
-            "arg_name": "length",
+            "name": "length",
             "arg_type": "Uint"
          },
          {
-            "arg_name": "vec",
+            "name": "vec",
             "arg_type": "Str"
          }
       ]
    },
    "28": {
-      "syscall_name": "madvise",
-      "syscall_type": "Int",
-      "syscall_args": [
+      "name": "madvise",
+      "ret_type": "Int",
+      "args": [
          {
-            "arg_name": "addr",
+            "name": "addr",
             "arg_type": "Ptr"
          },
          {
-            "arg_name": "length",
+            "name": "length",
             "arg_type": "Uint"
          },
          {
-            "arg_name": "advice",
+            "name": "advice",
             "arg_type": "Int"
          }
       ]
    },
    "29": {
-      "syscall_name": "shmget",
-      "syscall_type": "Int",
-      "syscall_args": [
+      "name": "shmget",
+      "ret_type": "Int",
+      "args": [
          {
-            "arg_name": "key",
+            "name": "key",
             "arg_type": "Int"
          },
          {
-            "arg_name": "size",
+            "name": "size",
             "arg_type": "Uint"
          },
          {
-            "arg_name": "shmflg",
+            "name": "shmflg",
             "arg_type": "Int"
          }
       ]
    },
    "30": {
-      "syscall_name": "shmat",
-      "syscall_type": "Int",
-      "syscall_args": [
+      "name": "shmat",
+      "ret_type": "Int",
+      "args": [
          {
-            "arg_name": "shmid",
+            "name": "shmid",
             "arg_type": "Int"
          },
          {
-            "arg_name": "shmaddr",
+            "name": "shmaddr",
             "arg_type": "Ptr"
          },
          {
-            "arg_name": "shmflg",
+            "name": "shmflg",
             "arg_type": "Int"
          }
       ]
    },
    "31": {
-      "syscall_name": "shmctl",
-      "syscall_type": "Int",
-      "syscall_args": [
+      "name": "shmctl",
+      "ret_type": "Int",
+      "args": [
          {
-            "arg_name": "shmid",
+            "name": "shmid",
             "arg_type": "Int"
          },
          {
-            "arg_name": "cmd",
+            "name": "cmd",
             "arg_type": "Int"
          },
          {
-            "arg_name": "buf",
+            "name": "buf",
             "arg_type": "Ptr"
          }
       ]
    },
    "32": {
-      "syscall_name": "dup",
-      "syscall_type": "Int",
-      "syscall_args": [
+      "name": "dup",
+      "ret_type": "Int",
+      "args": [
          {
-            "arg_name": "oldfd",
+            "name": "oldfd",
             "arg_type": "Int"
          }
       ]
    },
    "33": {
-      "syscall_name": "dup2",
-      "syscall_type": "Int",
-      "syscall_args": [
+      "name": "dup2",
+      "ret_type": "Int",
+      "args": [
          {
-            "arg_name": "oldfd",
+            "name": "oldfd",
             "arg_type": "Int"
          },
          {
-            "arg_name": "newfd",
+            "name": "newfd",
             "arg_type": "Int"
          }
       ]
    },
    "34": {
-      "syscall_name": "pause",
-      "syscall_type": "Int",
-      "syscall_args": []
+      "name": "pause",
+      "ret_type": "Int",
+      "args": []
    },
    "35": {
-      "syscall_name": "nanosleep",
-      "syscall_type": "Int",
-      "syscall_args": [
+      "name": "nanosleep",
+      "ret_type": "Int",
+      "args": [
          {
-            "arg_name": "req",
+            "name": "req",
             "arg_type": "Ptr"
          },
          {
-            "arg_name": "rem",
+            "name": "rem",
             "arg_type": "Ptr"
          }
       ]
    },
    "36": {
-      "syscall_name": "getitimer",
-      "syscall_type": "Int",
-      "syscall_args": [
+      "name": "getitimer",
+      "ret_type": "Int",
+      "args": [
          {
-            "arg_name": "which",
+            "name": "which",
             "arg_type": "Int"
          },
          {
-            "arg_name": "curr_value",
+            "name": "curr_value",
             "arg_type": "Ptr"
          }
       ]
    },
    "37": {
-      "syscall_name": "alarm",
-      "syscall_type": "Int",
-      "syscall_args": [
+      "name": "alarm",
+      "ret_type": "Int",
+      "args": [
          {
-            "arg_name": "seconds",
+            "name": "seconds",
             "arg_type": "Uint"
          }
       ]
    },
    "38": {
-      "syscall_name": "setitimer",
-      "syscall_type": "Int",
-      "syscall_args": []
+      "name": "setitimer",
+      "ret_type": "Int",
+      "args": []
    },
    "39": {
-      "syscall_name": "getpid",
-      "syscall_type": "Int",
-      "syscall_args": []
+      "name": "getpid",
+      "ret_type": "Int",
+      "args": []
    },
    "40": {
-      "syscall_name": "sendfile",
-      "syscall_type": "Uint",
-      "syscall_args": [
+      "name": "sendfile",
+      "ret_type": "Uint",
+      "args": [
          {
-            "arg_name": "out_fd",
+            "name": "out_fd",
             "arg_type": "Int"
          },
          {
-            "arg_name": "in_fd",
+            "name": "in_fd",
             "arg_type": "Int"
          },
          {
-            "arg_name": "offset",
+            "name": "offset",
             "arg_type": "Ptr"
          },
          {
-            "arg_name": "count",
+            "name": "count",
             "arg_type": "Uint"
          }
       ]
    },
    "41": {
-      "syscall_name": "socket",
-      "syscall_type": "Int",
-      "syscall_args": [
+      "name": "socket",
+      "ret_type": "Int",
+      "args": [
          {
-            "arg_name": "domain",
+            "name": "domain",
             "arg_type": "Int"
          },
          {
-            "arg_name": "type",
+            "name": "type",
             "arg_type": "Int"
          },
          {
-            "arg_name": "protocol",
+            "name": "protocol",
             "arg_type": "Int"
          }
       ]
    },
    "42": {
-      "syscall_name": "connect",
-      "syscall_type": "Int",
-      "syscall_args": []
+      "name": "connect",
+      "ret_type": "Int",
+      "args": []
    },
    "43": {
-      "syscall_name": "accept",
-      "syscall_type": "Int",
-      "syscall_args": [
+      "name": "accept",
+      "ret_type": "Int",
+      "args": [
          {
-            "arg_name": "sockfd",
+            "name": "sockfd",
             "arg_type": "Int"
          },
          {
-            "arg_name": "addr",
+            "name": "addr",
             "arg_type": "Ptr"
          },
          {
-            "arg_name": "addrlen",
+            "name": "addrlen",
             "arg_type": "Ptr"
          }
       ]
    },
    "44": {
-      "syscall_name": "sendto",
-      "syscall_type": "Uint",
-      "syscall_args": []
+      "name": "sendto",
+      "ret_type": "Uint",
+      "args": []
    },
    "45": {
-      "syscall_name": "recvfrom",
-      "syscall_type": "Uint",
-      "syscall_args": []
+      "name": "recvfrom",
+      "ret_type": "Uint",
+      "args": []
    },
    "46": {
-      "syscall_name": "sendmsg",
-      "syscall_type": "Uint",
-      "syscall_args": [
+      "name": "sendmsg",
+      "ret_type": "Uint",
+      "args": [
          {
-            "arg_name": "sockfd",
+            "name": "sockfd",
             "arg_type": "Int"
          },
          {
-            "arg_name": "msg",
+            "name": "msg",
             "arg_type": "Ptr"
          },
          {
-            "arg_name": "flags",
+            "name": "flags",
             "arg_type": "Int"
          }
       ]
    },
    "47": {
-      "syscall_name": "recvmsg",
-      "syscall_type": "Uint",
-      "syscall_args": [
+      "name": "recvmsg",
+      "ret_type": "Uint",
+      "args": [
          {
-            "arg_name": "sockfd",
+            "name": "sockfd",
             "arg_type": "Int"
          },
          {
-            "arg_name": "msg",
+            "name": "msg",
             "arg_type": "Ptr"
          },
          {
-            "arg_name": "flags",
+            "name": "flags",
             "arg_type": "Int"
          }
       ]
    },
    "48": {
-      "syscall_name": "shutdown",
-      "syscall_type": "Int",
-      "syscall_args": [
+      "name": "shutdown",
+      "ret_type": "Int",
+      "args": [
          {
-            "arg_name": "sockfd",
+            "name": "sockfd",
             "arg_type": "Int"
          },
          {
-            "arg_name": "how",
+            "name": "how",
             "arg_type": "Int"
          }
       ]
    },
    "49": {
-      "syscall_name": "bind",
-      "syscall_type": "Int",
-      "syscall_args": []
+      "name": "bind",
+      "ret_type": "Int",
+      "args": []
    },
    "50": {
-      "syscall_name": "listen",
-      "syscall_type": "Int",
-      "syscall_args": [
+      "name": "listen",
+      "ret_type": "Int",
+      "args": [
          {
-            "arg_name": "sockfd",
+            "name": "sockfd",
             "arg_type": "Int"
          },
          {
-            "arg_name": "backlog",
+            "name": "backlog",
             "arg_type": "Int"
          }
       ]
    },
    "51": {
-      "syscall_name": "getsockname",
-      "syscall_type": "Int",
-      "syscall_args": [
+      "name": "getsockname",
+      "ret_type": "Int",
+      "args": [
          {
-            "arg_name": "sockfd",
+            "name": "sockfd",
             "arg_type": "Int"
          },
          {
-            "arg_name": "addr",
+            "name": "addr",
             "arg_type": "Ptr"
          },
          {
-            "arg_name": "addrlen",
+            "name": "addrlen",
             "arg_type": "Ptr"
          }
       ]
    },
    "52": {
-      "syscall_name": "getpeername",
-      "syscall_type": "Int",
-      "syscall_args": [
+      "name": "getpeername",
+      "ret_type": "Int",
+      "args": [
          {
-            "arg_name": "sockfd",
+            "name": "sockfd",
             "arg_type": "Int"
          },
          {
-            "arg_name": "addr",
+            "name": "addr",
             "arg_type": "Ptr"
          },
          {
-            "arg_name": "addrlen",
+            "name": "addrlen",
             "arg_type": "Ptr"
          }
       ]
    },
    "53": {
-      "syscall_name": "socketpair",
-      "syscall_type": "Int",
-      "syscall_args": [
+      "name": "socketpair",
+      "ret_type": "Int",
+      "args": [
          {
-            "arg_name": "domain",
+            "name": "domain",
             "arg_type": "Int"
          },
          {
-            "arg_name": "type",
+            "name": "type",
             "arg_type": "Int"
          },
          {
-            "arg_name": "protocol",
+            "name": "protocol",
             "arg_type": "Int"
          },
          {
-            "arg_name": "sv",
+            "name": "sv",
             "arg_type": "Ptr"
          }
       ]
    },
    "54": {
-      "syscall_name": "setsockopt",
-      "syscall_type": "Int",
-      "syscall_args": []
+      "name": "setsockopt",
+      "ret_type": "Int",
+      "args": []
    },
    "55": {
-      "syscall_name": "getsockopt",
-      "syscall_type": "Int",
-      "syscall_args": []
+      "name": "getsockopt",
+      "ret_type": "Int",
+      "args": []
    },
    "56": {
-      "syscall_name": "clone",
-      "syscall_type": "Int",
-      "syscall_args": [
+      "name": "clone",
+      "ret_type": "Int",
+      "args": [
          {
-            "arg_name": "fn",
+            "name": "fn",
             "arg_type": "Ptr"
          },
          {
-            "arg_name": "child_stack",
+            "name": "child_stack",
             "arg_type": "Ptr"
          },
          {
-            "arg_name": "flags",
+            "name": "flags",
             "arg_type": "Int"
          },
          {
-            "arg_name": "arg",
+            "name": "arg",
             "arg_type": "Ptr"
          }
       ]
    },
    "57": {
-      "syscall_name": "fork",
-      "syscall_type": "Int",
-      "syscall_args": []
+      "name": "fork",
+      "ret_type": "Int",
+      "args": []
    },
    "58": {
-      "syscall_name": "vfork",
-      "syscall_type": "Int",
-      "syscall_args": []
+      "name": "vfork",
+      "ret_type": "Int",
+      "args": []
    },
    "59": {
-      "syscall_name": "execve",
-      "syscall_type": "Int",
-      "syscall_args": [
+      "name": "execve",
+      "ret_type": "Int",
+      "args": [
          {
-            "arg_name": "filename", 
+            "name": "filename", 
             "arg_type": "Str"
          },
          {
-            "arg_name": "argv", 
+            "name": "argv", 
             "arg_type": "Str"
          },
          {
-            "arg_name": "envp", 
+            "name": "envp", 
             "arg_type": "Str"
          }
       ]
    },
    "60": {
-      "syscall_name": "exit",
-      "syscall_type": "Int",
-      "syscall_args": [
+      "name": "exit",
+      "ret_type": "Int",
+      "args": [
          {
-            "arg_name": "status", 
+            "name": "status", 
             "arg_type": "Int"
          }
       ]
    },
    "61": {
-      "syscall_name": "wait4",
-      "syscall_type": "Int",
-      "syscall_args": []
+      "name": "wait4",
+      "ret_type": "Int",
+      "args": []
    },
    "62": {
-      "syscall_name": "kill",
-      "syscall_type": "Int",
-      "syscall_args": [
+      "name": "kill",
+      "ret_type": "Int",
+      "args": [
          {
-            "arg_name": "pid",
+            "name": "pid",
             "arg_type": "Int"
          },
          {
-            "arg_name": "sig",
+            "name": "sig",
             "arg_type": "Int"
          }
       ]
    },
    "63": {
-      "syscall_name": "uname",
-      "syscall_type": "Int",
-      "syscall_args": [
+      "name": "uname",
+      "ret_type": "Int",
+      "args": [
          {
-            "arg_name": "buf",
+            "name": "buf",
             "arg_type": "Ptr"
          }
       ]
    },
    "64": {
-      "syscall_name": "semget",
-      "syscall_type": "Int",
-      "syscall_args": [
+      "name": "semget",
+      "ret_type": "Int",
+      "args": [
          {
-            "arg_name": "key",
+            "name": "key",
             "arg_type": "Int"
          },
          {
-            "arg_name": "nsems",
+            "name": "nsems",
             "arg_type": "Int"
          },
          {
-            "arg_name": "semflg",
+            "name": "semflg",
             "arg_type": "Int"
          }
       ]
    },
    "65": {
-      "syscall_name": "semop",
-      "syscall_type": "Int",
-      "syscall_args": [
+      "name": "semop",
+      "ret_type": "Int",
+      "args": [
          {
-            "arg_name": "semid",
+            "name": "semid",
             "arg_type": "Int"
          },
          {
-            "arg_name": "sops",
+            "name": "sops",
             "arg_type": "Ptr"
          },
          {
-            "arg_name": "nsops",
+            "name": "nsops",
             "arg_type": "Uint"
          }
       ]
    },
    "66": {
-      "syscall_name": "semctl",
-      "syscall_type": "Int",
-      "syscall_args": [
+      "name": "semctl",
+      "ret_type": "Int",
+      "args": [
          {
-            "arg_name": "semid",
+            "name": "semid",
             "arg_type": "Int"
          },
          {
-            "arg_name": "semnum",
+            "name": "semnum",
             "arg_type": "Int"
          },
          {
-            "arg_name": "cmd",
+            "name": "cmd",
             "arg_type": "Int"
          }
       ]
    },
    "67": {
-      "syscall_name": "shmdt",
-      "syscall_type": "Int",
-      "syscall_args": [
+      "name": "shmdt",
+      "ret_type": "Int",
+      "args": [
          {
-            "arg_name": "shmaddr",
+            "name": "shmaddr",
             "arg_type": "Ptr"
          }
       ]
    },
    "68": {
-      "syscall_name": "msgget",
-      "syscall_type": "Int",
-      "syscall_args": [
+      "name": "msgget",
+      "ret_type": "Int",
+      "args": [
          {
-            "arg_name": "key",
+            "name": "key",
             "arg_type": "Int"
          },
          {
-            "arg_name": "msgflg",
+            "name": "msgflg",
             "arg_type": "Int"
          }
       ]
    },
    "69": {
-      "syscall_name": "msgsnd",
-      "syscall_type": "Int",
-      "syscall_args": [
+      "name": "msgsnd",
+      "ret_type": "Int",
+      "args": [
          {
-            "arg_name": "msqid",
+            "name": "msqid",
             "arg_type": "Int"
          },
          {
-            "arg_name": "msgp",
+            "name": "msgp",
             "arg_type": "Ptr"
          },
          {
-            "arg_name": "msgsz",
+            "name": "msgsz",
             "arg_type": "Uint"
          },
          {
-            "arg_name": "msgflg",
+            "name": "msgflg",
             "arg_type": "Int"
          }
       ]
    },
    "70": {
-      "syscall_name": "msgrcv",
-      "syscall_type": "Uint",
-      "syscall_args": []
+      "name": "msgrcv",
+      "ret_type": "Uint",
+      "args": []
    },
    "71": {
-      "syscall_name": "msgctl",
-      "syscall_type": "Int",
-      "syscall_args": [
+      "name": "msgctl",
+      "ret_type": "Int",
+      "args": [
          {
-            "arg_name": "msqid",
+            "name": "msqid",
             "arg_type": "Int"
          },
          {
-            "arg_name": "cmd",
+            "name": "cmd",
             "arg_type": "Int"
          },
          {
-            "arg_name": "buf",
+            "name": "buf",
             "arg_type": "Ptr"
          }
       ]
    },
    "72": {
-      "syscall_name": "fcntl",
-      "syscall_type": "Int",
-      "syscall_args": [
+      "name": "fcntl",
+      "ret_type": "Int",
+      "args": [
          {
-            "arg_name": "fd",
+            "name": "fd",
             "arg_type": "Int"
          },
          {
-            "arg_name": "cmd",
+            "name": "cmd",
             "arg_type": "Int"
          },
          {
-            "arg_name": "/",
+            "name": "/",
             "arg_type": "Ptr"
          }
       ]
    },
    "73": {
-      "syscall_name": "flock",
-      "syscall_type": "Int",
-      "syscall_args": [
+      "name": "flock",
+      "ret_type": "Int",
+      "args": [
          {
-            "arg_name": "fd",
+            "name": "fd",
             "arg_type": "Int"
          },
          {
-            "arg_name": "operation",
+            "name": "operation",
             "arg_type": "Int"
          }
       ]
    },
    "74": {
-      "syscall_name": "fsync",
-      "syscall_type": "Int",
-      "syscall_args": [
+      "name": "fsync",
+      "ret_type": "Int",
+      "args": [
          {
-            "arg_name": "fd",
+            "name": "fd",
             "arg_type": "Int"
          }
       ]
    },
    "75": {
-      "syscall_name": "fdatasync",
-      "syscall_type": "Int",
-      "syscall_args": [
+      "name": "fdatasync",
+      "ret_type": "Int",
+      "args": [
          {
-            "arg_name": "fd",
+            "name": "fd",
             "arg_type": "Int"
          }
       ]
    },
    "76": {
-      "syscall_name": "truncate",
-      "syscall_type": "Int",
-      "syscall_args": [
+      "name": "truncate",
+      "ret_type": "Int",
+      "args": [
          {
-            "arg_name": "path",
+            "name": "path",
             "arg_type": "Str"
          },
          {
-            "arg_name": "length",
+            "name": "length",
             "arg_type": "Int"
          }
       ]
    },
    "77": {
-      "syscall_name": "ftruncate",
-      "syscall_type": "Int",
-      "syscall_args": [
+      "name": "ftruncate",
+      "ret_type": "Int",
+      "args": [
          {
-            "arg_name": "fd",
+            "name": "fd",
             "arg_type": "Int"
          },
          {
-            "arg_name": "length",
+            "name": "length",
             "arg_type": "Int"
          }
       ]
    },
    "78": {
-      "syscall_name": "getdents",
-      "syscall_type": "Int",
-      "syscall_args": []
+      "name": "getdents",
+      "ret_type": "Int",
+      "args": []
    },
    "79": {
-      "syscall_name": "getcwd",
-      "syscall_type": "Int",
-      "syscall_args": [
+      "name": "getcwd",
+      "ret_type": "Int",
+      "args": [
          {
-            "arg_name": "buf",
+            "name": "buf",
             "arg_type": "Str"
          },
          {
-            "arg_name": "size",
+            "name": "size",
             "arg_type": "Uint"
          }
       ]
    },
    "80": {
-      "syscall_name": "chdir",
-      "syscall_type": "Int",
-      "syscall_args": [
+      "name": "chdir",
+      "ret_type": "Int",
+      "args": [
          {
-            "arg_name": "path",
+            "name": "path",
             "arg_type": "Str"
          }
       ]
    },
    "81": {
-      "syscall_name": "fchdir",
-      "syscall_type": "Int",
-      "syscall_args": [
+      "name": "fchdir",
+      "ret_type": "Int",
+      "args": [
          {
-            "arg_name": "fd",
+            "name": "fd",
             "arg_type": "Int"
          }
       ]
    },
    "82": {
-      "syscall_name": "rename",
-      "syscall_type": "Int",
-      "syscall_args": [
+      "name": "rename",
+      "ret_type": "Int",
+      "args": [
          {
-            "arg_name": "oldpath",
+            "name": "oldpath",
             "arg_type": "Str"
          },
          {
-            "arg_name": "newpath",
+            "name": "newpath",
             "arg_type": "Str"
          }
       ]
    },
    "83": {
-      "syscall_name": "mkdir",
-      "syscall_type": "Int",
-      "syscall_args": [
+      "name": "mkdir",
+      "ret_type": "Int",
+      "args": [
          {
-            "arg_name": "pathname",
+            "name": "pathname",
             "arg_type": "Str"
          },
          {
-            "arg_name": "mode",
+            "name": "mode",
             "arg_type": "Int"
          }
       ]
    },
    "84": {
-      "syscall_name": "rmdir",
-      "syscall_type": "Int",
-      "syscall_args": [
+      "name": "rmdir",
+      "ret_type": "Int",
+      "args": [
          {
-            "arg_name": "pathname",
+            "name": "pathname",
             "arg_type": "Str"
          }
       ]
    },
    "85": {
-      "syscall_name": "creat",
-      "syscall_type": "Int",
-      "syscall_args": [
+      "name": "creat",
+      "ret_type": "Int",
+      "args": [
          {
-            "arg_name": "pathname",
+            "name": "pathname",
             "arg_type": "Str"
          },
          {
-            "arg_name": "mode",
+            "name": "mode",
             "arg_type": "Int"
          }
       ]
    },
    "86": {
-      "syscall_name": "link",
-      "syscall_type": "Int",
-      "syscall_args": [
+      "name": "link",
+      "ret_type": "Int",
+      "args": [
          {
-            "arg_name": "oldpath",
+            "name": "oldpath",
             "arg_type": "Str"
          },
          {
-            "arg_name": "newpath",
+            "name": "newpath",
             "arg_type": "Str"
          }
       ]
    },
    "87": {
-      "syscall_name": "unlink",
-      "syscall_type": "Int",
-      "syscall_args": [
+      "name": "unlink",
+      "ret_type": "Int",
+      "args": [
          {
-            "arg_name": "pathname",
+            "name": "pathname",
             "arg_type": "Str"
          }
       ]
    },
    "88": {
-      "syscall_name": "symlink",
-      "syscall_type": "Int",
-      "syscall_args": [
+      "name": "symlink",
+      "ret_type": "Int",
+      "args": [
          {
-            "arg_name": "oldpath",
+            "name": "oldpath",
             "arg_type": "Str"
          },
          {
-            "arg_name": "newpath",
+            "name": "newpath",
             "arg_type": "Str"
          }
       ]
    },
    "89": {
-      "syscall_name": "readlink",
-      "syscall_type": "Uint",
-      "syscall_args": [
+      "name": "readlink",
+      "ret_type": "Uint",
+      "args": [
          {
-            "arg_name": "path",
+            "name": "path",
             "arg_type": "Str"
          },
          {
-            "arg_name": "buf",
+            "name": "buf",
             "arg_type": "Str"
          },
          {
-            "arg_name": "bufsiz",
+            "name": "bufsiz",
             "arg_type": "Uint"
          }
       ]
    },
    "90": {
-      "syscall_name": "chmod",
-      "syscall_type": "Int",
-      "syscall_args": [
+      "name": "chmod",
+      "ret_type": "Int",
+      "args": [
          {
-            "arg_name": "path",
+            "name": "path",
             "arg_type": "Str"
          },
          {
-            "arg_name": "mode",
+            "name": "mode",
             "arg_type": "Int"
          }
       ]
    },
    "91": {
-      "syscall_name": "fchmod",
-      "syscall_type": "Int",
-      "syscall_args": [
+      "name": "fchmod",
+      "ret_type": "Int",
+      "args": [
          {
-            "arg_name": "fd",
+            "name": "fd",
             "arg_type": "Int"
          },
          {
-            "arg_name": "mode",
+            "name": "mode",
             "arg_type": "Int"
          }
       ]
    },
    "92": {
-      "syscall_name": "chown",
-      "syscall_type": "Int",
-      "syscall_args": [
+      "name": "chown",
+      "ret_type": "Int",
+      "args": [
          {
-            "arg_name": "path",
+            "name": "path",
             "arg_type": "Str"
          },
          {
-            "arg_name": "owner",
+            "name": "owner",
             "arg_type": "Int"
          },
          {
-            "arg_name": "group",
+            "name": "group",
             "arg_type": "Int"
          }
       ]
    },
    "93": {
-      "syscall_name": "fchown",
-      "syscall_type": "Int",
-      "syscall_args": [
+      "name": "fchown",
+      "ret_type": "Int",
+      "args": [
          {
-            "arg_name": "fd",
+            "name": "fd",
             "arg_type": "Int"
          },
          {
-            "arg_name": "owner",
+            "name": "owner",
             "arg_type": "Int"
          },
          {
-            "arg_name": "group",
+            "name": "group",
             "arg_type": "Int"
          }
       ]
    },
    "94": {
-      "syscall_name": "lchown",
-      "syscall_type": "Int",
-      "syscall_args": [
+      "name": "lchown",
+      "ret_type": "Int",
+      "args": [
          {
-            "arg_name": "path",
+            "name": "path",
             "arg_type": "Str"
          },
          {
-            "arg_name": "owner",
+            "name": "owner",
             "arg_type": "Int"
          },
          {
-            "arg_name": "group",
+            "name": "group",
             "arg_type": "Int"
          }
       ]
    },
    "95": {
-      "syscall_name": "umask",
-      "syscall_type": "Int",
-      "syscall_args": [
+      "name": "umask",
+      "ret_type": "Int",
+      "args": [
          {
-            "arg_name": "mask",
+            "name": "mask",
             "arg_type": "Int"
          }
       ]
    },
    "96": {
-      "syscall_name": "gettimeofday",
-      "syscall_type": "Int",
-      "syscall_args": [
+      "name": "gettimeofday",
+      "ret_type": "Int",
+      "args": [
          {
-            "arg_name": "tv",
+            "name": "tv",
             "arg_type": "Ptr"
          },
          {
-            "arg_name": "tz",
+            "name": "tz",
             "arg_type": "Ptr"
          }
       ]
    },
    "97": {
-      "syscall_name": "getrlimit",
-      "syscall_type": "Int",
-      "syscall_args": [
+      "name": "getrlimit",
+      "ret_type": "Int",
+      "args": [
          {
-            "arg_name": "resource",
+            "name": "resource",
             "arg_type": "Int"
          },
          {
-            "arg_name": "rlim",
+            "name": "rlim",
             "arg_type": "Ptr"
          }
       ]
    },
    "98": {
-      "syscall_name": "getrusage",
-      "syscall_type": "Int",
-      "syscall_args": [
+      "name": "getrusage",
+      "ret_type": "Int",
+      "args": [
          {
-            "arg_name": "who",
+            "name": "who",
             "arg_type": "Int"
          },
          {
-            "arg_name": "usage",
+            "name": "usage",
             "arg_type": "Ptr"
          }
       ]
    },
    "99": {
-      "syscall_name": "sysinfo",
-      "syscall_type": "Int",
-      "syscall_args": [
+      "name": "sysinfo",
+      "ret_type": "Int",
+      "args": [
          {
-            "arg_name": "info",
+            "name": "info",
             "arg_type": "Ptr"
          }
       ]
    },
    "100": {
-      "syscall_name": "times",
-      "syscall_type": "Int",
-      "syscall_args": [
+      "name": "times",
+      "ret_type": "Int",
+      "args": [
          {
-            "arg_name": "buf",
+            "name": "buf",
             "arg_type": "Ptr"
          }
       ]
    },
    "101": {
-      "syscall_name": "ptrace",
-      "syscall_type": "Int",
-      "syscall_args": []
+      "name": "ptrace",
+      "ret_type": "Int",
+      "args": []
    },
    "102": {
-      "syscall_name": "getuid",
-      "syscall_type": "Int",
-      "syscall_args": []
+      "name": "getuid",
+      "ret_type": "Int",
+      "args": []
    },
    "103": {
-      "syscall_name": "syslog",
-      "syscall_type": "Int",
-      "syscall_args": [
+      "name": "syslog",
+      "ret_type": "Int",
+      "args": [
          {
-            "arg_name": "type",
+            "name": "type",
             "arg_type": "Int"
          },
          {
-            "arg_name": "bufp",
+            "name": "bufp",
             "arg_type": "Str"
          },
          {
-            "arg_name": "len",
+            "name": "len",
             "arg_type": "Int"
          }
       ]
    },
    "104": {
-      "syscall_name": "getgid",
-      "syscall_type": "Int",
-      "syscall_args": []
+      "name": "getgid",
+      "ret_type": "Int",
+      "args": []
    },
    "105": {
-      "syscall_name": "setuid",
-      "syscall_type": "Int",
-      "syscall_args": [
+      "name": "setuid",
+      "ret_type": "Int",
+      "args": [
          {
-            "arg_name": "uid",
+            "name": "uid",
             "arg_type": "Int"
          }
       ]
    },
    "106": {
-      "syscall_name": "setgid",
-      "syscall_type": "Int",
-      "syscall_args": [
+      "name": "setgid",
+      "ret_type": "Int",
+      "args": [
          {
-            "arg_name": "gid",
+            "name": "gid",
             "arg_type": "Int"
          }
       ]
    },
    "107": {
-      "syscall_name": "geteuid",
-      "syscall_type": "Int",
-      "syscall_args": []
+      "name": "geteuid",
+      "ret_type": "Int",
+      "args": []
    },
    "108": {
-      "syscall_name": "getegid",
-      "syscall_type": "Int",
-      "syscall_args": []
+      "name": "getegid",
+      "ret_type": "Int",
+      "args": []
    },
    "109": {
-      "syscall_name": "setpgid",
-      "syscall_type": "Int",
-      "syscall_args": [
+      "name": "setpgid",
+      "ret_type": "Int",
+      "args": [
          {
-            "arg_name": "pid",
+            "name": "pid",
             "arg_type": "Int"
          },
          {
-            "arg_name": "pgid",
+            "name": "pgid",
             "arg_type": "Int"
          }
       ]
    },
    "110": {
-      "syscall_name": "getppid",
-      "syscall_type": "Int",
-      "syscall_args": []
+      "name": "getppid",
+      "ret_type": "Int",
+      "args": []
    },
    "111": {
-      "syscall_name": "getpgrp",
-      "syscall_type": "Int",
-      "syscall_args": []
+      "name": "getpgrp",
+      "ret_type": "Int",
+      "args": []
    },
    "112": {
-      "syscall_name": "setsid",
-      "syscall_type": "Int",
-      "syscall_args": []
+      "name": "setsid",
+      "ret_type": "Int",
+      "args": []
    },
    "113": {
-      "syscall_name": "setreuid",
-      "syscall_type": "Int",
-      "syscall_args": [
+      "name": "setreuid",
+      "ret_type": "Int",
+      "args": [
          {
-            "arg_name": "ruid",
+            "name": "ruid",
             "arg_type": "Int"
          },
          {
-            "arg_name": "euid",
+            "name": "euid",
             "arg_type": "Int"
          }
       ]
    },
    "114": {
-      "syscall_name": "setregid",
-      "syscall_type": "Int",
-      "syscall_args": [
+      "name": "setregid",
+      "ret_type": "Int",
+      "args": [
          {
-            "arg_name": "rgid",
+            "name": "rgid",
             "arg_type": "Int"
          },
          {
-            "arg_name": "egid",
+            "name": "egid",
             "arg_type": "Int"
          }
       ]
    },
    "115": {
-      "syscall_name": "getgroups",
-      "syscall_type": "Int",
-      "syscall_args": [
+      "name": "getgroups",
+      "ret_type": "Int",
+      "args": [
          {
-            "arg_name": "size",
+            "name": "size",
             "arg_type": "Int"
          },
          {
-            "arg_name": "list",
+            "name": "list",
             "arg_type": "Ptr"
          }
       ]
    },
    "116": {
-      "syscall_name": "setgroups",
-      "syscall_type": "Int",
-      "syscall_args": [
+      "name": "setgroups",
+      "ret_type": "Int",
+      "args": [
          {
-            "arg_name": "size",
+            "name": "size",
             "arg_type": "Uint"
          },
          {
-            "arg_name": "list",
+            "name": "list",
             "arg_type": "Ptr"
          }
       ]
    },
    "117": {
-      "syscall_name": "setresuid",
-      "syscall_type": "Int",
-      "syscall_args": [
+      "name": "setresuid",
+      "ret_type": "Int",
+      "args": [
          {
-            "arg_name": "ruid",
+            "name": "ruid",
             "arg_type": "Int"
          },
          {
-            "arg_name": "euid",
+            "name": "euid",
             "arg_type": "Int"
          },
          {
-            "arg_name": "suid",
+            "name": "suid",
             "arg_type": "Int"
          }
       ]
    },
    "118": {
-      "syscall_name": "getresuid",
-      "syscall_type": "Int",
-      "syscall_args": [
+      "name": "getresuid",
+      "ret_type": "Int",
+      "args": [
          {
-            "arg_name": "ruid",
+            "name": "ruid",
             "arg_type": "Ptr"
          },
          {
-            "arg_name": "euid",
+            "name": "euid",
             "arg_type": "Ptr"
          },
          {
-            "arg_name": "suid",
+            "name": "suid",
             "arg_type": "Ptr"
          }
       ]
    },
    "119": {
-      "syscall_name": "setresgid",
-      "syscall_type": "Int",
-      "syscall_args": [
+      "name": "setresgid",
+      "ret_type": "Int",
+      "args": [
          {
-            "arg_name": "rgid",
+            "name": "rgid",
             "arg_type": "Int"
          },
          {
-            "arg_name": "egid",
+            "name": "egid",
             "arg_type": "Int"
          },
          {
-            "arg_name": "sgid",
+            "name": "sgid",
             "arg_type": "Int"
          }
       ]
    },
    "120": {
-      "syscall_name": "getresgid",
-      "syscall_type": "Int",
-      "syscall_args": [
+      "name": "getresgid",
+      "ret_type": "Int",
+      "args": [
          {
-            "arg_name": "rgid",
+            "name": "rgid",
             "arg_type": "Ptr"
          },
          {
-            "arg_name": "egid",
+            "name": "egid",
             "arg_type": "Ptr"
          },
          {
-            "arg_name": "sgid",
+            "name": "sgid",
             "arg_type": "Ptr"
          }
       ]
    },
    "121": {
-      "syscall_name": "getpgid",
-      "syscall_type": "Int",
-      "syscall_args": [
+      "name": "getpgid",
+      "ret_type": "Int",
+      "args": [
          {
-            "arg_name": "pid",
+            "name": "pid",
             "arg_type": "Int"
          }
       ]
    },
    "122": {
-      "syscall_name": "setfsuid",
-      "syscall_type": "Int",
-      "syscall_args": [
+      "name": "setfsuid",
+      "ret_type": "Int",
+      "args": [
          {
-            "arg_name": "fsuid",
+            "name": "fsuid",
             "arg_type": "Int"
          }
       ]
    },
    "123": {
-      "syscall_name": "setfsgid",
-      "syscall_type": "Int",
-      "syscall_args": [
+      "name": "setfsgid",
+      "ret_type": "Int",
+      "args": [
          {
-            "arg_name": "fsgid",
+            "name": "fsgid",
             "arg_type": "Int"
          }
       ]
    },
    "124": {
-      "syscall_name": "getsid",
-      "syscall_type": "Int",
-      "syscall_args": [
+      "name": "getsid",
+      "ret_type": "Int",
+      "args": [
          {
-            "arg_name": "pid",
+            "name": "pid",
             "arg_type": "Int"
          }
       ]
    },
    "125": {
-      "syscall_name": "capget",
-      "syscall_type": "Int",
-      "syscall_args": [
+      "name": "capget",
+      "ret_type": "Int",
+      "args": [
          {
-            "arg_name": "hdrp",
+            "name": "hdrp",
             "arg_type": "Int"
          },
          {
-            "arg_name": "datap",
+            "name": "datap",
             "arg_type": "Int"
          }
       ]
    },
    "126": {
-      "syscall_name": "capset",
-      "syscall_type": "Int",
-      "syscall_args": [
+      "name": "capset",
+      "ret_type": "Int",
+      "args": [
          {
-            "arg_name": "hdrp",
+            "name": "hdrp",
             "arg_type": "Int"
          },
          {
-            "arg_name": "datap",
+            "name": "datap",
             "arg_type": "Int"
          }
       ]
    },
    "129": {
-      "syscall_name": "rt_sigqueueinfo",
-      "syscall_type": "Int",
-      "syscall_args": [
+      "name": "rt_sigqueueinfo",
+      "ret_type": "Int",
+      "args": [
          {
-            "arg_name": "tgid",
+            "name": "tgid",
             "arg_type": "Int"
          },
          {
-            "arg_name": "sig",
+            "name": "sig",
             "arg_type": "Int"
          },
          {
-            "arg_name": "uinfo",
+            "name": "uinfo",
             "arg_type": "Ptr"
          }
       ]
    },
    "131": {
-      "syscall_name": "sigaltstack",
-      "syscall_type": "Int",
-      "syscall_args": [
+      "name": "sigaltstack",
+      "ret_type": "Int",
+      "args": [
          {
-            "arg_name": "ss",
+            "name": "ss",
             "arg_type": "Ptr"
          },
          {
-            "arg_name": "oss",
+            "name": "oss",
             "arg_type": "Ptr"
          }
       ]
    },
    "132": {
-      "syscall_name": "utime",
-      "syscall_type": "Int",
-      "syscall_args": [
+      "name": "utime",
+      "ret_type": "Int",
+      "args": [
          {
-            "arg_name": "filename",
+            "name": "filename",
             "arg_type": "Str"
          },
          {
-            "arg_name": "times",
+            "name": "times",
             "arg_type": "Ptr"
          }
       ]
    },
    "133": {
-      "syscall_name": "mknod",
-      "syscall_type": "Int",
-      "syscall_args": [
+      "name": "mknod",
+      "ret_type": "Int",
+      "args": [
          {
-            "arg_name": "pathname",
+            "name": "pathname",
             "arg_type": "Str"
          },
          {
-            "arg_name": "mode",
+            "name": "mode",
             "arg_type": "Int"
          },
          {
-            "arg_name": "dev",
+            "name": "dev",
             "arg_type": "Int"
          }
       ]
    },
    "134": {
-      "syscall_name": "uselib",
-      "syscall_type": "Int",
-      "syscall_args": [
+      "name": "uselib",
+      "ret_type": "Int",
+      "args": [
          {
-            "arg_name": "library",
+            "name": "library",
             "arg_type": "Str"
          }
       ]
    },
    "135": {
-      "syscall_name": "personality",
-      "syscall_type": "Int",
-      "syscall_args": [
+      "name": "personality",
+      "ret_type": "Int",
+      "args": [
          {
-            "arg_name": "persona",
+            "name": "persona",
             "arg_type": "Uint"
          }
       ]
    },
    "136": {
-      "syscall_name": "ustat",
-      "syscall_type": "Int",
-      "syscall_args": [
+      "name": "ustat",
+      "ret_type": "Int",
+      "args": [
          {
-            "arg_name": "dev",
+            "name": "dev",
             "arg_type": "Int"
          },
          {
-            "arg_name": "ubuf",
+            "name": "ubuf",
             "arg_type": "Ptr"
          }
       ]
    },
    "137": {
-      "syscall_name": "statfs",
-      "syscall_type": "Int",
-      "syscall_args": [
+      "name": "statfs",
+      "ret_type": "Int",
+      "args": [
          {
-            "arg_name": "path",
+            "name": "path",
             "arg_type": "Str"
          },
          {
-            "arg_name": "buf",
+            "name": "buf",
             "arg_type": "Ptr"
          }
       ]
    },
    "138": {
-      "syscall_name": "fstatfs",
-      "syscall_type": "Int",
-      "syscall_args": [
+      "name": "fstatfs",
+      "ret_type": "Int",
+      "args": [
          {
-            "arg_name": "fd",
+            "name": "fd",
             "arg_type": "Int"
          },
          {
-            "arg_name": "buf",
+            "name": "buf",
             "arg_type": "Ptr"
          }
       ]
    },
    "139": {
-      "syscall_name": "sysfs",
-      "syscall_type": "Int",
-      "syscall_args": [
+      "name": "sysfs",
+      "ret_type": "Int",
+      "args": [
          {
-            "arg_name": "option",
+            "name": "option",
             "arg_type": "Int"
          },
          {
-            "arg_name": "fsname",
+            "name": "fsname",
             "arg_type": "Str"
          }
       ]
    },
    "140": {
-      "syscall_name": "getpriority",
-      "syscall_type": "Int",
-      "syscall_args": [
+      "name": "getpriority",
+      "ret_type": "Int",
+      "args": [
          {
-            "arg_name": "which",
+            "name": "which",
             "arg_type": "Int"
          },
          {
-            "arg_name": "who",
+            "name": "who",
             "arg_type": "Int"
          }
       ]
    },
    "141": {
-      "syscall_name": "setpriority",
-      "syscall_type": "Int",
-      "syscall_args": [
+      "name": "setpriority",
+      "ret_type": "Int",
+      "args": [
          {
-            "arg_name": "which",
+            "name": "which",
             "arg_type": "Int"
          },
          {
-            "arg_name": "who",
+            "name": "who",
             "arg_type": "Int"
          },
          {
-            "arg_name": "prio",
+            "name": "prio",
             "arg_type": "Int"
          }
       ]
    },
    "142": {
-      "syscall_name": "sched_setparam",
-      "syscall_type": "Int",
-      "syscall_args": [
+      "name": "sched_setparam",
+      "ret_type": "Int",
+      "args": [
          {
-            "arg_name": "pid",
+            "name": "pid",
             "arg_type": "Int"
          },
          {
-            "arg_name": "param",
+            "name": "param",
             "arg_type": "Ptr"
          }
       ]
    },
    "143": {
-      "syscall_name": "sched_getparam",
-      "syscall_type": "Int",
-      "syscall_args": [
+      "name": "sched_getparam",
+      "ret_type": "Int",
+      "args": [
          {
-            "arg_name": "pid",
+            "name": "pid",
             "arg_type": "Int"
          },
          {
-            "arg_name": "param",
+            "name": "param",
             "arg_type": "Ptr"
          }
       ]
    },
    "144": {
-      "syscall_name": "sched_setscheduler",
-      "syscall_type": "Int",
-      "syscall_args": []
+      "name": "sched_setscheduler",
+      "ret_type": "Int",
+      "args": []
    },
    "145": {
-      "syscall_name": "sched_getscheduler",
-      "syscall_type": "Int",
-      "syscall_args": [
+      "name": "sched_getscheduler",
+      "ret_type": "Int",
+      "args": [
          {
-            "arg_name": "pid",
+            "name": "pid",
             "arg_type": "Int"
          }
       ]
    },
    "146": {
-      "syscall_name": "sched_get_priority_max",
-      "syscall_type": "Int",
-      "syscall_args": [
+      "name": "sched_get_priority_max",
+      "ret_type": "Int",
+      "args": [
          {
-            "arg_name": "policy",
+            "name": "policy",
             "arg_type": "Int"
          }
       ]
    },
    "147": {
-      "syscall_name": "sched_get_priority_min",
-      "syscall_type": "Int",
-      "syscall_args": [
+      "name": "sched_get_priority_min",
+      "ret_type": "Int",
+      "args": [
          {
-            "arg_name": "policy",
+            "name": "policy",
             "arg_type": "Int"
          }
       ]
    },
    "148": {
-      "syscall_name": "sched_rr_get_interval",
-      "syscall_type": "Int",
-      "syscall_args": [
+      "name": "sched_rr_get_interval",
+      "ret_type": "Int",
+      "args": [
          {
-            "arg_name": "pid",
+            "name": "pid",
             "arg_type": "Int"
          },
          {
-            "arg_name": "tp",
+            "name": "tp",
             "arg_type": "Ptr"
          }
       ]
    },
    "149": {
-      "syscall_name": "mlock",
-      "syscall_type": "Int",
-      "syscall_args": [
+      "name": "mlock",
+      "ret_type": "Int",
+      "args": [
          {
-            "arg_name": "addr",
+            "name": "addr",
             "arg_type": "Ptr"
          },
          {
-            "arg_name": "len",
+            "name": "len",
             "arg_type": "Uint"
          }
       ]
    },
    "150": {
-      "syscall_name": "munlock",
-      "syscall_type": "Int",
-      "syscall_args": [
+      "name": "munlock",
+      "ret_type": "Int",
+      "args": [
          {
-            "arg_name": "addr",
+            "name": "addr",
             "arg_type": "Ptr"
          },
          {
-            "arg_name": "len",
+            "name": "len",
             "arg_type": "Uint"
          }
       ]
    },
    "151": {
-      "syscall_name": "mlockall",
-      "syscall_type": "Int",
-      "syscall_args": [
+      "name": "mlockall",
+      "ret_type": "Int",
+      "args": [
          {
-            "arg_name": "flags",
+            "name": "flags",
             "arg_type": "Int"
          }
       ]
    },
    "152": {
-      "syscall_name": "munlockall",
-      "syscall_type": "Int",
-      "syscall_args": []
+      "name": "munlockall",
+      "ret_type": "Int",
+      "args": []
    },
    "153": {
-      "syscall_name": "vhangup",
-      "syscall_type": "Int",
-      "syscall_args": []
+      "name": "vhangup",
+      "ret_type": "Int",
+      "args": []
    },
    "154": {
-      "syscall_name": "modify_ldt",
-      "syscall_type": "Int",
-      "syscall_args": [
+      "name": "modify_ldt",
+      "ret_type": "Int",
+      "args": [
          {
-            "arg_name": "func",
+            "name": "func",
             "arg_type": "Int"
          },
          {
-            "arg_name": "ptr",
+            "name": "ptr",
             "arg_type": "Ptr"
          },
          {
-            "arg_name": "bytecount",
+            "name": "bytecount",
             "arg_type": "Uint"
          }
       ]
    },
    "155": {
-      "syscall_name": "pivot_root",
-      "syscall_type": "Int",
-      "syscall_args": [
+      "name": "pivot_root",
+      "ret_type": "Int",
+      "args": [
          {
-            "arg_name": "new_root",
+            "name": "new_root",
             "arg_type": "Str"
          },
          {
-            "arg_name": "put_old",
+            "name": "put_old",
             "arg_type": "Str"
          }
       ]
    },
    "156": {
-      "syscall_name": "_sysctl",
-      "syscall_type": "Int",
-      "syscall_args": [
+      "name": "_sysctl",
+      "ret_type": "Int",
+      "args": [
          {
-            "arg_name": "args",
+            "name": "args",
             "arg_type": "Ptr"
          }
       ]
    },
    "157": {
-      "syscall_name": "prctl",
-      "syscall_type": "Int",
-      "syscall_args": []
+      "name": "prctl",
+      "ret_type": "Int",
+      "args": []
    },
    "158": {
-      "syscall_name": "arch_prctl",
-      "syscall_type": "Int",
-      "syscall_args": [
+      "name": "arch_prctl",
+      "ret_type": "Int",
+      "args": [
          {
-            "arg_name": "code",
+            "name": "code",
             "arg_type": "Int"
          },
          {
-            "arg_name": "addr",
+            "name": "addr",
             "arg_type": "Uint"
          }
       ]
    },
    "159": {
-      "syscall_name": "adjtimex",
-      "syscall_type": "Int",
-      "syscall_args": [
+      "name": "adjtimex",
+      "ret_type": "Int",
+      "args": [
          {
-            "arg_name": "buf",
+            "name": "buf",
             "arg_type": "Ptr"
          }
       ]
    },
    "160": {
-      "syscall_name": "setrlimit",
-      "syscall_type": "Int",
-      "syscall_args": [
+      "name": "setrlimit",
+      "ret_type": "Int",
+      "args": [
          {
-            "arg_name": "resource",
+            "name": "resource",
             "arg_type": "Int"
          },
          {
-            "arg_name": "rlim",
+            "name": "rlim",
             "arg_type": "Ptr"
          }
       ]
    },
    "161": {
-      "syscall_name": "chroot",
-      "syscall_type": "Int",
-      "syscall_args": [
+      "name": "chroot",
+      "ret_type": "Int",
+      "args": [
          {
-            "arg_name": "path",
+            "name": "path",
             "arg_type": "Str"
          }
       ]
    },
    "162": {
-      "syscall_name": "sync",
-      "syscall_type": "Int",
-      "syscall_args": []
+      "name": "sync",
+      "ret_type": "Int",
+      "args": []
    },
    "163": {
-      "syscall_name": "acct",
-      "syscall_type": "Int",
-      "syscall_args": [
+      "name": "acct",
+      "ret_type": "Int",
+      "args": [
          {
-            "arg_name": "filename",
+            "name": "filename",
             "arg_type": "Str"
          }
       ]
    },
    "164": {
-      "syscall_name": "settimeofday",
-      "syscall_type": "Int",
-      "syscall_args": [
+      "name": "settimeofday",
+      "ret_type": "Int",
+      "args": [
          {
-            "arg_name": "tv",
+            "name": "tv",
             "arg_type": "Ptr"
          },
          {
-            "arg_name": "tz",
+            "name": "tz",
             "arg_type": "Ptr"
          }
       ]
    },
    "165": {
-      "syscall_name": "mount",
-      "syscall_type": "Int",
-      "syscall_args": []
+      "name": "mount",
+      "ret_type": "Int",
+      "args": []
    },
    "166": {
-      "syscall_name": "umount2",
-      "syscall_type": "Int",
-      "syscall_args": [
+      "name": "umount2",
+      "ret_type": "Int",
+      "args": [
          {
-            "arg_name": "target",
+            "name": "target",
             "arg_type": "Str"
          },
          {
-            "arg_name": "flags",
+            "name": "flags",
             "arg_type": "Int"
          }
       ]
    },
    "167": {
-      "syscall_name": "swapon",
-      "syscall_type": "Int",
-      "syscall_args": [
+      "name": "swapon",
+      "ret_type": "Int",
+      "args": [
          {
-            "arg_name": "path",
+            "name": "path",
             "arg_type": "Str"
          },
          {
-            "arg_name": "swapflags",
+            "name": "swapflags",
             "arg_type": "Int"
          }
       ]
    },
    "168": {
-      "syscall_name": "swapoff",
-      "syscall_type": "Int",
-      "syscall_args": [
+      "name": "swapoff",
+      "ret_type": "Int",
+      "args": [
          {
-            "arg_name": "path",
+            "name": "path",
             "arg_type": "Str"
          }
       ]
    },
    "169": {
-      "syscall_name": "reboot",
-      "syscall_type": "Int",
-      "syscall_args": [
+      "name": "reboot",
+      "ret_type": "Int",
+      "args": [
          {
-            "arg_name": "magic",
+            "name": "magic",
             "arg_type": "Int"
          },
          {
-            "arg_name": "magic2",
+            "name": "magic2",
             "arg_type": "Int"
          },
          {
-            "arg_name": "cmd",
+            "name": "cmd",
             "arg_type": "Int"
          },
          {
-            "arg_name": "arg",
+            "name": "arg",
             "arg_type": "Ptr"
          }
       ]
    },
    "170": {
-      "syscall_name": "sethostname",
-      "syscall_type": "Int",
-      "syscall_args": [
+      "name": "sethostname",
+      "ret_type": "Int",
+      "args": [
          {
-            "arg_name": "name",
+            "name": "name",
             "arg_type": "Str"
          },
          {
-            "arg_name": "len",
+            "name": "len",
             "arg_type": "Uint"
          }
       ]
    },
    "171": {
-      "syscall_name": "setdomainname",
-      "syscall_type": "Int",
-      "syscall_args": [
+      "name": "setdomainname",
+      "ret_type": "Int",
+      "args": [
          {
-            "arg_name": "name",
+            "name": "name",
             "arg_type": "Str"
          },
          {
-            "arg_name": "len",
+            "name": "len",
             "arg_type": "Uint"
          }
       ]
    },
    "172": {
-      "syscall_name": "iopl",
-      "syscall_type": "Int",
-      "syscall_args": [
+      "name": "iopl",
+      "ret_type": "Int",
+      "args": [
          {
-            "arg_name": "level",
+            "name": "level",
             "arg_type": "Int"
          }
       ]
    },
    "173": {
-      "syscall_name": "ioperm",
-      "syscall_type": "Int",
-      "syscall_args": [
+      "name": "ioperm",
+      "ret_type": "Int",
+      "args": [
          {
-            "arg_name": "from",
+            "name": "from",
             "arg_type": "Uint"
          },
          {
-            "arg_name": "num",
+            "name": "num",
             "arg_type": "Uint"
          },
          {
-            "arg_name": "turn_on",
+            "name": "turn_on",
             "arg_type": "Int"
          }
       ]
    },
    "174": {
-      "syscall_name": "create_module",
-      "syscall_type": "Int",
-      "syscall_args": [
+      "name": "create_module",
+      "ret_type": "Int",
+      "args": [
          {
-            "arg_name": "name",
+            "name": "name",
             "arg_type": "Str"
          },
          {
-            "arg_name": "size",
+            "name": "size",
             "arg_type": "Uint"
          }
       ]
    },
    "175": {
-      "syscall_name": "init_module",
-      "syscall_type": "Int",
-      "syscall_args": []
+      "name": "init_module",
+      "ret_type": "Int",
+      "args": []
    },
    "176": {
-      "syscall_name": "delete_module",
-      "syscall_type": "Int",
-      "syscall_args": [
+      "name": "delete_module",
+      "ret_type": "Int",
+      "args": [
          {
-            "arg_name": "name",
+            "name": "name",
             "arg_type": "Str"
          },
          {
-            "arg_name": "flags",
+            "name": "flags",
             "arg_type": "Int"
          }
       ]
    },
    "177": {
-      "syscall_name": "get_kernel_syms",
-      "syscall_type": "Int",
-      "syscall_args": [
+      "name": "get_kernel_syms",
+      "ret_type": "Int",
+      "args": [
          {
-            "arg_name": "table",
+            "name": "table",
             "arg_type": "Ptr"
          }
       ]
    },
    "178": {
-      "syscall_name": "query_module",
-      "syscall_type": "Int",
-      "syscall_args": []
+      "name": "query_module",
+      "ret_type": "Int",
+      "args": []
    },
    "179": {
-      "syscall_name": "quotactl",
-      "syscall_type": "Int",
-      "syscall_args": [
+      "name": "quotactl",
+      "ret_type": "Int",
+      "args": [
          {
-            "arg_name": "cmd",
+            "name": "cmd",
             "arg_type": "Int"
          },
          {
-            "arg_name": "special",
+            "name": "special",
             "arg_type": "Str"
          },
          {
-            "arg_name": "id",
+            "name": "id",
             "arg_type": "Int"
          },
          {
-            "arg_name": "addr",
+            "name": "addr",
             "arg_type": "Int"
          }
       ]
    },
    "186": {
-      "syscall_name": "gettid",
-      "syscall_type": "Int",
-      "syscall_args": []
+      "name": "gettid",
+      "ret_type": "Int",
+      "args": []
    },
    "187": {
-      "syscall_name": "readahead",
-      "syscall_type": "Uint",
-      "syscall_args": [
+      "name": "readahead",
+      "ret_type": "Uint",
+      "args": [
          {
-            "arg_name": "fd",
+            "name": "fd",
             "arg_type": "Int"
          },
          {
-            "arg_name": "offset",
+            "name": "offset",
             "arg_type": "Int"
          },
          {
-            "arg_name": "count",
+            "name": "count",
             "arg_type": "Uint"
          }
       ]
    },
    "191": {
-      "syscall_name": "getxattr",
-      "syscall_type": "Uint",
-      "syscall_args": [
+      "name": "getxattr",
+      "ret_type": "Uint",
+      "args": [
          {
-            "arg_name": "path",
+            "name": "path",
             "arg_type": "Str"
          },
          {
-            "arg_name": "name",
+            "name": "name",
             "arg_type": "Str"
          },
          {
-            "arg_name": "value",
+            "name": "value",
             "arg_type": "Ptr"
          },
          {
-            "arg_name": "size",
+            "name": "size",
             "arg_type": "Uint"
          }
       ]
    },
    "192": {
-      "syscall_name": "lgetxattr",
-      "syscall_type": "Uint",
-      "syscall_args": [
+      "name": "lgetxattr",
+      "ret_type": "Uint",
+      "args": [
          {
-            "arg_name": "path",
+            "name": "path",
             "arg_type": "Str"
          },
          {
-            "arg_name": "name",
+            "name": "name",
             "arg_type": "Str"
          },
          {
-            "arg_name": "value",
+            "name": "value",
             "arg_type": "Ptr"
          },
          {
-            "arg_name": "size",
+            "name": "size",
             "arg_type": "Uint"
          }
       ]
    },
    "193": {
-      "syscall_name": "fgetxattr",
-      "syscall_type": "Uint",
-      "syscall_args": [
+      "name": "fgetxattr",
+      "ret_type": "Uint",
+      "args": [
          {
-            "arg_name": "fd",
+            "name": "fd",
             "arg_type": "Int"
          },
          {
-            "arg_name": "name",
+            "name": "name",
             "arg_type": "Str"
          },
          {
-            "arg_name": "value",
+            "name": "value",
             "arg_type": "Ptr"
          },
          {
-            "arg_name": "size",
+            "name": "size",
             "arg_type": "Uint"
          }
       ]
    },
    "200": {
-      "syscall_name": "tkill",
-      "syscall_type": "Int",
-      "syscall_args": [
+      "name": "tkill",
+      "ret_type": "Int",
+      "args": [
          {
-            "arg_name": "tid",
+            "name": "tid",
             "arg_type": "Int"
          },
          {
-            "arg_name": "sig",
+            "name": "sig",
             "arg_type": "Int"
          }
       ]
    },
    "201": {
-      "syscall_name": "time",
-      "syscall_type": "Int",
-      "syscall_args": [
+      "name": "time",
+      "ret_type": "Int",
+      "args": [
          {
-            "arg_name": "t",
+            "name": "t",
             "arg_type": "Ptr"
          }
       ]
    },
    "202": {
-      "syscall_name": "futex",
-      "syscall_type": "Int",
-      "syscall_args": []
+      "name": "futex",
+      "ret_type": "Int",
+      "args": []
    },
    "203": {
-      "syscall_name": "sched_setaffinity",
-      "syscall_type": "Int",
-      "syscall_args": []
+      "name": "sched_setaffinity",
+      "ret_type": "Int",
+      "args": []
    },
    "204": {
-      "syscall_name": "sched_getaffinity",
-      "syscall_type": "Int",
-      "syscall_args": []
+      "name": "sched_getaffinity",
+      "ret_type": "Int",
+      "args": []
    },
    "205": {
-      "syscall_name": "set_thread_area",
-      "syscall_type": "Int",
-      "syscall_args": [
+      "name": "set_thread_area",
+      "ret_type": "Int",
+      "args": [
          {
-            "arg_name": "u_info",
+            "name": "u_info",
             "arg_type": "Ptr"
          }
       ]
    },
    "206": {
-      "syscall_name": "io_setup",
-      "syscall_type": "Int",
-      "syscall_args": [
+      "name": "io_setup",
+      "ret_type": "Int",
+      "args": [
          {
-            "arg_name": "nr_events",
+            "name": "nr_events",
             "arg_type": "Uint"
          },
          {
-            "arg_name": "ctx_idp",
+            "name": "ctx_idp",
             "arg_type": "Ptr"
          }
       ]
    },
    "207": {
-      "syscall_name": "io_destroy",
-      "syscall_type": "Int",
-      "syscall_args": [
+      "name": "io_destroy",
+      "ret_type": "Int",
+      "args": [
          {
-            "arg_name": "ctx_id",
+            "name": "ctx_id",
             "arg_type": "Int"
          }
       ]
    },
    "208": {
-      "syscall_name": "io_getevents",
-      "syscall_type": "Int",
-      "syscall_args": []
+      "name": "io_getevents",
+      "ret_type": "Int",
+      "args": []
    },
    "209": {
-      "syscall_name": "io_submit",
-      "syscall_type": "Int",
-      "syscall_args": [
+      "name": "io_submit",
+      "ret_type": "Int",
+      "args": [
          {
-            "arg_name": "ctx_id",
+            "name": "ctx_id",
             "arg_type": "Int"
          },
          {
-            "arg_name": "nr",
+            "name": "nr",
             "arg_type": "Int"
          },
          {
-            "arg_name": "*iocbpp",
+            "name": "*iocbpp",
             "arg_type": "Ptr"
          }
       ]
    },
    "210": {
-      "syscall_name": "io_cancel",
-      "syscall_type": "Int",
-      "syscall_args": []
+      "name": "io_cancel",
+      "ret_type": "Int",
+      "args": []
    },
    "211": {
-      "syscall_name": "get_thread_area",
-      "syscall_type": "Int",
-      "syscall_args": [
+      "name": "get_thread_area",
+      "ret_type": "Int",
+      "args": [
          {
-            "arg_name": "u_info",
+            "name": "u_info",
             "arg_type": "Ptr"
          }
       ]
    },
    "212": {
-      "syscall_name": "lookup_dcookie",
-      "syscall_type": "Int",
-      "syscall_args": [
+      "name": "lookup_dcookie",
+      "ret_type": "Int",
+      "args": [
          {
-            "arg_name": "cookie",
+            "name": "cookie",
             "arg_type": "Int"
          },
          {
-            "arg_name": "buffer",
+            "name": "buffer",
             "arg_type": "Str"
          },
          {
-            "arg_name": "len",
+            "name": "len",
             "arg_type": "Uint"
          }
       ]
    },
    "213": {
-      "syscall_name": "epoll_create",
-      "syscall_type": "Int",
-      "syscall_args": [
+      "name": "epoll_create",
+      "ret_type": "Int",
+      "args": [
          {
-            "arg_name": "size",
+            "name": "size",
             "arg_type": "Int"
          }
       ]
    },
    "216": {
-      "syscall_name": "remap_file_pages",
-      "syscall_type": "Int",
-      "syscall_args": []
+      "name": "remap_file_pages",
+      "ret_type": "Int",
+      "args": []
    },
    "217": {
-      "syscall_name": "getdents64",
-      "syscall_type": "Int",
-      "syscall_args": []
+      "name": "getdents64",
+      "ret_type": "Int",
+      "args": []
    },
    "218": {
-      "syscall_name": "set_tid_address",
-      "syscall_type": "Int",
-      "syscall_args": [
+      "name": "set_tid_address",
+      "ret_type": "Int",
+      "args": [
          {
-            "arg_name": "tidptr",
+            "name": "tidptr",
             "arg_type": "Ptr"
          }
       ]
    },
    "219": {
-      "syscall_name": "restart_syscall",
-      "syscall_type": "Int",
-      "syscall_args": []
+      "name": "restart_syscall",
+      "ret_type": "Int",
+      "args": []
    },
    "220": {
-      "syscall_name": "semtimedop",
-      "syscall_type": "Int",
-      "syscall_args": []
+      "name": "semtimedop",
+      "ret_type": "Int",
+      "args": []
    },
    "221": {
-      "syscall_name": "fadvise64",
-      "syscall_type": "Int",
-      "syscall_args": []
+      "name": "fadvise64",
+      "ret_type": "Int",
+      "args": []
    },
    "222": {
-      "syscall_name": "timer_create",
-      "syscall_type": "Int",
-      "syscall_args": []
+      "name": "timer_create",
+      "ret_type": "Int",
+      "args": []
    },
    "223": {
-      "syscall_name": "timer_settime",
-      "syscall_type": "Int",
-      "syscall_args": []
+      "name": "timer_settime",
+      "ret_type": "Int",
+      "args": []
    },
    "224": {
-      "syscall_name": "timer_gettime",
-      "syscall_type": "Int",
-      "syscall_args": [
+      "name": "timer_gettime",
+      "ret_type": "Int",
+      "args": [
          {
-            "arg_name": "timerid",
+            "name": "timerid",
             "arg_type": "Int"
          },
          {
-            "arg_name": "curr_value",
+            "name": "curr_value",
             "arg_type": "Ptr"
          }
       ]
    },
    "225": {
-      "syscall_name": "timer_getoverrun",
-      "syscall_type": "Int",
-      "syscall_args": [
+      "name": "timer_getoverrun",
+      "ret_type": "Int",
+      "args": [
          {
-            "arg_name": "timerid",
+            "name": "timerid",
             "arg_type": "Int"
          }
       ]
    },
    "226": {
-      "syscall_name": "timer_delete",
-      "syscall_type": "Int",
-      "syscall_args": [
+      "name": "timer_delete",
+      "ret_type": "Int",
+      "args": [
          {
-            "arg_name": "timerid",
+            "name": "timerid",
             "arg_type": "Int"
          }
       ]
    },
    "227": {
-      "syscall_name": "clock_settime",
-      "syscall_type": "Int",
-      "syscall_args": [
+      "name": "clock_settime",
+      "ret_type": "Int",
+      "args": [
          {
-            "arg_name": "clk_id",
+            "name": "clk_id",
             "arg_type": "Int"
          },
          {
-            "arg_name": "tp",
+            "name": "tp",
             "arg_type": "Ptr"
          }
       ]
    },
    "228": {
-      "syscall_name": "clock_gettime",
-      "syscall_type": "Int",
-      "syscall_args": [
+      "name": "clock_gettime",
+      "ret_type": "Int",
+      "args": [
          {
-            "arg_name": "clk_id",
+            "name": "clk_id",
             "arg_type": "Int"
          },
          {
-            "arg_name": "tp",
+            "name": "tp",
             "arg_type": "Ptr"
          }
       ]
    },
    "229": {
-      "syscall_name": "clock_getres",
-      "syscall_type": "Int",
-      "syscall_args": [
+      "name": "clock_getres",
+      "ret_type": "Int",
+      "args": [
          {
-            "arg_name": "clk_id",
+            "name": "clk_id",
             "arg_type": "Int"
          },
          {
-            "arg_name": "res",
+            "name": "res",
             "arg_type": "Ptr"
          }
       ]
    },
    "230": {
-      "syscall_name": "clock_nanosleep",
-      "syscall_type": "Int",
-      "syscall_args": []
+      "name": "clock_nanosleep",
+      "ret_type": "Int",
+      "args": []
    },
    "231": {
-      "syscall_name": "exit_group",
-      "syscall_type": "Int",
-      "syscall_args": [
+      "name": "exit_group",
+      "ret_type": "Int",
+      "args": [
          {
-            "arg_name": "status",
+            "name": "status",
             "arg_type": "Int"
          }
       ]
    },
    "232": {
-      "syscall_name": "epoll_wait",
-      "syscall_type": "Int",
-      "syscall_args": []
+      "name": "epoll_wait",
+      "ret_type": "Int",
+      "args": []
    },
    "233": {
-      "syscall_name": "epoll_ctl",
-      "syscall_type": "Int",
-      "syscall_args": [
+      "name": "epoll_ctl",
+      "ret_type": "Int",
+      "args": [
          {
-            "arg_name": "epfd",
+            "name": "epfd",
             "arg_type": "Int"
          },
          {
-            "arg_name": "op",
+            "name": "op",
             "arg_type": "Int"
          },
          {
-            "arg_name": "fd",
+            "name": "fd",
             "arg_type": "Int"
          },
          {
-            "arg_name": "event",
+            "name": "event",
             "arg_type": "Ptr"
          }
       ]
    },
    "234": {
-      "syscall_name": "tgkill",
-      "syscall_type": "Int",
-      "syscall_args": [
+      "name": "tgkill",
+      "ret_type": "Int",
+      "args": [
          {
-            "arg_name": "tgid",
+            "name": "tgid",
             "arg_type": "Int"
          },
          {
-            "arg_name": "tid",
+            "name": "tid",
             "arg_type": "Int"
          },
          {
-            "arg_name": "sig",
+            "name": "sig",
             "arg_type": "Int"
          }
       ]
    },
    "235": {
-      "syscall_name": "utimes",
-      "syscall_type": "Int",
-      "syscall_args": [
+      "name": "utimes",
+      "ret_type": "Int",
+      "args": [
          {
-            "arg_name": "filename",
+            "name": "filename",
             "arg_type": "Str"
          },
          {
-            "arg_name": "times",
+            "name": "times",
             "arg_type": "Ptr"
          }
       ]
    },
    "237": {
-      "syscall_name": "mbind",
-      "syscall_type": "Int",
-      "syscall_args": []
+      "name": "mbind",
+      "ret_type": "Int",
+      "args": []
    },
    "238": {
-      "syscall_name": "set_mempolicy",
-      "syscall_type": "Int",
-      "syscall_args": []
+      "name": "set_mempolicy",
+      "ret_type": "Int",
+      "args": []
    },
    "239": {
-      "syscall_name": "get_mempolicy",
-      "syscall_type": "Int",
-      "syscall_args": []
+      "name": "get_mempolicy",
+      "ret_type": "Int",
+      "args": []
    },
    "240": {
-      "syscall_name": "mq_open",
-      "syscall_type": "Int",
-      "syscall_args": [
+      "name": "mq_open",
+      "ret_type": "Int",
+      "args": [
          {
-            "arg_name": "name",
+            "name": "name",
             "arg_type": "Str"
          },
          {
-            "arg_name": "oflag",
+            "name": "oflag",
             "arg_type": "Int"
          }
       ]
    },
    "241": {
-      "syscall_name": "mq_unlink",
-      "syscall_type": "Int",
-      "syscall_args": [
+      "name": "mq_unlink",
+      "ret_type": "Int",
+      "args": [
          {
-            "arg_name": "name",
+            "name": "name",
             "arg_type": "Str"
          }
       ]
    },
    "242": {
-      "syscall_name": "mq_timedsend",
-      "syscall_type": "Int",
-      "syscall_args": []
+      "name": "mq_timedsend",
+      "ret_type": "Int",
+      "args": []
    },
    "243": {
-      "syscall_name": "mq_timedreceive",
-      "syscall_type": "Uint",
-      "syscall_args": []
+      "name": "mq_timedreceive",
+      "ret_type": "Uint",
+      "args": []
    },
    "244": {
-      "syscall_name": "mq_notify",
-      "syscall_type": "Int",
-      "syscall_args": [
+      "name": "mq_notify",
+      "ret_type": "Int",
+      "args": [
          {
-            "arg_name": "mqdes",
+            "name": "mqdes",
             "arg_type": "Int"
          },
          {
-            "arg_name": "sevp",
+            "name": "sevp",
             "arg_type": "Ptr"
          }
       ]
    },
    "246": {
-      "syscall_name": "kexec_load",
-      "syscall_type": "Int",
-      "syscall_args": []
+      "name": "kexec_load",
+      "ret_type": "Int",
+      "args": []
    },
    "247": {
-      "syscall_name": "waitid",
-      "syscall_type": "Int",
-      "syscall_args": [
+      "name": "waitid",
+      "ret_type": "Int",
+      "args": [
          {
-            "arg_name": "idtype",
+            "name": "idtype",
             "arg_type": "Int"
          },
          {
-            "arg_name": "id",
+            "name": "id",
             "arg_type": "Int"
          },
          {
-            "arg_name": "infop",
+            "name": "infop",
             "arg_type": "Ptr"
          },
          {
-            "arg_name": "options",
+            "name": "options",
             "arg_type": "Int"
          }
       ]
    },
    "248": {
-      "syscall_name": "add_key",
-      "syscall_type": "Int",
-      "syscall_args": []
+      "name": "add_key",
+      "ret_type": "Int",
+      "args": []
    },
    "249": {
-      "syscall_name": "request_key",
-      "syscall_type": "Int",
-      "syscall_args": []
+      "name": "request_key",
+      "ret_type": "Int",
+      "args": []
    },
    "250": {
-      "syscall_name": "keyctl",
-      "syscall_type": "Int",
-      "syscall_args": [
+      "name": "keyctl",
+      "ret_type": "Int",
+      "args": [
          {
-            "arg_name": "cmd",
+            "name": "cmd",
             "arg_type": "Int"
          }
       ]
    },
    "251": {
-      "syscall_name": "ioprio_set",
-      "syscall_type": "Int",
-      "syscall_args": [
+      "name": "ioprio_set",
+      "ret_type": "Int",
+      "args": [
          {
-            "arg_name": "which",
+            "name": "which",
             "arg_type": "Int"
          },
          {
-            "arg_name": "who",
+            "name": "who",
             "arg_type": "Int"
          },
          {
-            "arg_name": "ioprio",
+            "name": "ioprio",
             "arg_type": "Int"
          }
       ]
    },
    "252": {
-      "syscall_name": "ioprio_get",
-      "syscall_type": "Int",
-      "syscall_args": [
+      "name": "ioprio_get",
+      "ret_type": "Int",
+      "args": [
          {
-            "arg_name": "which",
+            "name": "which",
             "arg_type": "Int"
          },
          {
-            "arg_name": "who",
+            "name": "who",
             "arg_type": "Int"
          }
       ]
    },
    "253": {
-      "syscall_name": "inotify_init",
-      "syscall_type": "Int",
-      "syscall_args": []
+      "name": "inotify_init",
+      "ret_type": "Int",
+      "args": []
    },
    "254": {
-      "syscall_name": "inotify_add_watch",
-      "syscall_type": "Int",
-      "syscall_args": [
+      "name": "inotify_add_watch",
+      "ret_type": "Int",
+      "args": [
          {
-            "arg_name": "fd",
+            "name": "fd",
             "arg_type": "Int"
          },
          {
-            "arg_name": "pathname",
+            "name": "pathname",
             "arg_type": "Str"
          },
          {
-            "arg_name": "mask",
+            "name": "mask",
             "arg_type": "Int"
          }
       ]
    },
    "255": {
-      "syscall_name": "inotify_rm_watch",
-      "syscall_type": "Int",
-      "syscall_args": [
+      "name": "inotify_rm_watch",
+      "ret_type": "Int",
+      "args": [
          {
-            "arg_name": "fd",
+            "name": "fd",
             "arg_type": "Int"
          },
          {
-            "arg_name": "wd",
+            "name": "wd",
             "arg_type": "Int"
          }
       ]
    },
    "256": {
-      "syscall_name": "migrate_pages",
-      "syscall_type": "Int",
-      "syscall_args": []
+      "name": "migrate_pages",
+      "ret_type": "Int",
+      "args": []
    },
    "257": {
-      "syscall_name": "openat",
-      "syscall_type": "Int",
-      "syscall_args": [
+      "name": "openat",
+      "ret_type": "Int",
+      "args": [
          {
-            "arg_name": "dirfd",
+            "name": "dirfd",
             "arg_type": "Int"
          },
          {
-            "arg_name": "pathname",
+            "name": "pathname",
             "arg_type": "Str"
          },
          {
-            "arg_name": "flags",
+            "name": "flags",
             "arg_type": "Int"
          }
       ]
    },
    "258": {
-      "syscall_name": "mkdirat",
-      "syscall_type": "Int",
-      "syscall_args": [
+      "name": "mkdirat",
+      "ret_type": "Int",
+      "args": [
          {
-            "arg_name": "dirfd",
+            "name": "dirfd",
             "arg_type": "Int"
          },
          {
-            "arg_name": "pathname",
+            "name": "pathname",
             "arg_type": "Str"
          },
          {
-            "arg_name": "mode",
+            "name": "mode",
             "arg_type": "Int"
          }
       ]
    },
    "259": {
-      "syscall_name": "mknodat",
-      "syscall_type": "Int",
-      "syscall_args": [
+      "name": "mknodat",
+      "ret_type": "Int",
+      "args": [
          {
-            "arg_name": "dirfd",
+            "name": "dirfd",
             "arg_type": "Int"
          },
          {
-            "arg_name": "pathname",
+            "name": "pathname",
             "arg_type": "Str"
          },
          {
-            "arg_name": "mode",
+            "name": "mode",
             "arg_type": "Int"
          },
          {
-            "arg_name": "dev",
+            "name": "dev",
             "arg_type": "Int"
          }
       ]
    },
    "260": {
-      "syscall_name": "fchownat",
-      "syscall_type": "Int",
-      "syscall_args": []
+      "name": "fchownat",
+      "ret_type": "Int",
+      "args": []
    },
    "261": {
-      "syscall_name": "futimesat",
-      "syscall_type": "Int",
-      "syscall_args": []
+      "name": "futimesat",
+      "ret_type": "Int",
+      "args": []
    },
    "263": {
-      "syscall_name": "unlinkat",
-      "syscall_type": "Int",
-      "syscall_args": [
+      "name": "unlinkat",
+      "ret_type": "Int",
+      "args": [
          {
-            "arg_name": "dirfd",
+            "name": "dirfd",
             "arg_type": "Int"
          },
          {
-            "arg_name": "pathname",
+            "name": "pathname",
             "arg_type": "Str"
          },
          {
-            "arg_name": "flags",
+            "name": "flags",
             "arg_type": "Int"
          }
       ]
    },
    "264": {
-      "syscall_name": "renameat",
-      "syscall_type": "Int",
-      "syscall_args": []
+      "name": "renameat",
+      "ret_type": "Int",
+      "args": []
    },
    "265": {
-      "syscall_name": "linkat",
-      "syscall_type": "Int",
-      "syscall_args": []
+      "name": "linkat",
+      "ret_type": "Int",
+      "args": []
    },
    "266": {
-      "syscall_name": "symlinkat",
-      "syscall_type": "Int",
-      "syscall_args": [
+      "name": "symlinkat",
+      "ret_type": "Int",
+      "args": [
          {
-            "arg_name": "oldpath",
+            "name": "oldpath",
             "arg_type": "Str"
          },
          {
-            "arg_name": "newdirfd",
+            "name": "newdirfd",
             "arg_type": "Int"
          },
          {
-            "arg_name": "newpath",
+            "name": "newpath",
             "arg_type": "Str"
          }
       ]
    },
    "267": {
-      "syscall_name": "readlinkat",
-      "syscall_type": "Int",
-      "syscall_args": []
+      "name": "readlinkat",
+      "ret_type": "Int",
+      "args": []
    },
    "268": {
-      "syscall_name": "fchmodat",
-      "syscall_type": "Int",
-      "syscall_args": [
+      "name": "fchmodat",
+      "ret_type": "Int",
+      "args": [
          {
-            "arg_name": "dirfd",
+            "name": "dirfd",
             "arg_type": "Int"
          },
          {
-            "arg_name": "pathname",
+            "name": "pathname",
             "arg_type": "Str"
          },
          {
-            "arg_name": "mode",
+            "name": "mode",
             "arg_type": "Int"
          },
          {
-            "arg_name": "flags",
+            "name": "flags",
             "arg_type": "Int"
          }
       ]
    },
    "269": {
-      "syscall_name": "faccessat",
-      "syscall_type": "Int",
-      "syscall_args": [
+      "name": "faccessat",
+      "ret_type": "Int",
+      "args": [
          {
-            "arg_name": "dirfd",
+            "name": "dirfd",
             "arg_type": "Int"
          },
          {
-            "arg_name": "pathname",
+            "name": "pathname",
             "arg_type": "Str"
          },
          {
-            "arg_name": "mode",
+            "name": "mode",
             "arg_type": "Int"
          },
          {
-            "arg_name": "flags",
+            "name": "flags",
             "arg_type": "Int"
          }
       ]
    },
    "270": {
-      "syscall_name": "pselect6",
-      "syscall_type": "Int",
-      "syscall_args": []
+      "name": "pselect6",
+      "ret_type": "Int",
+      "args": []
    },
    "271": {
-      "syscall_name": "ppoll",
-      "syscall_type": "Int",
-      "syscall_args": []
+      "name": "ppoll",
+      "ret_type": "Int",
+      "args": []
    },
    "272": {
-      "syscall_name": "unshare",
-      "syscall_type": "Int",
-      "syscall_args": [
+      "name": "unshare",
+      "ret_type": "Int",
+      "args": [
          {
-            "arg_name": "flags",
+            "name": "flags",
             "arg_type": "Int"
          }
       ]
    },
    "273": {
-      "syscall_name": "set_robust_list",
-      "syscall_type": "Int",
-      "syscall_args": [
+      "name": "set_robust_list",
+      "ret_type": "Int",
+      "args": [
          {
-            "arg_name": "head",
+            "name": "head",
             "arg_type": "Ptr"
          },
          {
-            "arg_name": "len",
+            "name": "len",
             "arg_type": "Uint"
          }
       ]
    },
    "274": {
-      "syscall_name": "get_robust_list",
-      "syscall_type": "Int",
-      "syscall_args": []
+      "name": "get_robust_list",
+      "ret_type": "Int",
+      "args": []
    },
    "275": {
-      "syscall_name": "splice",
-      "syscall_type": "Uint",
-      "syscall_args": []
+      "name": "splice",
+      "ret_type": "Uint",
+      "args": []
    },
    "276": {
-      "syscall_name": "tee",
-      "syscall_type": "Uint",
-      "syscall_args": [
+      "name": "tee",
+      "ret_type": "Uint",
+      "args": [
          {
-            "arg_name": "fd_in",
+            "name": "fd_in",
             "arg_type": "Int"
          },
          {
-            "arg_name": "fd_out",
+            "name": "fd_out",
             "arg_type": "Int"
          },
          {
-            "arg_name": "len",
+            "name": "len",
             "arg_type": "Uint"
          },
          {
-            "arg_name": "flags",
+            "name": "flags",
             "arg_type": "Uint"
          }
       ]
    },
    "277": {
-      "syscall_name": "sync_file_range",
-      "syscall_type": "Int",
-      "syscall_args": []
+      "name": "sync_file_range",
+      "ret_type": "Int",
+      "args": []
    },
    "278": {
-      "syscall_name": "vmsplice",
-      "syscall_type": "Uint",
-      "syscall_args": []
+      "name": "vmsplice",
+      "ret_type": "Uint",
+      "args": []
    },
    "279": {
-      "syscall_name": "move_pages",
-      "syscall_type": "Int",
-      "syscall_args": []
+      "name": "move_pages",
+      "ret_type": "Int",
+      "args": []
    },
    "280": {
-      "syscall_name": "utimensat",
-      "syscall_type": "Int",
-      "syscall_args": []
+      "name": "utimensat",
+      "ret_type": "Int",
+      "args": []
    },
    "281": {
-      "syscall_name": "epoll_pwait",
-      "syscall_type": "Int",
-      "syscall_args": []
+      "name": "epoll_pwait",
+      "ret_type": "Int",
+      "args": []
    },
    "282": {
-      "syscall_name": "signalfd",
-      "syscall_type": "Int",
-      "syscall_args": [
+      "name": "signalfd",
+      "ret_type": "Int",
+      "args": [
          {
-            "arg_name": "fd",
+            "name": "fd",
             "arg_type": "Int"
          },
          {
-            "arg_name": "mask",
+            "name": "mask",
             "arg_type": "Ptr"
          },
          {
-            "arg_name": "flags",
+            "name": "flags",
             "arg_type": "Int"
          }
       ]
    },
    "283": {
-      "syscall_name": "timerfd_create",
-      "syscall_type": "Int",
-      "syscall_args": [
+      "name": "timerfd_create",
+      "ret_type": "Int",
+      "args": [
          {
-            "arg_name": "clockid",
+            "name": "clockid",
             "arg_type": "Int"
          },
          {
-            "arg_name": "flags",
+            "name": "flags",
             "arg_type": "Int"
          }
       ]
    },
    "284": {
-      "syscall_name": "eventfd",
-      "syscall_type": "Int",
-      "syscall_args": [
+      "name": "eventfd",
+      "ret_type": "Int",
+      "args": [
          {
-            "arg_name": "initval",
+            "name": "initval",
             "arg_type": "Uint"
          },
          {
-            "arg_name": "flags",
+            "name": "flags",
             "arg_type": "Int"
          }
       ]
    },
    "285": {
-      "syscall_name": "fallocate",
-      "syscall_type": "Int",
-      "syscall_args": [
+      "name": "fallocate",
+      "ret_type": "Int",
+      "args": [
          {
-            "arg_name": "fd",
+            "name": "fd",
             "arg_type": "Int"
          },
          {
-            "arg_name": "mode",
+            "name": "mode",
             "arg_type": "Int"
          },
          {
-            "arg_name": "offset",
+            "name": "offset",
             "arg_type": "Int"
          },
          {
-            "arg_name": "len",
+            "name": "len",
             "arg_type": "Int"
          }
       ]
    },
    "286": {
-      "syscall_name": "timerfd_settime",
-      "syscall_type": "Int",
-      "syscall_args": []
+      "name": "timerfd_settime",
+      "ret_type": "Int",
+      "args": []
    },
    "287": {
-      "syscall_name": "timerfd_gettime",
-      "syscall_type": "Int",
-      "syscall_args": [
+      "name": "timerfd_gettime",
+      "ret_type": "Int",
+      "args": [
          {
-            "arg_name": "fd",
+            "name": "fd",
             "arg_type": "Int"
          },
          {
-            "arg_name": "curr_value",
+            "name": "curr_value",
             "arg_type": "Ptr"
          }
       ]
    },
    "288": {
-      "syscall_name": "accept4",
-      "syscall_type": "Int",
-      "syscall_args": []
+      "name": "accept4",
+      "ret_type": "Int",
+      "args": []
    },
    "289": {
-      "syscall_name": "signalfd4",
-      "syscall_type": "Int",
-      "syscall_args": []
+      "name": "signalfd4",
+      "ret_type": "Int",
+      "args": []
    },
    "290": {
-      "syscall_name": "eventfd2",
-      "syscall_type": "Int",
-      "syscall_args": []
+      "name": "eventfd2",
+      "ret_type": "Int",
+      "args": []
    },
    "291": {
-      "syscall_name": "epoll_create1",
-      "syscall_type": "Int",
-      "syscall_args": [
+      "name": "epoll_create1",
+      "ret_type": "Int",
+      "args": [
          {
-            "arg_name": "flags",
+            "name": "flags",
             "arg_type": "Int"
          }
       ]
    },
    "292": {
-      "syscall_name": "dup3",
-      "syscall_type": "Int",
-      "syscall_args": [
+      "name": "dup3",
+      "ret_type": "Int",
+      "args": [
          {
-            "arg_name": "oldfd",
+            "name": "oldfd",
             "arg_type": "Int"
          },
          {
-            "arg_name": "newfd",
+            "name": "newfd",
             "arg_type": "Int"
          },
          {
-            "arg_name": "flags",
+            "name": "flags",
             "arg_type": "Int"
          }
       ]
    },
    "293": {
-      "syscall_name": "pipe2",
-      "syscall_type": "Int",
-      "syscall_args": [
+      "name": "pipe2",
+      "ret_type": "Int",
+      "args": [
          {
-            "arg_name": "pipefd",
+            "name": "pipefd",
             "arg_type": "Ptr"
          },
          {
-            "arg_name": "flags",
+            "name": "flags",
             "arg_type": "Int"
          }
       ]
    },
    "294": {
-      "syscall_name": "inotify_init1",
-      "syscall_type": "Int",
-      "syscall_args": [
+      "name": "inotify_init1",
+      "ret_type": "Int",
+      "args": [
          {
-            "arg_name": "flags",
+            "name": "flags",
             "arg_type": "Int"
          }
       ]
    },
    "295": {
-      "syscall_name": "preadv",
-      "syscall_type": "Uint",
-      "syscall_args": []
+      "name": "preadv",
+      "ret_type": "Uint",
+      "args": []
    },
    "296": {
-      "syscall_name": "pwritev",
-      "syscall_type": "Uint",
-      "syscall_args": []
+      "name": "pwritev",
+      "ret_type": "Uint",
+      "args": []
    },
    "297": {
-      "syscall_name": "rt_tgsigqueueinfo",
-      "syscall_type": "Int",
-      "syscall_args": []
+      "name": "rt_tgsigqueueinfo",
+      "ret_type": "Int",
+      "args": []
    },
    "298": {
-      "syscall_name": "perf_event_open",
-      "syscall_type": "Int",
-      "syscall_args": []
+      "name": "perf_event_open",
+      "ret_type": "Int",
+      "args": []
    },
    "299": {
-      "syscall_name": "recvmmsg",
-      "syscall_type": "Int",
-      "syscall_args": []
+      "name": "recvmmsg",
+      "ret_type": "Int",
+      "args": []
    },
    "306": {
-      "syscall_name": "syncfs",
-      "syscall_type": "Int",
-      "syscall_args": [
+      "name": "syncfs",
+      "ret_type": "Int",
+      "args": [
          {
-            "arg_name": "fd",
+            "name": "fd",
             "arg_type": "Int"
          }
       ]
    },
    "307": {
-      "syscall_name": "sendmmsg",
-      "syscall_type": "Int",
-      "syscall_args": []
+      "name": "sendmmsg",
+      "ret_type": "Int",
+      "args": []
    },
    "308": {
-      "syscall_name": "setns",
-      "syscall_type": "Int",
-      "syscall_args": [
+      "name": "setns",
+      "ret_type": "Int",
+      "args": [
          {
-            "arg_name": "fd",
+            "name": "fd",
             "arg_type": "Int"
          },
          {
-            "arg_name": "nstype",
+            "name": "nstype",
             "arg_type": "Int"
          }
       ]
    },
    "309": {
-      "syscall_name": "getcpu",
-      "syscall_type": "Int",
-      "syscall_args": [
+      "name": "getcpu",
+      "ret_type": "Int",
+      "args": [
          {
-            "arg_name": "cpu",
+            "name": "cpu",
             "arg_type": "Uint"
          },
          {
-            "arg_name": "node",
+            "name": "node",
             "arg_type": "Uint"
          },
          {
-            "arg_name": "tcache",
+            "name": "tcache",
             "arg_type": "Ptr"
          }
       ]
    },
    "310": {
-      "syscall_name": "process_vm_readv",
-      "syscall_type": "Uint",
-      "syscall_args": []
+      "name": "process_vm_readv",
+      "ret_type": "Uint",
+      "args": []
    },
    "311": {
-      "syscall_name": "process_vm_writev",
-      "syscall_type": "Uint",
-      "syscall_args": []
+      "name": "process_vm_writev",
+      "ret_type": "Uint",
+      "args": []
    },
    "312": {
-      "syscall_name": "kcmp",
-      "syscall_type": "Int",
-      "syscall_args": []
+      "name": "kcmp",
+      "ret_type": "Int",
+      "args": []
    },
    "313": {
-      "syscall_name": "finit_module",
-      "syscall_type": "Int",
-      "syscall_args": []
+      "name": "finit_module",
+      "ret_type": "Int",
+      "args": []
    },
    "318": {
-      "syscall_name": "getrandom",
-      "syscall_type": "Uint",
-      "syscall_args": [
+      "name": "getrandom",
+      "ret_type": "Uint",
+      "args": [
          {
-            "arg_name": "buf",
+            "name": "buf",
             "arg_type": "Ptr"
          },
          {
-            "arg_name": "buflen",
+            "name": "buflen",
             "arg_type": "Uint"
          },
          {
-            "arg_name": "flags",
+            "name": "flags",
             "arg_type": "Uint"
          }
       ]

@@ -23,4 +23,4 @@ serde_json = "1.0.114"
 [lints.clippy]
 all = "deny"
 cargo = "deny"
-pedantic = "warn"
+pedantic = "deny"
