@@ -12,6 +12,6 @@ Let's kill two birds with one stone :)
 ## strace-rs
 
 This works the same way as Linux's `strace` command and can be used to trace
-the system calls invoked by a process.  
+the system calls invoked by a process as well as the signals it received.  
 
 Usage: `strace-rs command [args]`  
