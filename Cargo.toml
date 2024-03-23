@@ -1,11 +1,26 @@
 [package]
-name = "sys-rs"
-version = "0.1.0"
-edition = "2021"
-license = "MIT"
 authors = ["yrakcaz <zackaryayoun@gmail.com>"]
+categories = ["Development tools", "Operating systems"]
+description = "Re-writing some of the Linux system tools in Rust as a toy project"
+edition = "2021"
+keywords = ["Linux", "system", "tools"]
+license = "MIT"
+name = "sys-rs"
 repository = "https://github.com/yrakcaz/sys-rs"
+version = "0.2.0"
 
 [[bin]]
 name = "strace-rs"
 path = "src/strace.rs"
+
+[dependencies]
+libc = "0.2.153"
+nix = { version = "0.28.0", features = ["fs", "process", "ptrace"] }
+serde = "1.0.197"
+serde_derive = "1.0.197"
+serde_json = "1.0.114"
+
+[lints.clippy]
+all = "deny"
+cargo = "deny"
+pedantic = "deny"
