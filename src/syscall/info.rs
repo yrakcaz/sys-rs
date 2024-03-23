@@ -29,12 +29,16 @@ pub struct Entries {
 }
 
 impl Entries {
+    /// # Errors
+    ///
+    /// Will return `Err` if failing to parse info.json.
     pub fn new() -> Result<Self> {
         let json = include_str!("info.json");
         let map = serde_json::from_str(json)?;
         Ok(Self { map })
     }
 
+    #[must_use]
     pub fn get(&self, id: u64) -> Entry {
         self.map.get(&id).cloned().unwrap_or_else(|| Entry {
             name: "unknown".to_string(),

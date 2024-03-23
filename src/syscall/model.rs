@@ -49,6 +49,9 @@ fn parse_value(type_repr: &Type, val: u64, pid: Pid) -> Result<String> {
 }
 
 impl Repr {
+    /// # Errors
+    ///
+    /// Will return `Err` upon `ptrace::getregs()` or `ptrace::read()` failure.
     pub fn build(pid: Pid, infos: &Entries) -> Result<Self> {
         let regs = ptrace::getregs(pid)?;
         let info = infos.get(regs.orig_rax);
@@ -82,6 +85,7 @@ impl Repr {
         })
     }
 
+    #[must_use]
     pub fn is_exit(&self) -> bool {
         self.name.contains("exit")
     }

@@ -10,8 +10,12 @@ repository = "https://github.com/yrakcaz/sys-rs"
 version = "0.2.0"
 
 [[bin]]
+name = "sscov-rs"
+path = "src/bin/sscov.rs"
+
+[[bin]]
 name = "strace-rs"
-path = "src/strace.rs"
+path = "src/bin/strace.rs"
 
 [dependencies]
 libc = "0.2.153"

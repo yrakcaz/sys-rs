@@ -12,14 +12,9 @@ use nix::{
 };
 use std::ffi::CString;
 
-mod diag;
-use diag::Result;
-
-mod input;
-use input::{args, env};
-
-mod syscall;
-use syscall::{info::Entries as SyscallEntries, model::Repr as Syscall};
+use sys_rs::diag::Result;
+use sys_rs::input::{args, env};
+use sys_rs::syscall::{info::Entries as SyscallEntries, model::Repr as Syscall};
 
 fn tracer(child: Pid) -> Result<()> {
     let syscall_entries = SyscallEntries::new()?;
