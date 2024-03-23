@@ -1,0 +1,3340 @@
+{
+   "0": {
+      "name": "read",
+      "ret_type": "Uint",
+      "args": [
+         {
+            "name": "fd",
+            "arg_type": "Int"
+         },
+         {
+            "name": "buf",
+            "arg_type": "Ptr"
+         },
+         {
+            "name": "count",
+            "arg_type": "Uint"
+         }
+      ]
+   },
+   "1": {
+      "name": "write",
+      "ret_type": "Uint",
+      "args": [
+         {
+            "name": "fd",
+            "arg_type": "Int"
+         },
+         {
+            "name": "buf",
+            "arg_type": "Str"
+         },
+         {
+            "name": "count",
+            "arg_type": "Uint"
+         }
+      ]
+   },
+   "2": {
+      "name": "open",
+      "ret_type": "Int",
+      "args": [
+         {
+            "name": "pathname",
+            "arg_type": "Str"
+         },
+         {
+            "name": "flags",
+            "arg_type": "Int"
+         }
+      ]
+   },
+   "3": {
+      "name": "close",
+      "ret_type": "Int",
+      "args": [
+         {
+            "name": "fd",
+            "arg_type": "Int"
+         }
+      ]
+   },
+   "4": {
+      "name": "stat",
+      "ret_type": "Int",
+      "args": [
+         {
+            "name": "path",
+            "arg_type": "Str"
+         },
+         {
+            "name": "buf",
+            "arg_type": "Ptr"
+         }
+      ]
+   },
+   "5": {
+      "name": "fstat",
+      "ret_type": "Int",
+      "args": [
+         {
+            "name": "fd",
+            "arg_type": "Int"
+         },
+         {
+            "name": "buf",
+            "arg_type": "Ptr"
+         }
+      ]
+   },
+   "6": {
+      "name": "lstat",
+      "ret_type": "Int",
+      "args": [
+         {
+            "name": "path",
+            "arg_type": "Str"
+         },
+         {
+            "name": "buf",
+            "arg_type": "Ptr"
+         }
+      ]
+   },
+   "7": {
+      "name": "poll",
+      "ret_type": "Int",
+      "args": [
+         {
+            "name": "fds",
+            "arg_type": "Ptr"
+         },
+         {
+            "name": "nfds",
+            "arg_type": "Int"
+         },
+         {
+            "name": "timeout",
+            "arg_type": "Int"
+         }
+      ]
+   },
+   "8": {
+      "name": "lseek",
+      "ret_type": "Int",
+      "args": [
+         {
+            "name": "fd",
+            "arg_type": "Int"
+         },
+         {
+            "name": "offset",
+            "arg_type": "Int"
+         },
+         {
+            "name": "whence",
+            "arg_type": "Int"
+         }
+      ]
+   },
+   "9": {
+      "name": "mmap",
+      "ret_type": "Int",
+      "args": []
+   },
+   "10": {
+      "name": "mprotect",
+      "ret_type": "Int",
+      "args": [
+         {
+            "name": "addr",
+            "arg_type": "Ptr"
+         },
+         {
+            "name": "len",
+            "arg_type": "Uint"
+         },
+         {
+            "name": "prot",
+            "arg_type": "Int"
+         }
+      ]
+   },
+   "11": {
+      "name": "munmap",
+      "ret_type": "Int",
+      "args": [
+         {
+            "name": "addr",
+            "arg_type": "Ptr"
+         },
+         {
+            "name": "length",
+            "arg_type": "Uint"
+         }
+      ]
+   },
+   "12": {
+      "name": "brk",
+      "ret_type": "Int",
+      "args": [
+         {
+            "name": "addr",
+            "arg_type": "Ptr"
+         }
+      ]
+   },
+   "13": {
+      "name": "rt_sigaction",
+      "ret_type": "Int",
+      "args": [
+         {
+            "name": "signum",
+            "arg_type": "Int"
+         },
+         {
+            "name": "act",
+            "arg_type": "Ptr"
+         },
+         {
+            "name": "oldact",
+            "arg_type": "Ptr"
+         }
+      ]
+   },
+   "14": {
+      "name": "rt_sigprocmask",
+      "ret_type": "Int",
+      "args": [
+         {
+            "name": "how",
+            "arg_type": "Int"
+         },
+         {
+            "name": "set",
+            "arg_type": "Ptr"
+         },
+         {
+            "name": "oldset",
+            "arg_type": "Ptr"
+         }
+      ]
+   },
+   "15": {
+      "name": "rt_sigreturn",
+      "ret_type": "Int",
+      "args": []
+   },
+   "16": {
+      "name": "ioctl",
+      "ret_type": "Int",
+      "args": [
+         {
+            "name": "d",
+            "arg_type": "Int"
+         },
+         {
+            "name": "request",
+            "arg_type": "Int"
+         }
+      ]
+   },
+   "17": {
+      "name": "pread64",
+      "ret_type": "Int",
+      "args": []
+   },
+   "18": {
+      "name": "pwrite64",
+      "ret_type": "Int",
+      "args": []
+   },
+   "19": {
+      "name": "readv",
+      "ret_type": "Uint",
+      "args": [
+         {
+            "name": "fd",
+            "arg_type": "Int"
+         },
+         {
+            "name": "iov",
+            "arg_type": "Ptr"
+         },
+         {
+            "name": "iovcnt",
+            "arg_type": "Int"
+         }
+      ]
+   },
+   "20": {
+      "name": "writev",
+      "ret_type": "Uint",
+      "args": [
+         {
+            "name": "fd",
+            "arg_type": "Int"
+         },
+         {
+            "name": "iov",
+            "arg_type": "Ptr"
+         },
+         {
+            "name": "iovcnt",
+            "arg_type": "Int"
+         }
+      ]
+   },
+   "21": {
+      "name": "access",
+      "ret_type": "Int",
+      "args": [
+         {
+            "name": "pathname",
+            "arg_type": "Str"
+         },
+         {
+            "name": "mode",
+            "arg_type": "Int"
+         }
+      ]
+   },
+   "22": {
+      "name": "pipe",
+      "ret_type": "Int",
+      "args": [
+         {
+            "name": "pipefd",
+            "arg_type": "Ptr"
+         }
+      ]
+   },
+   "23": {
+      "name": "select",
+      "ret_type": "Int",
+      "args": []
+   },
+   "24": {
+      "name": "sched_yield",
+      "ret_type": "Int",
+      "args": []
+   },
+   "25": {
+      "name": "mremap",
+      "ret_type": "Int",
+      "args": []
+   },
+   "26": {
+      "name": "msync",
+      "ret_type": "Int",
+      "args": [
+         {
+            "name": "addr",
+            "arg_type": "Ptr"
+         },
+         {
+            "name": "length",
+            "arg_type": "Uint"
+         },
+         {
+            "name": "flags",
+            "arg_type": "Int"
+         }
+      ]
+   },
+   "27": {
+      "name": "mincore",
+      "ret_type": "Int",
+      "args": [
+         {
+            "name": "addr",
+            "arg_type": "Ptr"
+         },
+         {
+            "name": "length",
+            "arg_type": "Uint"
+         },
+         {
+            "name": "vec",
+            "arg_type": "Str"
+         }
+      ]
+   },
+   "28": {
+      "name": "madvise",
+      "ret_type": "Int",
+      "args": [
+         {
+            "name": "addr",
+            "arg_type": "Ptr"
+         },
+         {
+            "name": "length",
+            "arg_type": "Uint"
+         },
+         {
+            "name": "advice",
+            "arg_type": "Int"
+         }
+      ]
+   },
+   "29": {
+      "name": "shmget",
+      "ret_type": "Int",
+      "args": [
+         {
+            "name": "key",
+            "arg_type": "Int"
+         },
+         {
+            "name": "size",
+            "arg_type": "Uint"
+         },
+         {
+            "name": "shmflg",
+            "arg_type": "Int"
+         }
+      ]
+   },
+   "30": {
+      "name": "shmat",
+      "ret_type": "Int",
+      "args": [
+         {
+            "name": "shmid",
+            "arg_type": "Int"
+         },
+         {
+            "name": "shmaddr",
+            "arg_type": "Ptr"
+         },
+         {
+            "name": "shmflg",
+            "arg_type": "Int"
+         }
+      ]
+   },
+   "31": {
+      "name": "shmctl",
+      "ret_type": "Int",
+      "args": [
+         {
+            "name": "shmid",
+            "arg_type": "Int"
+         },
+         {
+            "name": "cmd",
+            "arg_type": "Int"
+         },
+         {
+            "name": "buf",
+            "arg_type": "Ptr"
+         }
+      ]
+   },
+   "32": {
+      "name": "dup",
+      "ret_type": "Int",
+      "args": [
+         {
+            "name": "oldfd",
+            "arg_type": "Int"
+         }
+      ]
+   },
+   "33": {
+      "name": "dup2",
+      "ret_type": "Int",
+      "args": [
+         {
+            "name": "oldfd",
+            "arg_type": "Int"
+         },
+         {
+            "name": "newfd",
+            "arg_type": "Int"
+         }
+      ]
+   },
+   "34": {
+      "name": "pause",
+      "ret_type": "Int",
+      "args": []
+   },
+   "35": {
+      "name": "nanosleep",
+      "ret_type": "Int",
+      "args": [
+         {
+            "name": "req",
+            "arg_type": "Ptr"
+         },
+         {
+            "name": "rem",
+            "arg_type": "Ptr"
+         }
+      ]
+   },
+   "36": {
+      "name": "getitimer",
+      "ret_type": "Int",
+      "args": [
+         {
+            "name": "which",
+            "arg_type": "Int"
+         },
+         {
+            "name": "curr_value",
+            "arg_type": "Ptr"
+         }
+      ]
+   },
+   "37": {
+      "name": "alarm",
+      "ret_type": "Int",
+      "args": [
+         {
+            "name": "seconds",
+            "arg_type": "Uint"
+         }
+      ]
+   },
+   "38": {
+      "name": "setitimer",
+      "ret_type": "Int",
+      "args": []
+   },
+   "39": {
+      "name": "getpid",
+      "ret_type": "Int",
+      "args": []
+   },
+   "40": {
+      "name": "sendfile",
+      "ret_type": "Uint",
+      "args": [
+         {
+            "name": "out_fd",
+            "arg_type": "Int"
+         },
+         {
+            "name": "in_fd",
+            "arg_type": "Int"
+         },
+         {
+            "name": "offset",
+            "arg_type": "Ptr"
+         },
+         {
+            "name": "count",
+            "arg_type": "Uint"
+         }
+      ]
+   },
+   "41": {
+      "name": "socket",
+      "ret_type": "Int",
+      "args": [
+         {
+            "name": "domain",
+            "arg_type": "Int"
+         },
+         {
+            "name": "type",
+            "arg_type": "Int"
+         },
+         {
+            "name": "protocol",
+            "arg_type": "Int"
+         }
+      ]
+   },
+   "42": {
+      "name": "connect",
+      "ret_type": "Int",
+      "args": []
+   },
+   "43": {
+      "name": "accept",
+      "ret_type": "Int",
+      "args": [
+         {
+            "name": "sockfd",
+            "arg_type": "Int"
+         },
+         {
+            "name": "addr",
+            "arg_type": "Ptr"
+         },
+         {
+            "name": "addrlen",
+            "arg_type": "Ptr"
+         }
+      ]
+   },
+   "44": {
+      "name": "sendto",
+      "ret_type": "Uint",
+      "args": []
+   },
+   "45": {
+      "name": "recvfrom",
+      "ret_type": "Uint",
+      "args": []
+   },
+   "46": {
+      "name": "sendmsg",
+      "ret_type": "Uint",
+      "args": [
+         {
+            "name": "sockfd",
+            "arg_type": "Int"
+         },
+         {
+            "name": "msg",
+            "arg_type": "Ptr"
+         },
+         {
+            "name": "flags",
+            "arg_type": "Int"
+         }
+      ]
+   },
+   "47": {
+      "name": "recvmsg",
+      "ret_type": "Uint",
+      "args": [
+         {
+            "name": "sockfd",
+            "arg_type": "Int"
+         },
+         {
+            "name": "msg",
+            "arg_type": "Ptr"
+         },
+         {
+            "name": "flags",
+            "arg_type": "Int"
+         }
+      ]
+   },
+   "48": {
+      "name": "shutdown",
+      "ret_type": "Int",
+      "args": [
+         {
+            "name": "sockfd",
+            "arg_type": "Int"
+         },
+         {
+            "name": "how",
+            "arg_type": "Int"
+         }
+      ]
+   },
+   "49": {
+      "name": "bind",
+      "ret_type": "Int",
+      "args": []
+   },
+   "50": {
+      "name": "listen",
+      "ret_type": "Int",
+      "args": [
+         {
+            "name": "sockfd",
+            "arg_type": "Int"
+         },
+         {
+            "name": "backlog",
+            "arg_type": "Int"
+         }
+      ]
+   },
+   "51": {
+      "name": "getsockname",
+      "ret_type": "Int",
+      "args": [
+         {
+            "name": "sockfd",
+            "arg_type": "Int"
+         },
+         {
+            "name": "addr",
+            "arg_type": "Ptr"
+         },
+         {
+            "name": "addrlen",
+            "arg_type": "Ptr"
+         }
+      ]
+   },
+   "52": {
+      "name": "getpeername",
+      "ret_type": "Int",
+      "args": [
+         {
+            "name": "sockfd",
+            "arg_type": "Int"
+         },
+         {
+            "name": "addr",
+            "arg_type": "Ptr"
+         },
+         {
+            "name": "addrlen",
+            "arg_type": "Ptr"
+         }
+      ]
+   },
+   "53": {
+      "name": "socketpair",
+      "ret_type": "Int",
+      "args": [
+         {
+            "name": "domain",
+            "arg_type": "Int"
+         },
+         {
+            "name": "type",
+            "arg_type": "Int"
+         },
+         {
+            "name": "protocol",
+            "arg_type": "Int"
+         },
+         {
+            "name": "sv",
+            "arg_type": "Ptr"
+         }
+      ]
+   },
+   "54": {
+      "name": "setsockopt",
+      "ret_type": "Int",
+      "args": []
+   },
+   "55": {
+      "name": "getsockopt",
+      "ret_type": "Int",
+      "args": []
+   },
+   "56": {
+      "name": "clone",
+      "ret_type": "Int",
+      "args": [
+         {
+            "name": "fn",
+            "arg_type": "Ptr"
+         },
+         {
+            "name": "child_stack",
+            "arg_type": "Ptr"
+         },
+         {
+            "name": "flags",
+            "arg_type": "Int"
+         },
+         {
+            "name": "arg",
+            "arg_type": "Ptr"
+         }
+      ]
+   },
+   "57": {
+      "name": "fork",
+      "ret_type": "Int",
+      "args": []
+   },
+   "58": {
+      "name": "vfork",
+      "ret_type": "Int",
+      "args": []
+   },
+   "59": {
+      "name": "execve",
+      "ret_type": "Int",
+      "args": [
+         {
+            "name": "filename", 
+            "arg_type": "Str"
+         },
+         {
+            "name": "argv", 
+            "arg_type": "Str"
+         },
+         {
+            "name": "envp", 
+            "arg_type": "Str"
+         }
+      ]
+   },
+   "60": {
+      "name": "exit",
+      "ret_type": "Int",
+      "args": [
+         {
+            "name": "status", 
+            "arg_type": "Int"
+         }
+      ]
+   },
+   "61": {
+      "name": "wait4",
+      "ret_type": "Int",
+      "args": []
+   },
+   "62": {
+      "name": "kill",
+      "ret_type": "Int",
+      "args": [
+         {
+            "name": "pid",
+            "arg_type": "Int"
+         },
+         {
+            "name": "sig",
+            "arg_type": "Int"
+         }
+      ]
+   },
+   "63": {
+      "name": "uname",
+      "ret_type": "Int",
+      "args": [
+         {
+            "name": "buf",
+            "arg_type": "Ptr"
+         }
+      ]
+   },
+   "64": {
+      "name": "semget",
+      "ret_type": "Int",
+      "args": [
+         {
+            "name": "key",
+            "arg_type": "Int"
+         },
+         {
+            "name": "nsems",
+            "arg_type": "Int"
+         },
+         {
+            "name": "semflg",
+            "arg_type": "Int"
+         }
+      ]
+   },
+   "65": {
+      "name": "semop",
+      "ret_type": "Int",
+      "args": [
+         {
+            "name": "semid",
+            "arg_type": "Int"
+         },
+         {
+            "name": "sops",
+            "arg_type": "Ptr"
+         },
+         {
+            "name": "nsops",
+            "arg_type": "Uint"
+         }
+      ]
+   },
+   "66": {
+      "name": "semctl",
+      "ret_type": "Int",
+      "args": [
+         {
+            "name": "semid",
+            "arg_type": "Int"
+         },
+         {
+            "name": "semnum",
+            "arg_type": "Int"
+         },
+         {
+            "name": "cmd",
+            "arg_type": "Int"
+         }
+      ]
+   },
+   "67": {
+      "name": "shmdt",
+      "ret_type": "Int",
+      "args": [
+         {
+            "name": "shmaddr",
+            "arg_type": "Ptr"
+         }
+      ]
+   },
+   "68": {
+      "name": "msgget",
+      "ret_type": "Int",
+      "args": [
+         {
+            "name": "key",
+            "arg_type": "Int"
+         },
+         {
+            "name": "msgflg",
+            "arg_type": "Int"
+         }
+      ]
+   },
+   "69": {
+      "name": "msgsnd",
+      "ret_type": "Int",
+      "args": [
+         {
+            "name": "msqid",
+            "arg_type": "Int"
+         },
+         {
+            "name": "msgp",
+            "arg_type": "Ptr"
+         },
+         {
+            "name": "msgsz",
+            "arg_type": "Uint"
+         },
+         {
+            "name": "msgflg",
+            "arg_type": "Int"
+         }
+      ]
+   },
+   "70": {
+      "name": "msgrcv",
+      "ret_type": "Uint",
+      "args": []
+   },
+   "71": {
+      "name": "msgctl",
+      "ret_type": "Int",
+      "args": [
+         {
+            "name": "msqid",
+            "arg_type": "Int"
+         },
+         {
+            "name": "cmd",
+            "arg_type": "Int"
+         },
+         {
+            "name": "buf",
+            "arg_type": "Ptr"
+         }
+      ]
+   },
+   "72": {
+      "name": "fcntl",
+      "ret_type": "Int",
+      "args": [
+         {
+            "name": "fd",
+            "arg_type": "Int"
+         },
+         {
+            "name": "cmd",
+            "arg_type": "Int"
+         },
+         {
+            "name": "/",
+            "arg_type": "Ptr"
+         }
+      ]
+   },
+   "73": {
+      "name": "flock",
+      "ret_type": "Int",
+      "args": [
+         {
+            "name": "fd",
+            "arg_type": "Int"
+         },
+         {
+            "name": "operation",
+            "arg_type": "Int"
+         }
+      ]
+   },
+   "74": {
+      "name": "fsync",
+      "ret_type": "Int",
+      "args": [
+         {
+            "name": "fd",
+            "arg_type": "Int"
+         }
+      ]
+   },
+   "75": {
+      "name": "fdatasync",
+      "ret_type": "Int",
+      "args": [
+         {
+            "name": "fd",
+            "arg_type": "Int"
+         }
+      ]
+   },
+   "76": {
+      "name": "truncate",
+      "ret_type": "Int",
+      "args": [
+         {
+            "name": "path",
+            "arg_type": "Str"
+         },
+         {
+            "name": "length",
+            "arg_type": "Int"
+         }
+      ]
+   },
+   "77": {
+      "name": "ftruncate",
+      "ret_type": "Int",
+      "args": [
+         {
+            "name": "fd",
+            "arg_type": "Int"
+         },
+         {
+            "name": "length",
+            "arg_type": "Int"
+         }
+      ]
+   },
+   "78": {
+      "name": "getdents",
+      "ret_type": "Int",
+      "args": []
+   },
+   "79": {
+      "name": "getcwd",
+      "ret_type": "Int",
+      "args": [
+         {
+            "name": "buf",
+            "arg_type": "Str"
+         },
+         {
+            "name": "size",
+            "arg_type": "Uint"
+         }
+      ]
+   },
+   "80": {
+      "name": "chdir",
+      "ret_type": "Int",
+      "args": [
+         {
+            "name": "path",
+            "arg_type": "Str"
+         }
+      ]
+   },
+   "81": {
+      "name": "fchdir",
+      "ret_type": "Int",
+      "args": [
+         {
+            "name": "fd",
+            "arg_type": "Int"
+         }
+      ]
+   },
+   "82": {
+      "name": "rename",
+      "ret_type": "Int",
+      "args": [
+         {
+            "name": "oldpath",
+            "arg_type": "Str"
+         },
+         {
+            "name": "newpath",
+            "arg_type": "Str"
+         }
+      ]
+   },
+   "83": {
+      "name": "mkdir",
+      "ret_type": "Int",
+      "args": [
+         {
+            "name": "pathname",
+            "arg_type": "Str"
+         },
+         {
+            "name": "mode",
+            "arg_type": "Int"
+         }
+      ]
+   },
+   "84": {
+      "name": "rmdir",
+      "ret_type": "Int",
+      "args": [
+         {
+            "name": "pathname",
+            "arg_type": "Str"
+         }
+      ]
+   },
+   "85": {
+      "name": "creat",
+      "ret_type": "Int",
+      "args": [
+         {
+            "name": "pathname",
+            "arg_type": "Str"
+         },
+         {
+            "name": "mode",
+            "arg_type": "Int"
+         }
+      ]
+   },
+   "86": {
+      "name": "link",
+      "ret_type": "Int",
+      "args": [
+         {
+            "name": "oldpath",
+            "arg_type": "Str"
+         },
+         {
+            "name": "newpath",
+            "arg_type": "Str"
+         }
+      ]
+   },
+   "87": {
+      "name": "unlink",
+      "ret_type": "Int",
+      "args": [
+         {
+            "name": "pathname",
+            "arg_type": "Str"
+         }
+      ]
+   },
+   "88": {
+      "name": "symlink",
+      "ret_type": "Int",
+      "args": [
+         {
+            "name": "oldpath",
+            "arg_type": "Str"
+         },
+         {
+            "name": "newpath",
+            "arg_type": "Str"
+         }
+      ]
+   },
+   "89": {
+      "name": "readlink",
+      "ret_type": "Uint",
+      "args": [
+         {
+            "name": "path",
+            "arg_type": "Str"
+         },
+         {
+            "name": "buf",
+            "arg_type": "Str"
+         },
+         {
+            "name": "bufsiz",
+            "arg_type": "Uint"
+         }
+      ]
+   },
+   "90": {
+      "name": "chmod",
+      "ret_type": "Int",
+      "args": [
+         {
+            "name": "path",
+            "arg_type": "Str"
+         },
+         {
+            "name": "mode",
+            "arg_type": "Int"
+         }
+      ]
+   },
+   "91": {
+      "name": "fchmod",
+      "ret_type": "Int",
+      "args": [
+         {
+            "name": "fd",
+            "arg_type": "Int"
+         },
+         {
+            "name": "mode",
+            "arg_type": "Int"
+         }
+      ]
+   },
+   "92": {
+      "name": "chown",
+      "ret_type": "Int",
+      "args": [
+         {
+            "name": "path",
+            "arg_type": "Str"
+         },
+         {
+            "name": "owner",
+            "arg_type": "Int"
+         },
+         {
+            "name": "group",
+            "arg_type": "Int"
+         }
+      ]
+   },
+   "93": {
+      "name": "fchown",
+      "ret_type": "Int",
+      "args": [
+         {
+            "name": "fd",
+            "arg_type": "Int"
+         },
+         {
+            "name": "owner",
+            "arg_type": "Int"
+         },
+         {
+            "name": "group",
+            "arg_type": "Int"
+         }
+      ]
+   },
+   "94": {
+      "name": "lchown",
+      "ret_type": "Int",
+      "args": [
+         {
+            "name": "path",
+            "arg_type": "Str"
+         },
+         {
+            "name": "owner",
+            "arg_type": "Int"
+         },
+         {
+            "name": "group",
+            "arg_type": "Int"
+         }
+      ]
+   },
+   "95": {
+      "name": "umask",
+      "ret_type": "Int",
+      "args": [
+         {
+            "name": "mask",
+            "arg_type": "Int"
+         }
+      ]
+   },
+   "96": {
+      "name": "gettimeofday",
+      "ret_type": "Int",
+      "args": [
+         {
+            "name": "tv",
+            "arg_type": "Ptr"
+         },
+         {
+            "name": "tz",
+            "arg_type": "Ptr"
+         }
+      ]
+   },
+   "97": {
+      "name": "getrlimit",
+      "ret_type": "Int",
+      "args": [
+         {
+            "name": "resource",
+            "arg_type": "Int"
+         },
+         {
+            "name": "rlim",
+            "arg_type": "Ptr"
+         }
+      ]
+   },
+   "98": {
+      "name": "getrusage",
+      "ret_type": "Int",
+      "args": [
+         {
+            "name": "who",
+            "arg_type": "Int"
+         },
+         {
+            "name": "usage",
+            "arg_type": "Ptr"
+         }
+      ]
+   },
+   "99": {
+      "name": "sysinfo",
+      "ret_type": "Int",
+      "args": [
+         {
+            "name": "info",
+            "arg_type": "Ptr"
+         }
+      ]
+   },
+   "100": {
+      "name": "times",
+      "ret_type": "Int",
+      "args": [
+         {
+            "name": "buf",
+            "arg_type": "Ptr"
+         }
+      ]
+   },
+   "101": {
+      "name": "ptrace",
+      "ret_type": "Int",
+      "args": []
+   },
+   "102": {
+      "name": "getuid",
+      "ret_type": "Int",
+      "args": []
+   },
+   "103": {
+      "name": "syslog",
+      "ret_type": "Int",
+      "args": [
+         {
+            "name": "type",
+            "arg_type": "Int"
+         },
+         {
+            "name": "bufp",
+            "arg_type": "Str"
+         },
+         {
+            "name": "len",
+            "arg_type": "Int"
+         }
+      ]
+   },
+   "104": {
+      "name": "getgid",
+      "ret_type": "Int",
+      "args": []
+   },
+   "105": {
+      "name": "setuid",
+      "ret_type": "Int",
+      "args": [
+         {
+            "name": "uid",
+            "arg_type": "Int"
+         }
+      ]
+   },
+   "106": {
+      "name": "setgid",
+      "ret_type": "Int",
+      "args": [
+         {
+            "name": "gid",
+            "arg_type": "Int"
+         }
+      ]
+   },
+   "107": {
+      "name": "geteuid",
+      "ret_type": "Int",
+      "args": []
+   },
+   "108": {
+      "name": "getegid",
+      "ret_type": "Int",
+      "args": []
+   },
+   "109": {
+      "name": "setpgid",
+      "ret_type": "Int",
+      "args": [
+         {
+            "name": "pid",
+            "arg_type": "Int"
+         },
+         {
+            "name": "pgid",
+            "arg_type": "Int"
+         }
+      ]
+   },
+   "110": {
+      "name": "getppid",
+      "ret_type": "Int",
+      "args": []
+   },
+   "111": {
+      "name": "getpgrp",
+      "ret_type": "Int",
+      "args": []
+   },
+   "112": {
+      "name": "setsid",
+      "ret_type": "Int",
+      "args": []
+   },
+   "113": {
+      "name": "setreuid",
+      "ret_type": "Int",
+      "args": [
+         {
+            "name": "ruid",
+            "arg_type": "Int"
+         },
+         {
+            "name": "euid",
+            "arg_type": "Int"
+         }
+      ]
+   },
+   "114": {
+      "name": "setregid",
+      "ret_type": "Int",
+      "args": [
+         {
+            "name": "rgid",
+            "arg_type": "Int"
+         },
+         {
+            "name": "egid",
+            "arg_type": "Int"
+         }
+      ]
+   },
+   "115": {
+      "name": "getgroups",
+      "ret_type": "Int",
+      "args": [
+         {
+            "name": "size",
+            "arg_type": "Int"
+         },
+         {
+            "name": "list",
+            "arg_type": "Ptr"
+         }
+      ]
+   },
+   "116": {
+      "name": "setgroups",
+      "ret_type": "Int",
+      "args": [
+         {
+            "name": "size",
+            "arg_type": "Uint"
+         },
+         {
+            "name": "list",
+            "arg_type": "Ptr"
+         }
+      ]
+   },
+   "117": {
+      "name": "setresuid",
+      "ret_type": "Int",
+      "args": [
+         {
+            "name": "ruid",
+            "arg_type": "Int"
+         },
+         {
+            "name": "euid",
+            "arg_type": "Int"
+         },
+         {
+            "name": "suid",
+            "arg_type": "Int"
+         }
+      ]
+   },
+   "118": {
+      "name": "getresuid",
+      "ret_type": "Int",
+      "args": [
+         {
+            "name": "ruid",
+            "arg_type": "Ptr"
+         },
+         {
+            "name": "euid",
+            "arg_type": "Ptr"
+         },
+         {
+            "name": "suid",
+            "arg_type": "Ptr"
+         }
+      ]
+   },
+   "119": {
+      "name": "setresgid",
+      "ret_type": "Int",
+      "args": [
+         {
+            "name": "rgid",
+            "arg_type": "Int"
+         },
+         {
+            "name": "egid",
+            "arg_type": "Int"
+         },
+         {
+            "name": "sgid",
+            "arg_type": "Int"
+         }
+      ]
+   },
+   "120": {
+      "name": "getresgid",
+      "ret_type": "Int",
+      "args": [
+         {
+            "name": "rgid",
+            "arg_type": "Ptr"
+         },
+         {
+            "name": "egid",
+            "arg_type": "Ptr"
+         },
+         {
+            "name": "sgid",
+            "arg_type": "Ptr"
+         }
+      ]
+   },
+   "121": {
+      "name": "getpgid",
+      "ret_type": "Int",
+      "args": [
+         {
+            "name": "pid",
+            "arg_type": "Int"
+         }
+      ]
+   },
+   "122": {
+      "name": "setfsuid",
+      "ret_type": "Int",
+      "args": [
+         {
+            "name": "fsuid",
+            "arg_type": "Int"
+         }
+      ]
+   },
+   "123": {
+      "name": "setfsgid",
+      "ret_type": "Int",
+      "args": [
+         {
+            "name": "fsgid",
+            "arg_type": "Int"
+         }
+      ]
+   },
+   "124": {
+      "name": "getsid",
+      "ret_type": "Int",
+      "args": [
+         {
+            "name": "pid",
+            "arg_type": "Int"
+         }
+      ]
+   },
+   "125": {
+      "name": "capget",
+      "ret_type": "Int",
+      "args": [
+         {
+            "name": "hdrp",
+            "arg_type": "Int"
+         },
+         {
+            "name": "datap",
+            "arg_type": "Int"
+         }
+      ]
+   },
+   "126": {
+      "name": "capset",
+      "ret_type": "Int",
+      "args": [
+         {
+            "name": "hdrp",
+            "arg_type": "Int"
+         },
+         {
+            "name": "datap",
+            "arg_type": "Int"
+         }
+      ]
+   },
+   "129": {
+      "name": "rt_sigqueueinfo",
+      "ret_type": "Int",
+      "args": [
+         {
+            "name": "tgid",
+            "arg_type": "Int"
+         },
+         {
+            "name": "sig",
+            "arg_type": "Int"
+         },
+         {
+            "name": "uinfo",
+            "arg_type": "Ptr"
+         }
+      ]
+   },
+   "131": {
+      "name": "sigaltstack",
+      "ret_type": "Int",
+      "args": [
+         {
+            "name": "ss",
+            "arg_type": "Ptr"
+         },
+         {
+            "name": "oss",
+            "arg_type": "Ptr"
+         }
+      ]
+   },
+   "132": {
+      "name": "utime",
+      "ret_type": "Int",
+      "args": [
+         {
+            "name": "filename",
+            "arg_type": "Str"
+         },
+         {
+            "name": "times",
+            "arg_type": "Ptr"
+         }
+      ]
+   },
+   "133": {
+      "name": "mknod",
+      "ret_type": "Int",
+      "args": [
+         {
+            "name": "pathname",
+            "arg_type": "Str"
+         },
+         {
+            "name": "mode",
+            "arg_type": "Int"
+         },
+         {
+            "name": "dev",
+            "arg_type": "Int"
+         }
+      ]
+   },
+   "134": {
+      "name": "uselib",
+      "ret_type": "Int",
+      "args": [
+         {
+            "name": "library",
+            "arg_type": "Str"
+         }
+      ]
+   },
+   "135": {
+      "name": "personality",
+      "ret_type": "Int",
+      "args": [
+         {
+            "name": "persona",
+            "arg_type": "Uint"
+         }
+      ]
+   },
+   "136": {
+      "name": "ustat",
+      "ret_type": "Int",
+      "args": [
+         {
+            "name": "dev",
+            "arg_type": "Int"
+         },
+         {
+            "name": "ubuf",
+            "arg_type": "Ptr"
+         }
+      ]
+   },
+   "137": {
+      "name": "statfs",
+      "ret_type": "Int",
+      "args": [
+         {
+            "name": "path",
+            "arg_type": "Str"
+         },
+         {
+            "name": "buf",
+            "arg_type": "Ptr"
+         }
+      ]
+   },
+   "138": {
+      "name": "fstatfs",
+      "ret_type": "Int",
+      "args": [
+         {
+            "name": "fd",
+            "arg_type": "Int"
+         },
+         {
+            "name": "buf",
+            "arg_type": "Ptr"
+         }
+      ]
+   },
+   "139": {
+      "name": "sysfs",
+      "ret_type": "Int",
+      "args": [
+         {
+            "name": "option",
+            "arg_type": "Int"
+         },
+         {
+            "name": "fsname",
+            "arg_type": "Str"
+         }
+      ]
+   },
+   "140": {
+      "name": "getpriority",
+      "ret_type": "Int",
+      "args": [
+         {
+            "name": "which",
+            "arg_type": "Int"
+         },
+         {
+            "name": "who",
+            "arg_type": "Int"
+         }
+      ]
+   },
+   "141": {
+      "name": "setpriority",
+      "ret_type": "Int",
+      "args": [
+         {
+            "name": "which",
+            "arg_type": "Int"
+         },
+         {
+            "name": "who",
+            "arg_type": "Int"
+         },
+         {
+            "name": "prio",
+            "arg_type": "Int"
+         }
+      ]
+   },
+   "142": {
+      "name": "sched_setparam",
+      "ret_type": "Int",
+      "args": [
+         {
+            "name": "pid",
+            "arg_type": "Int"
+         },
+         {
+            "name": "param",
+            "arg_type": "Ptr"
+         }
+      ]
+   },
+   "143": {
+      "name": "sched_getparam",
+      "ret_type": "Int",
+      "args": [
+         {
+            "name": "pid",
+            "arg_type": "Int"
+         },
+         {
+            "name": "param",
+            "arg_type": "Ptr"
+         }
+      ]
+   },
+   "144": {
+      "name": "sched_setscheduler",
+      "ret_type": "Int",
+      "args": []
+   },
+   "145": {
+      "name": "sched_getscheduler",
+      "ret_type": "Int",
+      "args": [
+         {
+            "name": "pid",
+            "arg_type": "Int"
+         }
+      ]
+   },
+   "146": {
+      "name": "sched_get_priority_max",
+      "ret_type": "Int",
+      "args": [
+         {
+            "name": "policy",
+            "arg_type": "Int"
+         }
+      ]
+   },
+   "147": {
+      "name": "sched_get_priority_min",
+      "ret_type": "Int",
+      "args": [
+         {
+            "name": "policy",
+            "arg_type": "Int"
+         }
+      ]
+   },
+   "148": {
+      "name": "sched_rr_get_interval",
+      "ret_type": "Int",
+      "args": [
+         {
+            "name": "pid",
+            "arg_type": "Int"
+         },
+         {
+            "name": "tp",
+            "arg_type": "Ptr"
+         }
+      ]
+   },
+   "149": {
+      "name": "mlock",
+      "ret_type": "Int",
+      "args": [
+         {
+            "name": "addr",
+            "arg_type": "Ptr"
+         },
+         {
+            "name": "len",
+            "arg_type": "Uint"
+         }
+      ]
+   },
+   "150": {
+      "name": "munlock",
+      "ret_type": "Int",
+      "args": [
+         {
+            "name": "addr",
+            "arg_type": "Ptr"
+         },
+         {
+            "name": "len",
+            "arg_type": "Uint"
+         }
+      ]
+   },
+   "151": {
+      "name": "mlockall",
+      "ret_type": "Int",
+      "args": [
+         {
+            "name": "flags",
+            "arg_type": "Int"
+         }
+      ]
+   },
+   "152": {
+      "name": "munlockall",
+      "ret_type": "Int",
+      "args": []
+   },
+   "153": {
+      "name": "vhangup",
+      "ret_type": "Int",
+      "args": []
+   },
+   "154": {
+      "name": "modify_ldt",
+      "ret_type": "Int",
+      "args": [
+         {
+            "name": "func",
+            "arg_type": "Int"
+         },
+         {
+            "name": "ptr",
+            "arg_type": "Ptr"
+         },
+         {
+            "name": "bytecount",
+            "arg_type": "Uint"
+         }
+      ]
+   },
+   "155": {
+      "name": "pivot_root",
+      "ret_type": "Int",
+      "args": [
+         {
+            "name": "new_root",
+            "arg_type": "Str"
+         },
+         {
+            "name": "put_old",
+            "arg_type": "Str"
+         }
+      ]
+   },
+   "156": {
+      "name": "_sysctl",
+      "ret_type": "Int",
+      "args": [
+         {
+            "name": "args",
+            "arg_type": "Ptr"
+         }
+      ]
+   },
+   "157": {
+      "name": "prctl",
+      "ret_type": "Int",
+      "args": []
+   },
+   "158": {
+      "name": "arch_prctl",
+      "ret_type": "Int",
+      "args": [
+         {
+            "name": "code",
+            "arg_type": "Int"
+         },
+         {
+            "name": "addr",
+            "arg_type": "Uint"
+         }
+      ]
+   },
+   "159": {
+      "name": "adjtimex",
+      "ret_type": "Int",
+      "args": [
+         {
+            "name": "buf",
+            "arg_type": "Ptr"
+         }
+      ]
+   },
+   "160": {
+      "name": "setrlimit",
+      "ret_type": "Int",
+      "args": [
+         {
+            "name": "resource",
+            "arg_type": "Int"
+         },
+         {
+            "name": "rlim",
+            "arg_type": "Ptr"
+         }
+      ]
+   },
+   "161": {
+      "name": "chroot",
+      "ret_type": "Int",
+      "args": [
+         {
+            "name": "path",
+            "arg_type": "Str"
+         }
+      ]
+   },
+   "162": {
+      "name": "sync",
+      "ret_type": "Int",
+      "args": []
+   },
+   "163": {
+      "name": "acct",
+      "ret_type": "Int",
+      "args": [
+         {
+            "name": "filename",
+            "arg_type": "Str"
+         }
+      ]
+   },
+   "164": {
+      "name": "settimeofday",
+      "ret_type": "Int",
+      "args": [
+         {
+            "name": "tv",
+            "arg_type": "Ptr"
+         },
+         {
+            "name": "tz",
+            "arg_type": "Ptr"
+         }
+      ]
+   },
+   "165": {
+      "name": "mount",
+      "ret_type": "Int",
+      "args": []
+   },
+   "166": {
+      "name": "umount2",
+      "ret_type": "Int",
+      "args": [
+         {
+            "name": "target",
+            "arg_type": "Str"
+         },
+         {
+            "name": "flags",
+            "arg_type": "Int"
+         }
+      ]
+   },
+   "167": {
+      "name": "swapon",
+      "ret_type": "Int",
+      "args": [
+         {
+            "name": "path",
+            "arg_type": "Str"
+         },
+         {
+            "name": "swapflags",
+            "arg_type": "Int"
+         }
+      ]
+   },
+   "168": {
+      "name": "swapoff",
+      "ret_type": "Int",
+      "args": [
+         {
+            "name": "path",
+            "arg_type": "Str"
+         }
+      ]
+   },
+   "169": {
+      "name": "reboot",
+      "ret_type": "Int",
+      "args": [
+         {
+            "name": "magic",
+            "arg_type": "Int"
+         },
+         {
+            "name": "magic2",
+            "arg_type": "Int"
+         },
+         {
+            "name": "cmd",
+            "arg_type": "Int"
+         },
+         {
+            "name": "arg",
+            "arg_type": "Ptr"
+         }
+      ]
+   },
+   "170": {
+      "name": "sethostname",
+      "ret_type": "Int",
+      "args": [
+         {
+            "name": "name",
+            "arg_type": "Str"
+         },
+         {
+            "name": "len",
+            "arg_type": "Uint"
+         }
+      ]
+   },
+   "171": {
+      "name": "setdomainname",
+      "ret_type": "Int",
+      "args": [
+         {
+            "name": "name",
+            "arg_type": "Str"
+         },
+         {
+            "name": "len",
+            "arg_type": "Uint"
+         }
+      ]
+   },
+   "172": {
+      "name": "iopl",
+      "ret_type": "Int",
+      "args": [
+         {
+            "name": "level",
+            "arg_type": "Int"
+         }
+      ]
+   },
+   "173": {
+      "name": "ioperm",
+      "ret_type": "Int",
+      "args": [
+         {
+            "name": "from",
+            "arg_type": "Uint"
+         },
+         {
+            "name": "num",
+            "arg_type": "Uint"
+         },
+         {
+            "name": "turn_on",
+            "arg_type": "Int"
+         }
+      ]
+   },
+   "174": {
+      "name": "create_module",
+      "ret_type": "Int",
+      "args": [
+         {
+            "name": "name",
+            "arg_type": "Str"
+         },
+         {
+            "name": "size",
+            "arg_type": "Uint"
+         }
+      ]
+   },
+   "175": {
+      "name": "init_module",
+      "ret_type": "Int",
+      "args": []
+   },
+   "176": {
+      "name": "delete_module",
+      "ret_type": "Int",
+      "args": [
+         {
+            "name": "name",
+            "arg_type": "Str"
+         },
+         {
+            "name": "flags",
+            "arg_type": "Int"
+         }
+      ]
+   },
+   "177": {
+      "name": "get_kernel_syms",
+      "ret_type": "Int",
+      "args": [
+         {
+            "name": "table",
+            "arg_type": "Ptr"
+         }
+      ]
+   },
+   "178": {
+      "name": "query_module",
+      "ret_type": "Int",
+      "args": []
+   },
+   "179": {
+      "name": "quotactl",
+      "ret_type": "Int",
+      "args": [
+         {
+            "name": "cmd",
+            "arg_type": "Int"
+         },
+         {
+            "name": "special",
+            "arg_type": "Str"
+         },
+         {
+            "name": "id",
+            "arg_type": "Int"
+         },
+         {
+            "name": "addr",
+            "arg_type": "Int"
+         }
+      ]
+   },
+   "186": {
+      "name": "gettid",
+      "ret_type": "Int",
+      "args": []
+   },
+   "187": {
+      "name": "readahead",
+      "ret_type": "Uint",
+      "args": [
+         {
+            "name": "fd",
+            "arg_type": "Int"
+         },
+         {
+            "name": "offset",
+            "arg_type": "Int"
+         },
+         {
+            "name": "count",
+            "arg_type": "Uint"
+         }
+      ]
+   },
+   "191": {
+      "name": "getxattr",
+      "ret_type": "Uint",
+      "args": [
+         {
+            "name": "path",
+            "arg_type": "Str"
+         },
+         {
+            "name": "name",
+            "arg_type": "Str"
+         },
+         {
+            "name": "value",
+            "arg_type": "Ptr"
+         },
+         {
+            "name": "size",
+            "arg_type": "Uint"
+         }
+      ]
+   },
+   "192": {
+      "name": "lgetxattr",
+      "ret_type": "Uint",
+      "args": [
+         {
+            "name": "path",
+            "arg_type": "Str"
+         },
+         {
+            "name": "name",
+            "arg_type": "Str"
+         },
+         {
+            "name": "value",
+            "arg_type": "Ptr"
+         },
+         {
+            "name": "size",
+            "arg_type": "Uint"
+         }
+      ]
+   },
+   "193": {
+      "name": "fgetxattr",
+      "ret_type": "Uint",
+      "args": [
+         {
+            "name": "fd",
+            "arg_type": "Int"
+         },
+         {
+            "name": "name",
+            "arg_type": "Str"
+         },
+         {
+            "name": "value",
+            "arg_type": "Ptr"
+         },
+         {
+            "name": "size",
+            "arg_type": "Uint"
+         }
+      ]
+   },
+   "200": {
+      "name": "tkill",
+      "ret_type": "Int",
+      "args": [
+         {
+            "name": "tid",
+            "arg_type": "Int"
+         },
+         {
+            "name": "sig",
+            "arg_type": "Int"
+         }
+      ]
+   },
+   "201": {
+      "name": "time",
+      "ret_type": "Int",
+      "args": [
+         {
+            "name": "t",
+            "arg_type": "Ptr"
+         }
+      ]
+   },
+   "202": {
+      "name": "futex",
+      "ret_type": "Int",
+      "args": []
+   },
+   "203": {
+      "name": "sched_setaffinity",
+      "ret_type": "Int",
+      "args": []
+   },
+   "204": {
+      "name": "sched_getaffinity",
+      "ret_type": "Int",
+      "args": []
+   },
+   "205": {
+      "name": "set_thread_area",
+      "ret_type": "Int",
+      "args": [
+         {
+            "name": "u_info",
+            "arg_type": "Ptr"
+         }
+      ]
+   },
+   "206": {
+      "name": "io_setup",
+      "ret_type": "Int",
+      "args": [
+         {
+            "name": "nr_events",
+            "arg_type": "Uint"
+         },
+         {
+            "name": "ctx_idp",
+            "arg_type": "Ptr"
+         }
+      ]
+   },
+   "207": {
+      "name": "io_destroy",
+      "ret_type": "Int",
+      "args": [
+         {
+            "name": "ctx_id",
+            "arg_type": "Int"
+         }
+      ]
+   },
+   "208": {
+      "name": "io_getevents",
+      "ret_type": "Int",
+      "args": []
+   },
+   "209": {
+      "name": "io_submit",
+      "ret_type": "Int",
+      "args": [
+         {
+            "name": "ctx_id",
+            "arg_type": "Int"
+         },
+         {
+            "name": "nr",
+            "arg_type": "Int"
+         },
+         {
+            "name": "*iocbpp",
+            "arg_type": "Ptr"
+         }
+      ]
+   },
+   "210": {
+      "name": "io_cancel",
+      "ret_type": "Int",
+      "args": []
+   },
+   "211": {
+      "name": "get_thread_area",
+      "ret_type": "Int",
+      "args": [
+         {
+            "name": "u_info",
+            "arg_type": "Ptr"
+         }
+      ]
+   },
+   "212": {
+      "name": "lookup_dcookie",
+      "ret_type": "Int",
+      "args": [
+         {
+            "name": "cookie",
+            "arg_type": "Int"
+         },
+         {
+            "name": "buffer",
+            "arg_type": "Str"
+         },
+         {
+            "name": "len",
+            "arg_type": "Uint"
+         }
+      ]
+   },
+   "213": {
+      "name": "epoll_create",
+      "ret_type": "Int",
+      "args": [
+         {
+            "name": "size",
+            "arg_type": "Int"
+         }
+      ]
+   },
+   "216": {
+      "name": "remap_file_pages",
+      "ret_type": "Int",
+      "args": []
+   },
+   "217": {
+      "name": "getdents64",
+      "ret_type": "Int",
+      "args": []
+   },
+   "218": {
+      "name": "set_tid_address",
+      "ret_type": "Int",
+      "args": [
+         {
+            "name": "tidptr",
+            "arg_type": "Ptr"
+         }
+      ]
+   },
+   "219": {
+      "name": "restart_syscall",
+      "ret_type": "Int",
+      "args": []
+   },
+   "220": {
+      "name": "semtimedop",
+      "ret_type": "Int",
+      "args": []
+   },
+   "221": {
+      "name": "fadvise64",
+      "ret_type": "Int",
+      "args": []
+   },
+   "222": {
+      "name": "timer_create",
+      "ret_type": "Int",
+      "args": []
+   },
+   "223": {
+      "name": "timer_settime",
+      "ret_type": "Int",
+      "args": []
+   },
+   "224": {
+      "name": "timer_gettime",
+      "ret_type": "Int",
+      "args": [
+         {
+            "name": "timerid",
+            "arg_type": "Int"
+         },
+         {
+            "name": "curr_value",
+            "arg_type": "Ptr"
+         }
+      ]
+   },
+   "225": {
+      "name": "timer_getoverrun",
+      "ret_type": "Int",
+      "args": [
+         {
+            "name": "timerid",
+            "arg_type": "Int"
+         }
+      ]
+   },
+   "226": {
+      "name": "timer_delete",
+      "ret_type": "Int",
+      "args": [
+         {
+            "name": "timerid",
+            "arg_type": "Int"
+         }
+      ]
+   },
+   "227": {
+      "name": "clock_settime",
+      "ret_type": "Int",
+      "args": [
+         {
+            "name": "clk_id",
+            "arg_type": "Int"
+         },
+         {
+            "name": "tp",
+            "arg_type": "Ptr"
+         }
+      ]
+   },
+   "228": {
+      "name": "clock_gettime",
+      "ret_type": "Int",
+      "args": [
+         {
+            "name": "clk_id",
+            "arg_type": "Int"
+         },
+         {
+            "name": "tp",
+            "arg_type": "Ptr"
+         }
+      ]
+   },
+   "229": {
+      "name": "clock_getres",
+      "ret_type": "Int",
+      "args": [
+         {
+            "name": "clk_id",
+            "arg_type": "Int"
+         },
+         {
+            "name": "res",
+            "arg_type": "Ptr"
+         }
+      ]
+   },
+   "230": {
+      "name": "clock_nanosleep",
+      "ret_type": "Int",
+      "args": []
+   },
+   "231": {
+      "name": "exit_group",
+      "ret_type": "Int",
+      "args": [
+         {
+            "name": "status",
+            "arg_type": "Int"
+         }
+      ]
+   },
+   "232": {
+      "name": "epoll_wait",
+      "ret_type": "Int",
+      "args": []
+   },
+   "233": {
+      "name": "epoll_ctl",
+      "ret_type": "Int",
+      "args": [
+         {
+            "name": "epfd",
+            "arg_type": "Int"
+         },
+         {
+            "name": "op",
+            "arg_type": "Int"
+         },
+         {
+            "name": "fd",
+            "arg_type": "Int"
+         },
+         {
+            "name": "event",
+            "arg_type": "Ptr"
+         }
+      ]
+   },
+   "234": {
+      "name": "tgkill",
+      "ret_type": "Int",
+      "args": [
+         {
+            "name": "tgid",
+            "arg_type": "Int"
+         },
+         {
+            "name": "tid",
+            "arg_type": "Int"
+         },
+         {
+            "name": "sig",
+            "arg_type": "Int"
+         }
+      ]
+   },
+   "235": {
+      "name": "utimes",
+      "ret_type": "Int",
+      "args": [
+         {
+            "name": "filename",
+            "arg_type": "Str"
+         },
+         {
+            "name": "times",
+            "arg_type": "Ptr"
+         }
+      ]
+   },
+   "237": {
+      "name": "mbind",
+      "ret_type": "Int",
+      "args": []
+   },
+   "238": {
+      "name": "set_mempolicy",
+      "ret_type": "Int",
+      "args": []
+   },
+   "239": {
+      "name": "get_mempolicy",
+      "ret_type": "Int",
+      "args": []
+   },
+   "240": {
+      "name": "mq_open",
+      "ret_type": "Int",
+      "args": [
+         {
+            "name": "name",
+            "arg_type": "Str"
+         },
+         {
+            "name": "oflag",
+            "arg_type": "Int"
+         }
+      ]
+   },
+   "241": {
+      "name": "mq_unlink",
+      "ret_type": "Int",
+      "args": [
+         {
+            "name": "name",
+            "arg_type": "Str"
+         }
+      ]
+   },
+   "242": {
+      "name": "mq_timedsend",
+      "ret_type": "Int",
+      "args": []
+   },
+   "243": {
+      "name": "mq_timedreceive",
+      "ret_type": "Uint",
+      "args": []
+   },
+   "244": {
+      "name": "mq_notify",
+      "ret_type": "Int",
+      "args": [
+         {
+            "name": "mqdes",
+            "arg_type": "Int"
+         },
+         {
+            "name": "sevp",
+            "arg_type": "Ptr"
+         }
+      ]
+   },
+   "246": {
+      "name": "kexec_load",
+      "ret_type": "Int",
+      "args": []
+   },
+   "247": {
+      "name": "waitid",
+      "ret_type": "Int",
+      "args": [
+         {
+            "name": "idtype",
+            "arg_type": "Int"
+         },
+         {
+            "name": "id",
+            "arg_type": "Int"
+         },
+         {
+            "name": "infop",
+            "arg_type": "Ptr"
+         },
+         {
+            "name": "options",
+            "arg_type": "Int"
+         }
+      ]
+   },
+   "248": {
+      "name": "add_key",
+      "ret_type": "Int",
+      "args": []
+   },
+   "249": {
+      "name": "request_key",
+      "ret_type": "Int",
+      "args": []
+   },
+   "250": {
+      "name": "keyctl",
+      "ret_type": "Int",
+      "args": [
+         {
+            "name": "cmd",
+            "arg_type": "Int"
+         }
+      ]
+   },
+   "251": {
+      "name": "ioprio_set",
+      "ret_type": "Int",
+      "args": [
+         {
+            "name": "which",
+            "arg_type": "Int"
+         },
+         {
+            "name": "who",
+            "arg_type": "Int"
+         },
+         {
+            "name": "ioprio",
+            "arg_type": "Int"
+         }
+      ]
+   },
+   "252": {
+      "name": "ioprio_get",
+      "ret_type": "Int",
+      "args": [
+         {
+            "name": "which",
+            "arg_type": "Int"
+         },
+         {
+            "name": "who",
+            "arg_type": "Int"
+         }
+      ]
+   },
+   "253": {
+      "name": "inotify_init",
+      "ret_type": "Int",
+      "args": []
+   },
+   "254": {
+      "name": "inotify_add_watch",
+      "ret_type": "Int",
+      "args": [
+         {
+            "name": "fd",
+            "arg_type": "Int"
+         },
+         {
+            "name": "pathname",
+            "arg_type": "Str"
+         },
+         {
+            "name": "mask",
+            "arg_type": "Int"
+         }
+      ]
+   },
+   "255": {
+      "name": "inotify_rm_watch",
+      "ret_type": "Int",
+      "args": [
+         {
+            "name": "fd",
+            "arg_type": "Int"
+         },
+         {
+            "name": "wd",
+            "arg_type": "Int"
+         }
+      ]
+   },
+   "256": {
+      "name": "migrate_pages",
+      "ret_type": "Int",
+      "args": []
+   },
+   "257": {
+      "name": "openat",
+      "ret_type": "Int",
+      "args": [
+         {
+            "name": "dirfd",
+            "arg_type": "Int"
+         },
+         {
+            "name": "pathname",
+            "arg_type": "Str"
+         },
+         {
+            "name": "flags",
+            "arg_type": "Int"
+         }
+      ]
+   },
+   "258": {
+      "name": "mkdirat",
+      "ret_type": "Int",
+      "args": [
+         {
+            "name": "dirfd",
+            "arg_type": "Int"
+         },
+         {
+            "name": "pathname",
+            "arg_type": "Str"
+         },
+         {
+            "name": "mode",
+            "arg_type": "Int"
+         }
+      ]
+   },
+   "259": {
+      "name": "mknodat",
+      "ret_type": "Int",
+      "args": [
+         {
+            "name": "dirfd",
+            "arg_type": "Int"
+         },
+         {
+            "name": "pathname",
+            "arg_type": "Str"
+         },
+         {
+            "name": "mode",
+            "arg_type": "Int"
+         },
+         {
+            "name": "dev",
+            "arg_type": "Int"
+         }
+      ]
+   },
+   "260": {
+      "name": "fchownat",
+      "ret_type": "Int",
+      "args": []
+   },
+   "261": {
+      "name": "futimesat",
+      "ret_type": "Int",
+      "args": []
+   },
+   "263": {
+      "name": "unlinkat",
+      "ret_type": "Int",
+      "args": [
+         {
+            "name": "dirfd",
+            "arg_type": "Int"
+         },
+         {
+            "name": "pathname",
+            "arg_type": "Str"
+         },
+         {
+            "name": "flags",
+            "arg_type": "Int"
+         }
+      ]
+   },
+   "264": {
+      "name": "renameat",
+      "ret_type": "Int",
+      "args": []
+   },
+   "265": {
+      "name": "linkat",
+      "ret_type": "Int",
+      "args": []
+   },
+   "266": {
+      "name": "symlinkat",
+      "ret_type": "Int",
+      "args": [
+         {
+            "name": "oldpath",
+            "arg_type": "Str"
+         },
+         {
+            "name": "newdirfd",
+            "arg_type": "Int"
+         },
+         {
+            "name": "newpath",
+            "arg_type": "Str"
+         }
+      ]
+   },
+   "267": {
+      "name": "readlinkat",
+      "ret_type": "Int",
+      "args": []
+   },
+   "268": {
+      "name": "fchmodat",
+      "ret_type": "Int",
+      "args": [
+         {
+            "name": "dirfd",
+            "arg_type": "Int"
+         },
+         {
+            "name": "pathname",
+            "arg_type": "Str"
+         },
+         {
+            "name": "mode",
+            "arg_type": "Int"
+         },
+         {
+            "name": "flags",
+            "arg_type": "Int"
+         }
+      ]
+   },
+   "269": {
+      "name": "faccessat",
+      "ret_type": "Int",
+      "args": [
+         {
+            "name": "dirfd",
+            "arg_type": "Int"
+         },
+         {
+            "name": "pathname",
+            "arg_type": "Str"
+         },
+         {
+            "name": "mode",
+            "arg_type": "Int"
+         },
+         {
+            "name": "flags",
+            "arg_type": "Int"
+         }
+      ]
+   },
+   "270": {
+      "name": "pselect6",
+      "ret_type": "Int",
+      "args": []
+   },
+   "271": {
+      "name": "ppoll",
+      "ret_type": "Int",
+      "args": []
+   },
+   "272": {
+      "name": "unshare",
+      "ret_type": "Int",
+      "args": [
+         {
+            "name": "flags",
+            "arg_type": "Int"
+         }
+      ]
+   },
+   "273": {
+      "name": "set_robust_list",
+      "ret_type": "Int",
+      "args": [
+         {
+            "name": "head",
+            "arg_type": "Ptr"
+         },
+         {
+            "name": "len",
+            "arg_type": "Uint"
+         }
+      ]
+   },
+   "274": {
+      "name": "get_robust_list",
+      "ret_type": "Int",
+      "args": []
+   },
+   "275": {
+      "name": "splice",
+      "ret_type": "Uint",
+      "args": []
+   },
+   "276": {
+      "name": "tee",
+      "ret_type": "Uint",
+      "args": [
+         {
+            "name": "fd_in",
+            "arg_type": "Int"
+         },
+         {
+            "name": "fd_out",
+            "arg_type": "Int"
+         },
+         {
+            "name": "len",
+            "arg_type": "Uint"
+         },
+         {
+            "name": "flags",
+            "arg_type": "Uint"
+         }
+      ]
+   },
+   "277": {
+      "name": "sync_file_range",
+      "ret_type": "Int",
+      "args": []
+   },
+   "278": {
+      "name": "vmsplice",
+      "ret_type": "Uint",
+      "args": []
+   },
+   "279": {
+      "name": "move_pages",
+      "ret_type": "Int",
+      "args": []
+   },
+   "280": {
+      "name": "utimensat",
+      "ret_type": "Int",
+      "args": []
+   },
+   "281": {
+      "name": "epoll_pwait",
+      "ret_type": "Int",
+      "args": []
+   },
+   "282": {
+      "name": "signalfd",
+      "ret_type": "Int",
+      "args": [
+         {
+            "name": "fd",
+            "arg_type": "Int"
+         },
+         {
+            "name": "mask",
+            "arg_type": "Ptr"
+         },
+         {
+            "name": "flags",
+            "arg_type": "Int"
+         }
+      ]
+   },
+   "283": {
+      "name": "timerfd_create",
+      "ret_type": "Int",
+      "args": [
+         {
+            "name": "clockid",
+            "arg_type": "Int"
+         },
+         {
+            "name": "flags",
+            "arg_type": "Int"
+         }
+      ]
+   },
+   "284": {
+      "name": "eventfd",
+      "ret_type": "Int",
+      "args": [
+         {
+            "name": "initval",
+            "arg_type": "Uint"
+         },
+         {
+            "name": "flags",
+            "arg_type": "Int"
+         }
+      ]
+   },
+   "285": {
+      "name": "fallocate",
+      "ret_type": "Int",
+      "args": [
+         {
+            "name": "fd",
+            "arg_type": "Int"
+         },
+         {
+            "name": "mode",
+            "arg_type": "Int"
+         },
+         {
+            "name": "offset",
+            "arg_type": "Int"
+         },
+         {
+            "name": "len",
+            "arg_type": "Int"
+         }
+      ]
+   },
+   "286": {
+      "name": "timerfd_settime",
+      "ret_type": "Int",
+      "args": []
+   },
+   "287": {
+      "name": "timerfd_gettime",
+      "ret_type": "Int",
+      "args": [
+         {
+            "name": "fd",
+            "arg_type": "Int"
+         },
+         {
+            "name": "curr_value",
+            "arg_type": "Ptr"
+         }
+      ]
+   },
+   "288": {
+      "name": "accept4",
+      "ret_type": "Int",
+      "args": []
+   },
+   "289": {
+      "name": "signalfd4",
+      "ret_type": "Int",
+      "args": []
+   },
+   "290": {
+      "name": "eventfd2",
+      "ret_type": "Int",
+      "args": []
+   },
+   "291": {
+      "name": "epoll_create1",
+      "ret_type": "Int",
+      "args": [
+         {
+            "name": "flags",
+            "arg_type": "Int"
+         }
+      ]
+   },
+   "292": {
+      "name": "dup3",
+      "ret_type": "Int",
+      "args": [
+         {
+            "name": "oldfd",
+            "arg_type": "Int"
+         },
+         {
+            "name": "newfd",
+            "arg_type": "Int"
+         },
+         {
+            "name": "flags",
+            "arg_type": "Int"
+         }
+      ]
+   },
+   "293": {
+      "name": "pipe2",
+      "ret_type": "Int",
+      "args": [
+         {
+            "name": "pipefd",
+            "arg_type": "Ptr"
+         },
+         {
+            "name": "flags",
+            "arg_type": "Int"
+         }
+      ]
+   },
+   "294": {
+      "name": "inotify_init1",
+      "ret_type": "Int",
+      "args": [
+         {
+            "name": "flags",
+            "arg_type": "Int"
+         }
+      ]
+   },
+   "295": {
+      "name": "preadv",
+      "ret_type": "Uint",
+      "args": []
+   },
+   "296": {
+      "name": "pwritev",
+      "ret_type": "Uint",
+      "args": []
+   },
+   "297": {
+      "name": "rt_tgsigqueueinfo",
+      "ret_type": "Int",
+      "args": []
+   },
+   "298": {
+      "name": "perf_event_open",
+      "ret_type": "Int",
+      "args": []
+   },
+   "299": {
+      "name": "recvmmsg",
+      "ret_type": "Int",
+      "args": []
+   },
+   "306": {
+      "name": "syncfs",
+      "ret_type": "Int",
+      "args": [
+         {
+            "name": "fd",
+            "arg_type": "Int"
+         }
+      ]
+   },
+   "307": {
+      "name": "sendmmsg",
+      "ret_type": "Int",
+      "args": []
+   },
+   "308": {
+      "name": "setns",
+      "ret_type": "Int",
+      "args": [
+         {
+            "name": "fd",
+            "arg_type": "Int"
+         },
+         {
+            "name": "nstype",
+            "arg_type": "Int"
+         }
+      ]
+   },
+   "309": {
+      "name": "getcpu",
+      "ret_type": "Int",
+      "args": [
+         {
+            "name": "cpu",
+            "arg_type": "Uint"
+         },
+         {
+            "name": "node",
+            "arg_type": "Uint"
+         },
+         {
+            "name": "tcache",
+            "arg_type": "Ptr"
+         }
+      ]
+   },
+   "310": {
+      "name": "process_vm_readv",
+      "ret_type": "Uint",
+      "args": []
+   },
+   "311": {
+      "name": "process_vm_writev",
+      "ret_type": "Uint",
+      "args": []
+   },
+   "312": {
+      "name": "kcmp",
+      "ret_type": "Int",
+      "args": []
+   },
+   "313": {
+      "name": "finit_module",
+      "ret_type": "Int",
+      "args": []
+   },
+   "318": {
+      "name": "getrandom",
+      "ret_type": "Uint",
+      "args": [
+         {
+            "name": "buf",
+            "arg_type": "Ptr"
+         },
+         {
+            "name": "buflen",
+            "arg_type": "Uint"
+         },
+         {
+            "name": "flags",
+            "arg_type": "Uint"
+         }
+      ]
+   }
+}
