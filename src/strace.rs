@@ -1,6 +1,5 @@
 use libc::PTRACE_SYSCALL_INFO_EXIT;
 use nix::{
-    errno::Errno,
     fcntl::{open, OFlag},
     libc::{STDERR_FILENO, STDOUT_FILENO},
     sys::{
@@ -11,47 +10,16 @@ use nix::{
     },
     unistd::{close, dup2, execve, fork, ForkResult, Pid},
 };
-use std::{
-    env,
-    ffi::{CString, NulError},
-    result,
-};
+use std::ffi::CString;
 
 mod diag;
-use diag::{Error, Result};
+use diag::Result;
+
+mod input;
+use input::{args, env};
 
 mod syscall;
 use syscall::{info::Entries as SyscallEntries, model::Repr as Syscall};
-
-fn get_args() -> Result<Vec<CString>> {
-    let mut args_iter = env::args();
-    let this = args_iter.next().unwrap_or_default();
-    let args: result::Result<Vec<CString>, NulError> =
-        args_iter.map(CString::new).collect();
-
-    match args {
-        Err(e) => Err(Error::from(e)),
-        Ok(args) if args.is_empty() => {
-            eprintln!("Usage: `{this} command [args]`");
-            Err(Error::from(Errno::EINVAL))
-        }
-        Ok(args) => Ok(args),
-    }
-}
-
-fn get_env() -> Result<Vec<CString>> {
-    env::vars_os()
-        .map(|(key, val)| {
-            let e = "Error: OsString conversion failed";
-            let key_str =
-                key.into_string().map_err(|_| Error::from(e.to_string()))?;
-            let val_str =
-                val.into_string().map_err(|_| Error::from(e.to_string()))?;
-            let env_str = format!("{key_str}={val_str}");
-            CString::new(env_str).map_err(Error::from)
-        })
-        .collect()
-}
 
 fn tracer(child: Pid) -> Result<()> {
     let syscall_entries = SyscallEntries::new()?;
@@ -129,8 +97,5 @@ fn do_fork(args: &[CString], env: &[CString]) -> Result<()> {
 }
 
 fn main() -> Result<()> {
-    let args = get_args()?;
-    let env = get_env()?;
-
-    do_fork(&args, &env)
+    do_fork(&args()?, &env()?)
 }
