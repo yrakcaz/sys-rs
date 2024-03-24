@@ -11,15 +11,14 @@ use nix::{
 use sys_rs::{
     diag::Result,
     input::{args, env},
-    inspect,
-    syscall::{info::Entries as SyscallEntries, model::Repr as Syscall},
+    syscall, trace,
 };
 
 struct Tracer;
 
-impl inspect::Tracer for Tracer {
-    fn trace(child: Pid) -> Result<()> {
-        let syscall_entries = SyscallEntries::new()?;
+impl trace::Tracer for Tracer {
+    fn trace(&self, child: Pid) -> Result<()> {
+        let syscalls = syscall::info::Entries::new()?;
 
         let mut status = wait()?;
         ptrace::setoptions(
@@ -35,37 +34,28 @@ impl inspect::Tracer for Tracer {
                     if u8::try_from(ptrace::getevent(child)?)?
                         == PTRACE_SYSCALL_INFO_EXIT
                     {
-                        println!("{}", Syscall::build(child, &syscall_entries)?);
+                        println!("{}", syscall::Repr::build(child, &syscalls)?);
                     }
                     ptrace::syscall(child, None)?;
                 }
                 WaitStatus::PtraceEvent(_, _, event) => {
                     if event == ptrace::Event::PTRACE_EVENT_EXIT as i32 {
-                        let syscall = Syscall::build(child, &syscall_entries)?;
+                        let syscall = syscall::Repr::build(child, &syscalls)?;
                         if syscall.is_exit() {
                             println!("{syscall}");
                         }
                     }
                     ptrace::syscall(child, None)?;
                 }
+                WaitStatus::Stopped(_, Signal::SIGTRAP) => {
+                    println!("{}", syscall::Repr::build(child, &syscalls)?);
+                    ptrace::syscall(child, None)?;
+                }
                 WaitStatus::Stopped(_, signal) => {
-                    if signal == Signal::SIGTRAP {
-                        println!("{}", Syscall::build(child, &syscall_entries)?);
-                        ptrace::syscall(child, None)?;
-                    } else {
-                        println!("--- {signal:?} ---");
-                        ptrace::cont(child, signal)?;
-                    }
+                    println!("--- {signal:?} ---");
+                    ptrace::cont(child, signal)?;
                 }
-                WaitStatus::Signaled(_, signal, coredump) => {
-                    let coredump_str = if coredump { " (core dumped)" } else { "" };
-                    println!("+++ killed by {signal:?}{coredump_str} +++");
-                    break;
-                }
-                WaitStatus::Exited(_, code) => {
-                    println!("+++ exited with {code} +++");
-                    break;
-                }
+                _ if Tracer::terminated(status) => break,
                 _ => {}
             }
             status = wait()?;
@@ -76,5 +66,5 @@ impl inspect::Tracer for Tracer {
 }
 
 fn main() -> Result<()> {
-    inspect::run::<Tracer>(&args()?, &env()?)
+    trace::run::<Tracer>(&Tracer, &args()?, &env()?)
 }
