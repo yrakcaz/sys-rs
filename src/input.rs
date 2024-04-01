@@ -23,6 +23,10 @@ fn find_executable_in_path(file_name: &str) -> Option<String> {
     })
 }
 
+/// # Errors
+///
+/// Will return `Err` if no command is provided, if the command is not found, if it
+/// is not executable, or if failing to convert arguments to `CString`.
 pub fn args() -> Result<Vec<CString>> {
     let mut args_iter = env::args().skip(1);
     let this = env::args()
@@ -51,6 +55,9 @@ pub fn args() -> Result<Vec<CString>> {
     Ok(args)
 }
 
+/// # Errors
+///
+/// Will return `Err` if failing to convert environment variables to `CString`.
 pub fn env() -> Result<Vec<CString>> {
     env::vars_os()
         .map(|(key, val)| {
