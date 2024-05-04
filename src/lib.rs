@@ -1,6 +1,7 @@
 pub mod asm;
 pub mod breakpoint;
 pub mod diag;
+pub mod dwarf;
 pub mod elf;
 pub mod input;
 pub mod syscall;

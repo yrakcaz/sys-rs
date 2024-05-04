@@ -10,10 +10,12 @@ use nix::{
 use sys_rs::{
     asm, breakpoint,
     diag::Result,
-    elf,
+    dwarf, elf,
     input::{args, env},
     trace,
 };
+
+// FIXME way too much dup from sscov
 
 struct Tracer {
     elf: elf::Reader,
@@ -31,6 +33,8 @@ impl Tracer {
 
 impl trace::Tracer for Tracer {
     fn trace(&self, child: Pid) -> Result<()> {
+        let mut dwarf = dwarf::Reader::build(&self.elf)?;
+
         let mut breakpoint_mgr = breakpoint::Manager::new(child);
 
         let mut startup_complete = false;
@@ -51,7 +55,9 @@ impl trace::Tracer for Tracer {
                     {
                         let instruction =
                             self.parser.get_instruction_from(opcode, rip)?;
-                        println!("{instruction}");
+                        if let Some(line) = dwarf.addr2line(rip)? {
+                            println!("{line}");
+                        }
                         last_instruction = Some(instruction);
                     } else if let Some(instruction) = last_instruction.as_ref() {
                         if instruction.is_call() {
