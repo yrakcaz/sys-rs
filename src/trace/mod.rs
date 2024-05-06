@@ -8,23 +8,9 @@ use std::ffi::CString;
 
 use crate::diag::Result;
 
-pub trait Tracer {
-    #[must_use]
-    fn terminated(status: WaitStatus) -> bool {
-        match status {
-            WaitStatus::Signaled(_, signal, coredump) => {
-                let coredump_str = if coredump { " (core dumped)" } else { "" };
-                println!("+++ killed by {signal:?}{coredump_str} +++");
-                true
-            }
-            WaitStatus::Exited(_, code) => {
-                println!("+++ exited with {code} +++");
-                true
-            }
-            _ => false,
-        }
-    }
+pub mod cov;
 
+pub trait Tracer {
     /// # Errors
     ///
     /// Should return `Err` upon failure while inspecting a binary.
@@ -51,5 +37,21 @@ pub fn run<T: Tracer>(tracer: &T, args: &[CString], env: &[CString]) -> Result<(
     match unsafe { fork() }? {
         ForkResult::Parent { child, .. } => tracer.trace(child),
         ForkResult::Child => tracee(args, env),
+    }
+}
+
+#[must_use]
+pub fn terminated(status: WaitStatus) -> bool {
+    match status {
+        WaitStatus::Signaled(_, signal, coredump) => {
+            let coredump_str = if coredump { " (core dumped)" } else { "" };
+            println!("+++ killed by {signal:?}{coredump_str} +++");
+            true
+        }
+        WaitStatus::Exited(_, code) => {
+            println!("+++ exited with {code} +++");
+            true
+        }
+        _ => false,
     }
 }
