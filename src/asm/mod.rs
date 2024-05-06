@@ -29,10 +29,10 @@ impl Parser {
     /// Will return `Err` upon any failure to disassemble instruction.
     pub fn get_instruction_from(
         &self,
-        bytes: &[u8],
+        opcode: &[u8],
         addr: u64,
     ) -> Result<instruction::Wrapper> {
-        let instructions = self.capstone.disasm_count(bytes, addr, 1)?;
+        let instructions = self.capstone.disasm_count(opcode, addr, 1)?;
         Ok(instruction::Wrapper::new(
             instructions
                 .iter()

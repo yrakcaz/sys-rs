@@ -55,7 +55,7 @@ impl trace::Tracer for Tracer {
                     println!("--- {signal:?} ---");
                     ptrace::cont(child, signal)?;
                 }
-                _ if Tracer::terminated(status) => break,
+                _ if trace::terminated(status) => break,
                 _ => {}
             }
             status = wait()?;
