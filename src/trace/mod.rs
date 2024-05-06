@@ -40,6 +40,7 @@ pub fn run<T: Tracer>(tracer: &T, args: &[CString], env: &[CString]) -> Result<(
     }
 }
 
+#[must_use]
 pub fn terminated(status: WaitStatus) -> bool {
     match status {
         WaitStatus::Signaled(_, signal, coredump) => {

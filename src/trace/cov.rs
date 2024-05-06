@@ -15,6 +15,9 @@ pub struct Tracer {
 }
 
 impl Tracer {
+    /// # Errors
+    ///
+    /// Will return `Err` upon failure to build `exec::Elf` or `asm::Parser`.
     pub fn new(path: &str) -> Result<Self> {
         Ok(Self {
             elf: Elf::build(path)?,
@@ -22,11 +25,16 @@ impl Tracer {
         })
     }
 
+    #[must_use]
     pub fn elf(&self) -> &Elf {
         &self.elf
     }
 }
 
+/// # Errors
+///
+/// Will return `Err` upon any failure related to parsing ELF or DWARF format,
+/// as well as issues related to syscalls usage (e.g. ptrace, wait).
 pub fn trace_with<F>(context: &Tracer, child: Pid, mut print: F) -> Result<()>
 where
     F: FnMut(&asm::instruction::Wrapper) -> Result<()>,

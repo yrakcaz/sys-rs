@@ -46,10 +46,12 @@ impl Elf {
         })
     }
 
+    #[must_use]
     pub fn endianness(&self) -> u8 {
         self.endianness
     }
 
+    #[must_use]
     pub fn is_addr_in_section(&self, addr: u64, name: &str) -> bool {
         self.section.get(name).map_or(false, |section| {
             let start = section.sh_addr;
@@ -64,12 +66,18 @@ impl Elf {
         Ok(self.buffer.get(offset..offset + len))
     }
 
+    /// # Errors
+    ///
+    /// Will return `Err` upon failure to convert u64 to usize when getting buffer data.
     pub fn get_section_data(&self, name: &str) -> Result<Option<&[u8]>> {
         self.section.get(name).map_or(Ok(None), |section| {
             self.get_buffer_data(section.sh_offset, section.sh_size)
         })
     }
 
+    /// # Errors
+    ///
+    /// Will return `Err` upon failure to convert u64 to usize when getting buffer data.
     pub fn get_opcode_from_section(
         &self,
         addr: u64,

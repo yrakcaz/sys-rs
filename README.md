@@ -23,3 +23,10 @@ by the instruction pointer during the execution of a binary, as well as the
 associated disassembled instructions.
 
 Usage: `sscov-rs command [args]`  
+
+## addr2line-rs
+
+This tool displays all the lines of code corresponding to the addresses covered
+by the instruction pointer during the execution of a binary.
+
+Usage: `addr2line-rs command [args]`

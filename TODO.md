@@ -19,8 +19,8 @@
 
 ### addr2line
 
-- [ ] basics  
-- [ ] update README.md  
+- [x] basics  
+- [x] update README.md  
 
 ### gcov
 

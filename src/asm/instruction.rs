@@ -17,6 +17,7 @@ impl Wrapper {
         }
     }
 
+    #[must_use]
     pub fn addr(&self) -> u64 {
         self.addr
     }
