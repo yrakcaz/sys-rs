@@ -2,7 +2,7 @@ use core::ffi::c_void;
 use nix::{errno::Errno, sys::ptrace, unistd::Pid};
 use std::fmt;
 
-use crate::diag::Result;
+use crate::diag::{Error, Result};
 
 pub mod info;
 use info::{Entries, Type};
@@ -60,18 +60,18 @@ impl Repr {
         let name = info.name();
 
         let reg_vals = [regs.rdi, regs.rsi, regs.rdx, regs.r10, regs.r8, regs.r9];
-        let args = info.args().clone().map_or(Ok(String::new()), |args| {
-            args.iter()
-                .enumerate()
-                .map(|(i, arg)| {
-                    let mut ret = arg.name().clone();
-                    ret.push('=');
-                    ret.push_str(&parse_value(arg.arg_type(), reg_vals[i], pid)?);
-                    Ok(ret)
-                })
-                .collect::<Result<Vec<String>>>()
-                .map(|v| v.join(", "))
-        })?;
+        let args = if let Some(args) = info.args() {
+            let mut results = Vec::new();
+            for (i, arg) in args.iter().enumerate() {
+                let mut ret = arg.name().to_owned();
+                ret.push('=');
+                ret.push_str(&parse_value(arg.arg_type(), reg_vals[i], pid)?);
+                results.push(ret);
+            }
+            Ok::<String, Error>(results.join(", "))
+        } else {
+            Ok(String::new())
+        }?;
 
         #[allow(clippy::cast_possible_wrap)]
         let ret_val = if regs.rax as i64 == -(Errno::ENOSYS as i64) {
