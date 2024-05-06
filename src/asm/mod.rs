@@ -37,7 +37,7 @@ impl Parser {
             instructions
                 .iter()
                 .next()
-                .ok_or(Error::from(Errno::ENOEXEC))?,
+                .ok_or_else(|| Error::from(Errno::ENOEXEC))?,
         ))
     }
 }
