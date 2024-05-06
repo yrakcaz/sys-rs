@@ -1,8 +1,7 @@
 pub mod asm;
 pub mod breakpoint;
 pub mod diag;
-pub mod dwarf;
-pub mod elf;
+pub mod exec;
 pub mod input;
 pub mod syscall;
 pub mod trace;

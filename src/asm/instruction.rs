@@ -17,6 +17,10 @@ impl Wrapper {
         }
     }
 
+    pub fn addr(&self) -> u64 {
+        self.addr
+    }
+
     #[must_use]
     pub fn is_call(&self) -> bool {
         self.mnemonic.contains("call")

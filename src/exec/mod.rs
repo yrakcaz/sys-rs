@@ -1,19 +1,21 @@
-use goblin::elf::{Elf, SectionHeader};
+use goblin::elf;
 use nix::errno::Errno;
 use std::{collections::HashMap, fs::File, io::Read, path::Path};
 
 use crate::diag::{Error, Result};
 
+pub mod debug;
+
 const EI_DATA: usize = 5;
 const MAX_OPCODE_SIZE: u64 = 16;
 
-pub struct Reader {
+pub struct Elf {
     buffer: Vec<u8>,
     endianness: u8,
-    section: HashMap<String, SectionHeader>,
+    section: HashMap<String, elf::SectionHeader>,
 }
 
-impl Reader {
+impl Elf {
     /// # Errors
     ///
     /// Will return `Err` upon any failure to read or parse ELF file.
@@ -23,10 +25,10 @@ impl Reader {
         let mut buffer = Vec::new();
         file.read_to_end(&mut buffer)?;
 
-        let elf = Elf::parse(&buffer)?;
+        let elf = elf::Elf::parse(&buffer)?;
         let endianness = elf.header.e_ident[EI_DATA];
 
-        let section: HashMap<String, SectionHeader> = elf
+        let section: HashMap<String, elf::SectionHeader> = elf
             .section_headers
             .iter()
             .filter_map(|header| {
