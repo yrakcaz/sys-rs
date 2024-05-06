@@ -37,7 +37,9 @@ impl Elf {
                     .map(|name| (name.to_string(), header.clone()))
             })
             .collect();
-        section.get(".text").ok_or(Error::from(Errno::ENODATA))?;
+        section
+            .get(".text")
+            .ok_or_else(|| Error::from(Errno::ENODATA))?;
 
         Ok(Self {
             buffer,
