@@ -3,7 +3,7 @@ use std::collections::{hash_map::Entry, HashMap};
 
 use sys_rs::{
     diag::{Error, Result},
-    exec::debug::Dwarf,
+    exec::symbol::Dwarf,
     input::{args, env},
     trace,
 };
