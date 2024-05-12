@@ -45,7 +45,9 @@ where
     let mut last_instruction: Option<asm::instruction::Wrapper> = None;
 
     wait()?;
-    ptrace::step(child, None)?;
+    breakpoint_mgr.set_breakpoint(context.elf.entry())?;
+
+    ptrace::cont(child, None)?;
     loop {
         let status = wait()?;
         match status {
