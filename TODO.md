@@ -26,6 +26,7 @@
 
 - [ ] basics  
 - [ ] update README.md  
+- [ ] skip basic blocks (optimization)
 
 ### ltrace
 

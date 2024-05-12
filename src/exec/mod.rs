@@ -12,6 +12,7 @@ const MAX_OPCODE_SIZE: u64 = 16;
 pub struct Elf {
     buffer: Vec<u8>,
     endianness: u8,
+    entry: u64,
     section: HashMap<String, elf::SectionHeader>,
 }
 
@@ -27,6 +28,7 @@ impl Elf {
 
         let elf = elf::Elf::parse(&buffer)?;
         let endianness = elf.header.e_ident[EI_DATA];
+        let entry = elf.header.e_entry;
 
         let section: HashMap<String, elf::SectionHeader> = elf
             .section_headers
@@ -44,6 +46,7 @@ impl Elf {
         Ok(Self {
             buffer,
             endianness,
+            entry,
             section,
         })
     }
@@ -51,6 +54,11 @@ impl Elf {
     #[must_use]
     pub fn endianness(&self) -> u8 {
         self.endianness
+    }
+
+    #[must_use]
+    pub fn entry(&self) -> u64 {
+        self.entry
     }
 
     #[must_use]
