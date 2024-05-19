@@ -1,9 +1,7 @@
-use nix::{errno::Errno, unistd::Pid};
-use std::collections::{hash_map::Entry, HashMap};
+use nix::unistd::Pid;
 
 use sys_rs::{
-    diag::{Error, Result},
-    exec::symbol::Dwarf,
+    diag::Result,
     input::{args, env},
     trace,
 };
@@ -22,25 +20,8 @@ impl Wrapper {
 
 impl trace::Tracer for Wrapper {
     fn trace(&self, child: Pid) -> Result<()> {
-        let mut cache = HashMap::new();
-        let dwarf = Dwarf::build(self.tracer.elf())?;
-
-        trace::cov::trace_with(&self.tracer, child, |instruction| {
-            let addr = instruction.addr();
-            if let Entry::Vacant(_) = cache.entry(addr) {
-                let info = dwarf.addr2line(addr)?;
-                cache.insert(addr, info);
-            }
-
-            if let Some(line) = cache
-                .get(&addr)
-                .ok_or_else(|| Error::from(Errno::ENODATA))?
-            {
-                println!("{line}");
-            }
-
-            Ok(())
-        })
+        let mut cached = trace::cov::Cached::new();
+        cached.trace(&self.tracer, child)
     }
 }
 

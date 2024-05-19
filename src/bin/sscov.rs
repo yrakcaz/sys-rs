@@ -20,10 +20,7 @@ impl Wrapper {
 
 impl trace::Tracer for Wrapper {
     fn trace(&self, child: Pid) -> Result<()> {
-        trace::cov::trace_with(&self.tracer, child, |instruction| {
-            println!("{instruction}");
-            Ok(())
-        })
+        trace::cov::trace_with_basic_print(&self.tracer, child)
     }
 }
 
