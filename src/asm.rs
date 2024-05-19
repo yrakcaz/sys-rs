@@ -1,10 +1,41 @@
-use capstone::prelude::*;
+use capstone::{prelude::*, Insn};
 use nix::errno::Errno;
+use std::fmt;
 
 use crate::diag::{Error, Result};
 
-pub mod instruction;
+pub struct Instruction {
+    addr: u64,
+    mnemonic: String,
+    operands: String,
+}
 
+impl Instruction {
+    #[must_use]
+    pub fn new(insn: &Insn) -> Self {
+        Self {
+            addr: insn.address(),
+            mnemonic: insn.mnemonic().unwrap_or("").to_string(),
+            operands: insn.op_str().unwrap_or("").to_string(),
+        }
+    }
+
+    #[must_use]
+    pub fn addr(&self) -> u64 {
+        self.addr
+    }
+
+    #[must_use]
+    pub fn is_call(&self) -> bool {
+        self.mnemonic.contains("call")
+    }
+}
+
+impl fmt::Display for Instruction {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        write!(f, "0x{:x}: {}\t{}", self.addr, self.mnemonic, self.operands)
+    }
+}
 pub struct Parser {
     capstone: Capstone,
 }
@@ -31,9 +62,9 @@ impl Parser {
         &self,
         opcode: &[u8],
         addr: u64,
-    ) -> Result<instruction::Wrapper> {
+    ) -> Result<Instruction> {
         let instructions = self.capstone.disasm_count(opcode, addr, 1)?;
-        Ok(instruction::Wrapper::new(
+        Ok(Instruction::new(
             instructions
                 .iter()
                 .next()

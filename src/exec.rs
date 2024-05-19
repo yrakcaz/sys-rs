@@ -4,8 +4,6 @@ use std::{collections::HashMap, fs::File, io::Read, path::Path};
 
 use crate::diag::{Error, Result};
 
-pub mod debug;
-
 const EI_DATA: usize = 5;
 const MAX_OPCODE_SIZE: u64 = 16;
 

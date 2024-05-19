@@ -5,19 +5,20 @@ use std::{
 };
 
 use sys_rs::{
+    cov,
     diag::Result,
     input::{args, env},
     trace,
 };
 
 struct Wrapper {
-    tracer: trace::cov::Tracer,
+    tracer: cov::Tracer,
 }
 
 impl Wrapper {
     pub fn new(path: &str) -> Result<Self> {
         Ok(Self {
-            tracer: trace::cov::Tracer::new(path)?,
+            tracer: cov::Tracer::new(path)?,
         })
     }
 }
@@ -25,7 +26,7 @@ impl Wrapper {
 impl trace::Tracer for Wrapper {
     // FIXME facto
     fn trace(&self, child: Pid) -> Result<()> {
-        let mut cached = trace::cov::Cached::new();
+        let mut cached = cov::Cached::new();
         if let Ok(_) = cached.trace(&self.tracer, child) {
             for path in cached.files().iter() {
                 let file = File::open(&path)?;
@@ -63,7 +64,7 @@ impl trace::Tracer for Wrapper {
 
             Ok(())
         } else {
-            trace::cov::trace_with_basic_print(&self.tracer, child)
+            cov::trace_with_basic_print(&self.tracer, child)
         }
     }
 }
