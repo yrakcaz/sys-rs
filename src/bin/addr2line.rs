@@ -1,26 +1,27 @@
 use nix::unistd::Pid;
 
 use sys_rs::{
+    cov,
     diag::Result,
     input::{args, env},
     trace,
 };
 
 struct Wrapper {
-    tracer: trace::cov::Tracer,
+    tracer: cov::Tracer,
 }
 
 impl Wrapper {
     pub fn new(path: &str) -> Result<Self> {
         Ok(Self {
-            tracer: trace::cov::Tracer::new(path)?,
+            tracer: cov::Tracer::new(path)?,
         })
     }
 }
 
 impl trace::Tracer for Wrapper {
     fn trace(&self, child: Pid) -> Result<()> {
-        let mut cached = trace::cov::Cached::new();
+        let mut cached = cov::Cached::new();
         cached.trace(&self.tracer, child)
     }
 }

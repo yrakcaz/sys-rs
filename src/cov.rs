@@ -11,11 +11,9 @@ use std::collections::{hash_map::Entry, HashMap, HashSet};
 
 use crate::{
     asm, breakpoint,
+    debug::{Dwarf, LineInfo},
     diag::{Error, Result},
-    exec::{
-        debug::{line, Dwarf},
-        Elf,
-    },
+    exec::Elf,
     trace::terminated,
 };
 
@@ -47,12 +45,12 @@ impl Tracer {
 /// as well as issues related to syscalls usage (e.g. ptrace, wait).
 fn trace_with<F>(context: &Tracer, child: Pid, mut print: F) -> Result<()>
 where
-    F: FnMut(&asm::instruction::Wrapper) -> Result<()>,
+    F: FnMut(&asm::Instruction) -> Result<()>,
 {
     let mut breakpoint_mgr = breakpoint::Manager::new(child);
 
     let mut startup_complete = false;
-    let mut last_instruction: Option<asm::instruction::Wrapper> = None;
+    let mut last_instruction: Option<asm::Instruction> = None;
 
     wait()?;
     breakpoint_mgr.set_breakpoint(context.elf.entry())?;
@@ -114,7 +112,8 @@ pub fn trace_with_basic_print(context: &Tracer, child: Pid) -> Result<()> {
 }
 
 pub struct Cached {
-    cache: HashMap<u64, Option<line::Info>>,
+    // FIXME probably need some sep types
+    cache: HashMap<u64, Option<LineInfo>>,
     coverage: HashMap<(String, usize), usize>,
     files: HashSet<String>,
 }
@@ -137,11 +136,7 @@ impl Cached {
         &self.files
     }
 
-    pub fn trace(
-        &mut self,
-        context: &Tracer,
-        child: Pid,
-    ) -> Result<()> {
+    pub fn trace(&mut self, context: &Tracer, child: Pid) -> Result<()> {
         let dwarf = Dwarf::build(context.elf())?;
         trace_with(&context, child, |instruction| {
             let addr = instruction.addr();
