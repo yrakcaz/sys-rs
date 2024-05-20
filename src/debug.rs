@@ -1,14 +1,76 @@
 use gimli;
 use goblin::elf::header::{ELFDATA2LSB, ELFDATA2MSB};
 use nix::errno::Errno;
-use std::{collections::HashMap, path::PathBuf};
+use std::{
+    collections::HashMap,
+    fmt,
+    fs::File,
+    io::{BufRead, BufReader},
+    path::PathBuf,
+};
 
 use crate::{
     diag::{Error, Result},
     exec::Elf,
 };
 
-pub mod line;
+pub struct LineInfo {
+    addr: u64,
+    path: PathBuf,
+    line: usize,
+}
+
+impl LineInfo {
+    /// # Errors
+    ///
+    /// Will return `Err` upon failure to convert line (u64) to usize.
+    pub fn new(addr: u64, path: PathBuf, line: u64) -> Result<Self> {
+        Ok(Self {
+            addr,
+            path,
+            line: usize::try_from(line)?,
+        })
+    }
+
+    #[must_use]
+    pub fn path(&self) -> String {
+        self.path.display().to_string()
+    }
+
+    #[must_use]
+    pub fn line(&self) -> usize {
+        self.line
+    }
+
+    fn read(&self) -> Result<String> {
+        let file = File::open(&self.path)?;
+        let reader = BufReader::new(file);
+
+        let mut lines = reader.lines();
+        if let Some(line) = lines.nth(self.line - 1) {
+            Ok(line?)
+        } else {
+            Err(Error::from(Errno::ENODATA))
+        }
+    }
+}
+
+impl fmt::Display for LineInfo {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        if let Ok(line) = self.read() {
+            write!(
+                f,
+                "0x{:x}: {}:{} | {}",
+                self.addr,
+                self.path.display(),
+                self.line,
+                line
+            )
+        } else {
+            Err(fmt::Error)
+        }
+    }
+}
 
 type AddressRange = Vec<(u64, u64)>;
 type DebugArangesMap = HashMap<gimli::DebugInfoOffset, AddressRange>;
@@ -147,11 +209,11 @@ impl<'a> Dwarf<'a> {
         unit_header: &gimli::UnitHeader<SectionData<'_>>,
         program_header: &gimli::LineProgramHeader<SectionData<'_>>,
         row: &gimli::LineRow,
-    ) -> Result<line::Info> {
+    ) -> Result<LineInfo> {
         if let Some(line) = row.line() {
             let line = line.get();
             let path = self.path_from_row(unit_header, program_header, row)?;
-            Ok(line::Info::new(row.address(), path, line)?)
+            Ok(LineInfo::new(row.address(), path, line)?)
         } else {
             Err(Error::from(Errno::ENODATA))
         }
@@ -161,7 +223,7 @@ impl<'a> Dwarf<'a> {
         &self,
         addr: u64,
         unit_header: &gimli::UnitHeader<SectionData<'_>>,
-    ) -> Result<Option<line::Info>> {
+    ) -> Result<Option<LineInfo>> {
         let mut info = None;
 
         let unit = self.dwarf.unit(*unit_header)?;
@@ -187,8 +249,8 @@ impl<'a> Dwarf<'a> {
     /// # Errors
     ///
     /// Will return `Err` upon any failure to read or parse DWARF format.
-    pub fn addr2line(&self, addr: u64) -> Result<Option<line::Info>> {
-        let mut info: Option<line::Info> = None;
+    pub fn addr2line(&self, addr: u64) -> Result<Option<LineInfo>> {
+        let mut info: Option<LineInfo> = None;
         let mut iter = self.dwarf.units();
         while let Some(unit_header) = iter.next()? {
             if !self.is_addr_in_unit(addr, &unit_header)? {
