@@ -32,10 +32,12 @@ impl LineInfo {
         })
     }
 
+    #[must_use]
     pub fn path(&self) -> String {
         self.path.display().to_string()
     }
 
+    #[must_use]
     pub fn line(&self) -> usize {
         self.line
     }

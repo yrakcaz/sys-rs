@@ -104,7 +104,10 @@ where
     Ok(())
 }
 
-pub fn trace_with_basic_print(context: &Tracer, child: Pid) -> Result<()> {
+/// # Errors
+///
+/// Will return `Err` upon `trace_with` failure.
+pub fn trace_with_simple_print(context: &Tracer, child: Pid) -> Result<()> {
     trace_with(context, child, |instruction| {
         println!("{instruction}");
         Ok(())
@@ -112,13 +115,13 @@ pub fn trace_with_basic_print(context: &Tracer, child: Pid) -> Result<()> {
 }
 
 pub struct Cached {
-    // FIXME probably need some sep types
     cache: HashMap<u64, Option<LineInfo>>,
     coverage: HashMap<(String, usize), usize>,
     files: HashSet<String>,
 }
 
 impl Cached {
+    #[must_use]
     pub fn new() -> Self {
         Self {
             cache: HashMap::new(),
@@ -127,18 +130,23 @@ impl Cached {
         }
     }
 
+    #[must_use]
     pub fn coverage(&self, path: String, line: usize) -> Option<&usize> {
         let key = (path, line);
         self.coverage.get(&key)
     }
 
+    #[must_use]
     pub fn files(&self) -> &HashSet<String> {
         &self.files
     }
 
+    /// # Errors
+    ///
+    /// Will return `Err` upon `trace_with` failure.
     pub fn trace(&mut self, context: &Tracer, child: Pid) -> Result<()> {
         let dwarf = Dwarf::build(context.elf())?;
-        trace_with(&context, child, |instruction| {
+        trace_with(context, child, |instruction| {
             let addr = instruction.addr();
             if let Entry::Vacant(_) = self.cache.entry(addr) {
                 let info = dwarf.addr2line(addr)?;
@@ -158,5 +166,11 @@ impl Cached {
 
             Ok(())
         })
+    }
+}
+
+impl Default for Cached {
+    fn default() -> Self {
+        Self::new()
     }
 }

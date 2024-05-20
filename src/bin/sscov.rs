@@ -21,7 +21,7 @@ impl Wrapper {
 
 impl trace::Tracer for Wrapper {
     fn trace(&self, child: Pid) -> Result<()> {
-        cov::trace_with_basic_print(&self.tracer, child)
+        cov::trace_with_simple_print(&self.tracer, child)
     }
 }
 
