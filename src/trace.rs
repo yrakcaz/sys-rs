@@ -8,8 +8,6 @@ use std::ffi::CString;
 
 use crate::diag::Result;
 
-pub mod cov;
-
 pub trait Tracer {
     /// # Errors
     ///

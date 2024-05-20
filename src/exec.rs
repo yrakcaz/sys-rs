@@ -4,14 +4,13 @@ use std::{collections::HashMap, fs::File, io::Read, path::Path};
 
 use crate::diag::{Error, Result};
 
-pub mod symbol;
-
 const EI_DATA: usize = 5;
 const MAX_OPCODE_SIZE: u64 = 16;
 
 pub struct Elf {
     buffer: Vec<u8>,
     endianness: u8,
+    entry: u64,
     section: HashMap<String, elf::SectionHeader>,
 }
 
@@ -27,6 +26,7 @@ impl Elf {
 
         let elf = elf::Elf::parse(&buffer)?;
         let endianness = elf.header.e_ident[EI_DATA];
+        let entry = elf.header.e_entry;
 
         let section: HashMap<String, elf::SectionHeader> = elf
             .section_headers
@@ -37,11 +37,14 @@ impl Elf {
                     .map(|name| (name.to_string(), header.clone()))
             })
             .collect();
-        section.get(".text").ok_or(Error::from(Errno::ENODATA))?;
+        section
+            .get(".text")
+            .ok_or_else(|| Error::from(Errno::ENODATA))?;
 
         Ok(Self {
             buffer,
             endianness,
+            entry,
             section,
         })
     }
@@ -49,6 +52,11 @@ impl Elf {
     #[must_use]
     pub fn endianness(&self) -> u8 {
         self.endianness
+    }
+
+    #[must_use]
+    pub fn entry(&self) -> u64 {
+        self.entry
     }
 
     #[must_use]
@@ -68,7 +76,8 @@ impl Elf {
 
     /// # Errors
     ///
-    /// Will return `Err` upon failure to convert u64 to usize when getting buffer data.
+    /// Will return `Err` upon failure to convert u64 to usize when getting buffer
+    /// data.
     pub fn get_section_data(&self, name: &str) -> Result<Option<&[u8]>> {
         self.section.get(name).map_or(Ok(None), |section| {
             self.get_buffer_data(section.sh_offset, section.sh_size)
@@ -77,7 +86,8 @@ impl Elf {
 
     /// # Errors
     ///
-    /// Will return `Err` upon failure to convert u64 to usize when getting buffer data.
+    /// Will return `Err` upon failure to convert u64 to usize when getting buffer
+    /// data.
     pub fn get_opcode_from_section(
         &self,
         addr: u64,
