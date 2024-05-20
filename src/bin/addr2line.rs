@@ -21,7 +21,7 @@ impl Wrapper {
 
 impl trace::Tracer for Wrapper {
     fn trace(&self, child: Pid) -> Result<()> {
-        let mut cached = cov::Cached::new();
+        let mut cached = cov::Cached::default();
         cached.trace(&self.tracer, child)
     }
 }

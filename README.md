@@ -30,3 +30,12 @@ This tool displays all the lines of code corresponding to the addresses covered
 by the instruction pointer during the execution of a binary.
 
 Usage: `addr2line-rs command [args]`
+
+## gcov-rs
+
+This tool leverages addr2line to generate a .cov file per source file that maps
+each line of the source file to its coverage count.
+This works only if the binary passed as parameter has been compiled with Dwarf debug
+symbols. If not, gcov-rs will simply behave the same as sscov-rs.
+
+Usage: `gcov-rs command [args]`
