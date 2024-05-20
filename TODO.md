@@ -24,8 +24,9 @@
 
 ### gcov
 
-- [ ] basics  
-- [ ] update README.md  
+- [x] basics  
+- [x] update README.md  
+- [ ] skip basic blocks (optimization)
 
 ### ltrace
 

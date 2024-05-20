@@ -29,7 +29,9 @@ fn find_executable_in_path(file_name: &str) -> Option<String> {
 /// is not executable, or if failing to convert arguments to `CString`.
 pub fn args() -> Result<Vec<CString>> {
     let mut args_iter = env::args().skip(1);
-    let this = env::args().next().ok_or(Error::from(Errno::EINVAL))?;
+    let this = env::args()
+        .next()
+        .ok_or_else(|| Error::from(Errno::EINVAL))?;
     let cmd = args_iter.next().map_or_else(
         || {
             eprintln!("Usage: {this} command [args]");
@@ -46,7 +48,7 @@ pub fn args() -> Result<Vec<CString>> {
     let executable_path = if is_executable(Path::new(&cmd)) {
         cmd
     } else {
-        find_executable_in_path(&cmd).ok_or(Error::from(Errno::ENOENT))?
+        find_executable_in_path(&cmd).ok_or_else(|| Error::from(Errno::ENOENT))?
     };
 
     args.insert(0, CString::new(executable_path).map_err(Error::from)?);

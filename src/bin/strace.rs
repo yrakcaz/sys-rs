@@ -18,7 +18,7 @@ struct Tracer;
 
 impl trace::Tracer for Tracer {
     fn trace(&self, child: Pid) -> Result<()> {
-        let syscalls = syscall::info::Entries::new()?;
+        let syscalls = syscall::Entries::new()?;
 
         let mut status = wait()?;
         ptrace::setoptions(

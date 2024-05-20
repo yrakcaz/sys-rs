@@ -14,6 +14,10 @@ name="addr2line-rs"
 path="src/bin/addr2line.rs"
 
 [[bin]]
+name="gcov-rs"
+path="src/bin/gcov.rs"
+
+[[bin]]
 name = "sscov-rs"
 path = "src/bin/sscov.rs"
 
