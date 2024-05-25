@@ -1,3 +1,4 @@
+use goblin::elf;
 use nix::{
     errno::Errno,
     sys::{
@@ -13,11 +14,12 @@ use crate::{
     asm, breakpoint,
     debug::{Dwarf, LineInfo},
     diag::{Error, Result},
-    exec::Elf,
+    exec::{get_mem_range, Elf},
     trace::terminated,
 };
 
 pub struct Tracer {
+    path: String,
     elf: Elf,
     parser: asm::Parser,
 }
@@ -28,9 +30,14 @@ impl Tracer {
     /// Will return `Err` upon failure to build `exec::Elf` or `asm::Parser`.
     pub fn new(path: &str) -> Result<Self> {
         Ok(Self {
+            path: path.to_string(),
             elf: Elf::build(path)?,
             parser: asm::Parser::new()?,
         })
+    }
+
+    pub fn path(&self) -> &str {
+        &self.path
     }
 
     #[must_use]
@@ -52,8 +59,18 @@ where
     let mut startup_complete = false;
     let mut last_instruction: Option<asm::Instruction> = None;
 
+    //println!("0x{:x}", context.elf.entry());
+
     wait()?;
-    breakpoint_mgr.set_breakpoint(context.elf.entry())?;
+    // FIXME we need a better way to discard unsupported types and all
+    let offset = if context.elf.etype() == elf::header::ET_DYN {
+        get_mem_range(child, context.path())?.start
+    } else {
+        0
+    };
+    //println!("0x{:x} - 0x{:x}", range.start, range.end);
+
+    breakpoint_mgr.set_breakpoint(context.elf.entry(offset))?;
 
     ptrace::cont(child, None)?;
     loop {
@@ -65,7 +82,7 @@ where
 
                 let rip = regs.rip;
                 if let Some(opcode) =
-                    context.elf.get_opcode_from_section(rip, ".text")?
+                    context.elf.get_opcode_from_section(rip, ".text", offset)?
                 {
                     let instruction =
                         context.parser.get_instruction_from(opcode, rip)?;
@@ -81,7 +98,7 @@ where
                         // Keep single stepping after the first call as it is
                         // likely to be part of the startup routine so it
                         // might never return.
-                        if context.elf.is_addr_in_section(ret, ".text")
+                        if context.elf.is_addr_in_section(ret, ".text", offset)
                             && startup_complete
                         {
                             breakpoint_mgr.set_breakpoint(ret)?;
