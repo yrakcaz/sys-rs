@@ -12,5 +12,9 @@ target/
 # Vim swap files
 .*.swp
 
-# Added by cargo
-/target
+# VSCode files
+.vscode/
+
+# Testing files
+.keep/
+*.cov
