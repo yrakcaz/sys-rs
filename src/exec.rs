@@ -8,25 +8,25 @@ use crate::diag::{Error, Result};
 const EI_DATA: usize = 5;
 const MAX_OPCODE_SIZE: u64 = 16;
 
-pub fn get_mem_range(pid : Pid, path : &str) -> Result<Range<u64>> {
-  // FIXME can probs be cleaner + maybe somewhere else + do we really need a range?
-  let process = Process::new(pid.into())?;
-  let maps = process.maps()?;
+pub fn get_mem_range(pid: Pid, path: &str) -> Result<Range<u64>> {
+    let absolute_path = std::fs::canonicalize(path)?;
 
-  let mut ret = None;
-  for map in maps {
-     if map.perms.contains(MMPermissions::READ) &&
-        map.perms.contains(MMPermissions::EXECUTE) {
-        if let MMapPath::Path(buf) = &map.pathname {
-           if buf.ends_with(path) {
-              ret = Some(map.address.0..map.address.1);
-              break;
-           }
+    let process = Process::new(pid.into())?;
+    let maps = process.maps()?;
+
+    let mut ret = None;
+    for map in maps {
+        if map.perms.contains(MMPermissions::READ) && map.perms.contains(MMPermissions::EXECUTE) {
+            if let MMapPath::Path(buf) = &map.pathname {
+                if buf == &absolute_path {
+                    ret = Some(map.address.0..map.address.1);
+                    break;
+                }
+            }
         }
-     }
-  }
+    }
 
-  ret.ok_or_else(|| Error::from(Errno::ENODATA))
+    ret.ok_or_else(|| Error::from(Errno::ENODATA))
 }
 
 pub struct Elf {
@@ -34,6 +34,7 @@ pub struct Elf {
     endianness: u8,
     entry: u64,
     etype: u16, // FIXME name
+    load: Option<u64>, // FIXME name
     section: HashMap<String, elf::SectionHeader>,
 }
 
@@ -51,6 +52,14 @@ impl Elf {
         let endianness = elf.header.e_ident[EI_DATA];
         let entry = elf.header.e_entry;
         let etype = elf.header.e_type;
+
+        let mut load = None;
+        for ph in &elf.program_headers {
+            if ph.p_type == elf::program_header::PT_LOAD && ph.is_executable() {
+                load = Some(ph.p_vaddr);
+                break;
+            }
+        }
 
         let section: HashMap<String, elf::SectionHeader> = elf
             .section_headers
@@ -70,6 +79,7 @@ impl Elf {
             endianness,
             entry,
             etype,
+            load,
             section,
         })
     }
@@ -81,11 +91,23 @@ impl Elf {
 
     #[must_use]
     pub fn entry(&self, offset: u64) -> u64 {
-        self.entry + offset
+        let mut entry = self.entry + offset;
+        if self.etype == elf::header::ET_DYN {
+            entry -= self.load.unwrap_or(0); // FIXME there should probs be an error instead of unwrap
+        }
+        entry
     }
 
     pub fn etype(&self) -> u16 {
         self.etype
+    }
+
+    pub fn load(&self) -> Option<u64> {
+        if self.etype == elf::header::ET_DYN {
+            self.load
+        } else {
+            None
+        }
     }
 
     #[must_use]
@@ -124,6 +146,12 @@ impl Elf {
         name: &str,
         offset: u64
     ) -> Result<Option<&[u8]>> {
+        let addr = if self.etype == elf::header::ET_DYN {
+            addr + self.load.unwrap_or(0) // FIXME error instead of unwrap?
+        } else {
+            addr
+        };
+
         self.section.get(name).map_or(Ok(None), |section| {
             if self.is_addr_in_section(addr, name, offset) {
                 self.get_buffer_data(

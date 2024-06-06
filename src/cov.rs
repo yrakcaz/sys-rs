@@ -46,29 +46,29 @@ impl Tracer {
     }
 }
 
+// FIXME this version seems to be working on EXEC/DYN with gdwarf4, but not Rust binaries.
+
 /// # Errors
 ///
 /// Will return `Err` upon any failure related to parsing ELF or DWARF format,
 /// as well as issues related to syscalls usage (e.g. ptrace, wait).
 fn trace_with<F>(context: &Tracer, child: Pid, mut print: F) -> Result<()>
 where
-    F: FnMut(&asm::Instruction) -> Result<()>,
+    F: FnMut(&asm::Instruction, u64) -> Result<()>,
 {
     let mut breakpoint_mgr = breakpoint::Manager::new(child);
 
     let mut startup_complete = false;
     let mut last_instruction: Option<asm::Instruction> = None;
 
-    //println!("0x{:x}", context.elf.entry());
-
     wait()?;
     // FIXME we need a better way to discard unsupported types and all
+    // FIXME and this should somehow be hidden in the elf with the rest of the PIE logic...
     let offset = if context.elf.etype() == elf::header::ET_DYN {
         get_mem_range(child, context.path())?.start
     } else {
         0
     };
-    //println!("0x{:x} - 0x{:x}", range.start, range.end);
 
     breakpoint_mgr.set_breakpoint(context.elf.entry(offset))?;
 
@@ -86,7 +86,7 @@ where
                 {
                     let instruction =
                         context.parser.get_instruction_from(opcode, rip)?;
-                    print(&instruction)?;
+                    print(&instruction, offset - context.elf.load().unwrap_or(0))?; // FIXME avoid unwrap_or here..
                     last_instruction = Some(instruction);
                 } else if let Some(instruction) = last_instruction.as_ref() {
                     if instruction.is_call() {
@@ -98,6 +98,9 @@ where
                         // Keep single stepping after the first call as it is
                         // likely to be part of the startup routine so it
                         // might never return.
+                        //
+                        // FIXME Not sure whether the code below is actually ran?]
+                        //       Offset doesn't change anything...
                         if context.elf.is_addr_in_section(ret, ".text", offset)
                             && startup_complete
                         {
@@ -125,7 +128,7 @@ where
 ///
 /// Will return `Err` upon `trace_with` failure.
 pub fn trace_with_simple_print(context: &Tracer, child: Pid) -> Result<()> {
-    trace_with(context, child, |instruction| {
+    trace_with(context, child, |instruction, offset| {
         println!("{instruction}");
         Ok(())
     })
@@ -163,10 +166,10 @@ impl Cached {
     /// Will return `Err` upon `trace_with` failure.
     pub fn trace(&mut self, context: &Tracer, child: Pid) -> Result<()> {
         let dwarf = Dwarf::build(context.elf())?;
-        trace_with(context, child, |instruction| {
+        trace_with(context, child, |instruction, offset| {
             let addr = instruction.addr();
             if let Entry::Vacant(_) = self.cache.entry(addr) {
-                let info = dwarf.addr2line(addr)?;
+                let info = dwarf.addr2line(addr - offset)?;
                 self.cache.insert(addr, info);
             }
 
@@ -178,7 +181,7 @@ impl Cached {
                 let key = (line.path(), line.line());
                 *self.coverage.entry(key).or_insert(0) += 1;
                 self.files.insert(line.path());
-                println!("{line}");
+                println!("{line}"); // FIXME this prints offset with PIE. should it?
             }
 
             Ok(())
