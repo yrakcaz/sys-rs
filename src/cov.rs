@@ -8,7 +8,10 @@ use nix::{
     },
     unistd::Pid,
 };
-use std::collections::{hash_map::Entry, HashMap, HashSet};
+use std::{
+    collections::{hash_map::Entry, HashMap, HashSet},
+    path::Path,
+};
 
 use crate::{
     asm, breakpoint,
@@ -47,6 +50,7 @@ impl Tracer {
 }
 
 // FIXME this version seems to be working on EXEC/DYN with gdwarf4, but not Rust binaries.
+// FIXME we should check what dwarf version we support and 1) update readme, 2) fail if wrong version.
 
 /// # Errors
 ///
@@ -178,10 +182,12 @@ impl Cached {
                 .get(&addr)
                 .ok_or_else(|| Error::from(Errno::ENODATA))?
             {
-                let key = (line.path(), line.line());
-                *self.coverage.entry(key).or_insert(0) += 1;
-                self.files.insert(line.path());
-                println!("{line}"); // FIXME this prints offset with PIE. should it?
+                if Path::new(&line.path()).exists() { // FIXME really this way?
+                    let key = (line.path(), line.line());
+                    *self.coverage.entry(key).or_insert(0) += 1;
+                    self.files.insert(line.path());
+                    println!("{line}"); // FIXME this prints offset with PIE. should it?
+                }
             }
 
             Ok(())

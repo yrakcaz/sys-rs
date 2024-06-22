@@ -78,7 +78,7 @@ type SectionData<'a> = gimli::EndianSlice<'a, gimli::RunTimeEndian>;
 
 pub struct Dwarf<'a> {
     dwarf: gimli::Dwarf<SectionData<'a>>,
-    aranges: DebugArangesMap,
+    aranges: DebugArangesMap, // FIXME rename?
 }
 
 impl<'a> Dwarf<'a> {
@@ -92,6 +92,9 @@ impl<'a> Dwarf<'a> {
             _ => Err(Error::from(Errno::ENOEXEC)),
         }?;
 
+        let debug_ranges = gimli::DebugRanges::new(Self::get_section(".debug_ranges", elf).unwrap_or(&[]), endianness);
+        let debug_rnglists = gimli::DebugRngLists::new(Self::get_section(".debug_rnglists", elf).unwrap_or(&[]), endianness);
+        let ranges = gimli::RangeLists::new(debug_ranges, debug_rnglists);
         let dwarf = gimli::Dwarf {
             debug_abbrev: gimli::DebugAbbrev::new(
                 Self::get_section(".debug_abbrev", elf)?,
@@ -109,10 +112,11 @@ impl<'a> Dwarf<'a> {
                 Self::get_section(".debug_str", elf)?,
                 endianness,
             ),
+            ranges,
             ..Default::default()
         };
 
-        let aranges = Self::build_aranges(".debug_aranges", elf, endianness)?;
+        let aranges = Self::build_aranges(&dwarf)?;
 
         Ok(Self { dwarf, aranges })
     }
@@ -123,27 +127,55 @@ impl<'a> Dwarf<'a> {
             .ok_or_else(|| Error::from(Errno::ENODATA))
     }
 
-    fn build_aranges(
-        section_name: &'a str,
-        elf: &'a Elf,
-        endianness: gimli::RunTimeEndian,
-    ) -> Result<HashMap<gimli::DebugInfoOffset, Vec<(u64, u64)>>> {
+    fn build_aranges(dwarf: &gimli::Dwarf<gimli::EndianSlice<gimli::RunTimeEndian>>) -> Result<HashMap<gimli::DebugInfoOffset, Vec<(u64, u64)>>> {
         let mut aranges = HashMap::new();
-
-        let data = Self::get_section(section_name, elf)?;
-        let debug_aranges = gimli::DebugAranges::new(data, endianness);
-
-        let mut aranges_iter = debug_aranges.headers();
-        while let Some(header) = aranges_iter.next()? {
+        let mut iter = dwarf.units();
+        while let Some(unit_header) = iter.next()? {
             let mut unit_ranges = Vec::new();
-            let mut entries_iter = header.entries();
-            while let Some(entry) = entries_iter.next()? {
-                unit_ranges
-                    .push((entry.address(), entry.address() + entry.length()));
-            }
-            aranges.insert(header.debug_info_offset(), unit_ranges);
-        }
+            let unit = dwarf.unit(unit_header)?;
+            let mut entries = unit.entries();
+            while let Some((_, entry)) = entries.next_dfs()? {
+                let mut attrs = entry.attrs();
+                let mut low_pc = None;
+                let mut high_pc = None;
+                let mut high_pc_offset = None; // FIXME really?
+                let mut ranges_offset = None;
+                while let Some(attr) = attrs.next()? {
+                    match attr.name() {
+                        gimli::DW_AT_low_pc => {
+                            if let gimli::AttributeValue::Addr(addr) = attr.value() {
+                                low_pc = Some(addr);
+                            }
+                        }
+                        gimli::DW_AT_high_pc => match attr.value() {
+                            gimli::AttributeValue::Addr(val) => high_pc = Some(val),
+                            gimli::AttributeValue::Udata(val) => high_pc_offset = Some(val),
+                            _ => return Err(Error::from(Errno::ENODATA)), // FIXME meh
+                        },
+                        gimli::DW_AT_ranges => {
+                            if let gimli::AttributeValue::RangeListsRef(val) = attr.value() {
+                                ranges_offset = Some(val);
+                            }
+                        },
+                        _ => continue,
+                    }
+                }
 
+                if let (Some(low_pc), Some(high_pc)) = (low_pc, high_pc) {
+                    unit_ranges.push((low_pc, high_pc));
+                } else if let (Some(low_pc), Some(high_pc_offset)) = (low_pc, high_pc_offset) {
+                    unit_ranges.push((low_pc, (low_pc + high_pc_offset)));
+                } else if let Some(ranges_offset) = ranges_offset {
+                    let offset = dwarf.ranges_offset_from_raw(&unit, ranges_offset);
+                    let mut iter = dwarf.ranges(&unit, offset)?;
+                    while let Some(range) = iter.next()? {
+                        unit_ranges.push((range.begin, range.end));
+                    }
+                }
+            }
+
+            aranges.insert(unit_header.offset().as_debug_info_offset().unwrap(), unit_ranges); // FIXME not unwrap
+        }
         Ok(aranges)
     }
 
@@ -158,13 +190,17 @@ impl<'a> Dwarf<'a> {
                 .map(|ranges| {
                     ranges
                         .iter()
-                        .any(|(start, end)| (*start..*end).contains(&addr))
+                        .any(|(start, end)| {
+                            (*start..*end).contains(&addr)
+                    })
                 })
                 .ok_or_else(|| Error::from(Errno::ENODATA))
         } else {
             Err(Error::from(Errno::ENODATA))
         }
     }
+
+    // FIXME code needs to be cleaned up, and we need to profile neuralnet-works again
 
     fn path_from_row(
         &self,
@@ -230,7 +266,7 @@ impl<'a> Dwarf<'a> {
         if let Some(program) = unit.line_program {
             let mut rows = program.rows();
             while let Some((program_header, row)) = rows.next_row()? {
-                if row.end_sequence() {
+                if !row.is_stmt() {
                     continue;
                 }
 
