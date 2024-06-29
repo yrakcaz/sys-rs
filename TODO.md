@@ -57,5 +57,5 @@
 
 - [x] apply clippy::pedantic lints  
 - [ ] testing  
-- [ ] better documentation, not just what clippy asks for  
+- [x] better documentation, not just what clippy asks for  
 - [ ] support more architectures  

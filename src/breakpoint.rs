@@ -18,9 +18,19 @@ impl Manager {
         }
     }
 
+    /// Sets a breakpoint at the specified address in the target process.
+    ///
+    /// # Arguments
+    ///
+    /// * `addr` - The address where the breakpoint should be set.
+    ///
     /// # Errors
     ///
-    /// Will return `Err` upon ptrace failure.
+    /// Returns an `Err` if the ptrace operation fails.
+    ///
+    /// # Returns
+    ///
+    /// Returns `Ok(())` if the breakpoint is set successfully.
     pub fn set_breakpoint(&mut self, addr: u64) -> Result<()> {
         let instruction = ptrace::read(self.pid, addr as ptrace::AddressType)?;
         let breakpoint = (instruction & !0xff) | 0xcc;
@@ -36,9 +46,19 @@ impl Manager {
         Ok(())
     }
 
+    /// Handles a breakpoint hit in the target process.
+    ///
+    /// # Arguments
+    ///
+    /// * `regs` - A mutable reference to the user_regs_struct containing the register values.
+    ///
     /// # Errors
     ///
-    /// Will return `Err` upon ptrace failure.
+    /// Returns an `Err` if the ptrace operation fails.
+    ///
+    /// # Returns
+    ///
+    /// Returns `Ok(())` if the breakpoint is handled successfully.
     pub fn handle_breakpoint(&mut self, regs: &mut user_regs_struct) -> Result<()> {
         let addr = regs.rip - 1;
         if let Some(instruction) = self.breakpoints.remove(&addr) {

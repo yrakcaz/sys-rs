@@ -41,9 +41,15 @@ pub struct Parser {
 }
 
 impl Parser {
+    /// Creates a new `Parser` instance.
+    ///
     /// # Errors
     ///
-    /// Will return `Err` upon any failure to build Capstone.
+    /// Returns an `Err` if there is a failure to build Capstone.
+    ///
+    /// # Returns
+    ///
+    /// A `Result` containing a `Parser` instance if successful.
     pub fn new() -> Result<Self> {
         Ok(Self {
             capstone: Capstone::new()
@@ -55,9 +61,20 @@ impl Parser {
         })
     }
 
+    /// Retrieves the disassembled instruction from the given opcode and address.
+    ///
+    /// # Arguments
+    ///
+    /// * `opcode` - The opcode bytes of the instruction.
+    /// * `addr` - The address of the instruction.
+    ///
     /// # Errors
     ///
-    /// Will return `Err` upon any failure to disassemble instruction.
+    /// Returns an `Err` if there is a failure to disassemble the instruction.
+    ///
+    /// # Returns
+    ///
+    /// The disassembled instruction as a `Result` containing an `Instruction` if successful.
     pub fn get_instruction_from(
         &self,
         opcode: &[u8],

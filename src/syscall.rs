@@ -71,9 +71,18 @@ pub struct Entries {
 }
 
 impl Entries {
+    /// Creates a new instance of `Entries`.
+    ///
+    /// This function reads the contents of the `syscall.json` file and parses it into a `HashMap<u64, Entry>`.
+    /// If the parsing fails, an `Err` is returned.
+    ///
     /// # Errors
     ///
-    /// Will return `Err` if failing to parse info.json.
+    /// This function will return an `Err` if it fails to parse the `syscall.json` file.
+    ///
+    /// # Returns
+    ///
+    /// Returns a `Result` containing the newly created `Entries` instance if successful, or an `Err` if parsing fails.
     pub fn new() -> Result<Self> {
         let json = include_str!("data/syscall.json");
         let map = serde_json::from_str(json)?;
@@ -133,9 +142,20 @@ fn parse_value(type_repr: &Type, val: u64, pid: Pid) -> Result<String> {
 }
 
 impl Repr {
+    /// Builds a `Repr` struct from the given process ID (`pid`) and a reference to `Entries`.
+    ///
+    /// # Arguments
+    ///
+    /// * `pid` - The process ID for which to build the `Repr` struct.
+    /// * `infos` - A reference to `Entries` containing the syscall information.
+    ///
     /// # Errors
     ///
-    /// Will return `Err` upon `ptrace::getregs()` or `ptrace::read()` failure.
+    /// Returns an `Err` if `ptrace::getregs()` or `ptrace::read()` fails.
+    ///
+    /// # Returns
+    ///
+    /// Returns a `Result` containing the constructed `Repr` struct on success.
     pub fn build(pid: Pid, infos: &Entries) -> Result<Self> {
         let regs = ptrace::getregs(pid)?;
         let info = infos.get(regs.orig_rax);

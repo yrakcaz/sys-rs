@@ -26,9 +26,19 @@ pub struct Tracer {
 }
 
 impl Tracer {
+    /// Creates a new `Tracer` instance.
+    ///
+    /// # Arguments
+    ///
+    /// * `path` - The path to the file.
+    ///
     /// # Errors
     ///
-    /// Will return `Err` upon failure to build `asm::Parser`.
+    /// Returns an `Err` if it fails to build `asm::Parser`.
+    ///
+    /// # Returns
+    ///
+    /// Returns a `Result` containing the newly created `Tracer` instance.
     pub fn new(path: &str) -> Result<Self> {
         Ok(Self {
             path: path.to_string(),
@@ -43,10 +53,22 @@ impl Tracer {
 
 // FIXME we should check what dwarf version we support and 1) update readme, 2) fail if wrong version.
 
+/// Traces the execution of a process and prints the instructions being executed.
+///
+/// # Arguments
+///
+/// * `context` - The `Tracer` instance containing the path to the file being traced.
+/// * `process` - The process information.
+/// * `child` - The process ID of the child process.
+/// * `print` - A closure that takes an `asm::Instruction` and prints it.
+///
 /// # Errors
 ///
-/// Will return `Err` upon any failure related to parsing ELF or DWARF format, as
-/// well as issues related to syscalls usage (e.g. ptrace, wait).
+/// Returns an `Err` upon any failure related to parsing ELF or DWARF format, as well as issues related to syscalls usage (e.g. ptrace, wait).
+///
+/// # Returns
+///
+/// Returns a `Result` indicating success or failure.
 fn trace_with<F>(
     context: &Tracer,
     process: &process::Info,
@@ -115,9 +137,20 @@ where
     Ok(())
 }
 
+/// Traces the execution of a process and prints the instructions being executed using a simple print function.
+///
+/// # Arguments
+///
+/// * `context` - The `Tracer` instance containing the path to the file being traced.
+/// * `child` - The process ID of the child process.
+///
 /// # Errors
 ///
-/// Will return `Err` upon `trace_with` failure.
+/// Returns an `Err` upon any failure related to parsing ELF or DWARF format, as well as issues related to syscalls usage (e.g. ptrace, wait).
+///
+/// # Returns
+///
+/// Returns a `Result` indicating success or failure.
 pub fn trace_with_simple_print(context: &Tracer, child: Pid) -> Result<()> {
     let process = process::Info::build(context.path(), child)?;
     trace_with(context, &process, child, |instruction| {
@@ -153,9 +186,20 @@ impl Cached {
         &self.files
     }
 
+    /// Traces the execution of a child process and updates the coverage information.
+    ///
+    /// # Arguments
+    ///
+    /// * `context` - The tracer context.
+    /// * `child` - The process ID of the child process.
+    ///
     /// # Errors
     ///
-    /// Will return `Err` upon `trace_with` failure.
+    /// Returns an `Err` if the `trace_with` operation fails.
+    ///
+    /// # Returns
+    ///
+    /// Returns a `Result` indicating success or failure.
     pub fn trace(&mut self, context: &Tracer, child: Pid) -> Result<()> {
         let process = process::Info::build(context.path(), child)?;
         let dwarf = Dwarf::build(&process)?;
