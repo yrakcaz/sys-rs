@@ -18,9 +18,20 @@ pub struct Info {
 }
 
 impl Info {
+    /// Builds an `Info` struct by collecting process data.
+    ///
+    /// # Arguments
+    ///
+    /// * `path` - The path to the file containing process data.
+    /// * `pid` - The process ID.
+    ///
     /// # Errors
     ///
-    /// Will return `Err` upon any failure while collecting process data.
+    /// Returns an `Err` upon any failure while collecting process data.
+    ///
+    /// # Returns
+    ///
+    /// Returns a `Result` containing the `Info` struct upon success, or an `Err` upon failure.
     pub fn build(path: &str, pid: Pid) -> Result<Self> {
         // First, wait for the process to start so we can collect its data.
         wait()?;
@@ -136,20 +147,39 @@ impl Info {
         Ok(self.buffer.get(offset..offset + len))
     }
 
+    /// Retrieves the data from the specified section.
+    ///
+    /// # Arguments
+    ///
+    /// * `name` - The name of the section.
+    ///
     /// # Errors
     ///
-    /// Will return `Err` upon failure to convert u64 to usize when getting buffer
-    /// data.
+    /// Returns an `Err` if the conversion from `u64` to `usize` fails when getting buffer data.
+    ///
+    /// # Returns
+    ///
+    /// Returns an `Ok` containing the data from the specified section as a slice of bytes, or `Err` if the section does not exist or if the conversion from `u64` to `usize` fails.
     pub fn get_section_data(&self, name: &str) -> Result<Option<&[u8]>> {
         self.sections.get(name).map_or(Ok(None), |section| {
             self.get_buffer_data(section.sh_offset, section.sh_size)
         })
     }
 
+    /// Retrieves the opcode data from the specified section at the given address.
+    ///
+    /// # Arguments
+    ///
+    /// * `addr` - The address within the section.
+    /// * `name` - The name of the section.
+    ///
     /// # Errors
     ///
-    /// Will return `Err` upon failure to convert u64 to usize when getting buffer
-    /// data.
+    /// Returns an `Err` if the conversion from `u64` to `usize` fails when getting buffer data.
+    ///
+    /// # Returns
+    ///
+    /// Returns an `Ok` containing the opcode data from the specified section as a slice of bytes, or `Err` if the section does not exist or if the conversion from `u64` to `usize` fails.
     pub fn get_opcode_from_section(
         &self,
         addr: u64,

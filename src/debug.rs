@@ -21,9 +21,21 @@ pub struct LineInfo {
 }
 
 impl LineInfo {
+    /// Represents information about a line in a file.
+    ///
+    /// # Arguments
+    ///
+    /// * `addr` - The address of the line.
+    /// * `path` - The path to the file.
+    /// * `line` - The line number.
+    ///
     /// # Errors
     ///
-    /// Will return `Err` upon failure to convert line (u64) to usize.
+    /// This function may return an error if it fails to convert the line number from `u64` to `usize`.
+    ///
+    /// # Returns
+    ///
+    /// Returns a `LineInfo` object on success.
     pub fn new(addr: u64, path: PathBuf, line: u64) -> Result<Self> {
         Ok(Self {
             addr,
@@ -83,9 +95,19 @@ pub struct Dwarf<'a> {
 }
 
 impl<'a> Dwarf<'a> {
+    /// Builds a `Dwarf` struct from the given process information.
+    ///
+    /// # Arguments
+    ///
+    /// * `process` - The process information.
+    ///
     /// # Errors
     ///
-    /// Will return `Err` upon any failure to retrieve ELF sections or parse DWARF format.
+    /// Returns an `Err` upon any failure to retrieve ELF sections or parse DWARF format.
+    ///
+    /// # Returns
+    ///
+    /// Returns a `Dwarf` struct on success, wrapped in an `Ok` variant. Returns an error on failure, wrapped in an `Err` variant.
     pub fn build(process: &'a process::Info) -> Result<Self> {
         let endianness = match process.endianness() {
             ELFDATA2LSB => Ok(gimli::RunTimeEndian::Little),
@@ -307,9 +329,21 @@ impl<'a> Dwarf<'a> {
         Ok(info)
     }
 
+    /// Resolves the source file name and line number for a given address in the binary.
+    ///
+    /// # Arguments
+    ///
+    /// * `addr`: The address in the binary's address space.
+    ///
     /// # Errors
     ///
-    /// Will return `Err` upon any failure to read or parse DWARF format.
+    /// Returns an error if there's any failure in reading or parsing the DWARF debug information.
+    ///
+    /// # Returns
+    ///
+    /// - `Ok(Some(LineInfo))`: The resolved source file name and line number.
+    /// - `Ok(None)`: The address does not correspond to any source line information.
+    /// - `Err`: Error reading or parsing the DWARF information.
     pub fn addr2line(&self, addr: u64) -> Result<Option<LineInfo>> {
         let addr = addr - self.offset;
 

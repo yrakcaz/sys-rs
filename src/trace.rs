@@ -9,9 +9,19 @@ use std::ffi::CString;
 use crate::diag::Result;
 
 pub trait Tracer {
+    /// Traces the execution of a binary with the given process ID.
+    ///
+    /// # Arguments
+    ///
+    /// * `child` - The process ID of the binary to be traced.
+    ///
     /// # Errors
     ///
-    /// Should return `Err` upon failure while inspecting a binary.
+    /// Returns an `Err` if there is a failure while inspecting the binary.
+    ///
+    /// # Returns
+    ///
+    /// Returns `Ok(())` if the tracing is successful.
     fn trace(&self, child: Pid) -> Result<()>;
 }
 
@@ -27,10 +37,21 @@ fn tracee(args: &[CString], env: &[CString]) -> Result<()> {
     Ok(())
 }
 
+/// Runs the binary inspection program using the specified tracer.
+///
+/// # Arguments
+///
+/// * `tracer` - The tracer implementation to use for binary inspection.
+/// * `args` - The command-line arguments for the binary to be inspected.
+/// * `env` - The environment variables for the binary to be inspected.
+///
 /// # Errors
 ///
-/// Will return `Err` upon any failure in the program as it is the entry point for
-/// binary inspection.
+/// Returns an `Err` if there is a failure during the binary inspection.
+///
+/// # Returns
+///
+/// Returns `Ok(())` if the binary inspection is successful.
 pub fn run<T: Tracer>(tracer: &T, args: &[CString], env: &[CString]) -> Result<()> {
     match unsafe { fork() }? {
         ForkResult::Parent { child, .. } => tracer.trace(child),
