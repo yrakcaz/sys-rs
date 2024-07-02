@@ -5,55 +5,83 @@ use nix::{
         signal::Signal,
         wait::{wait, WaitStatus},
     },
-    unistd::Pid,
 };
-use std::collections::{hash_map::Entry, HashMap, HashSet};
+use std::{
+    collections::{hash_map::Entry, HashMap, HashSet},
+    path::Path,
+};
 
 use crate::{
     asm, breakpoint,
     debug::{Dwarf, LineInfo},
     diag::{Error, Result},
-    exec::Elf,
+    process,
     trace::terminated,
 };
 
 pub struct Tracer {
-    elf: Elf,
+    path: String,
     parser: asm::Parser,
 }
 
 impl Tracer {
+    /// Creates a new `Tracer` instance.
+    ///
+    /// # Arguments
+    ///
+    /// * `path` - The path to the file.
+    ///
     /// # Errors
     ///
-    /// Will return `Err` upon failure to build `exec::Elf` or `asm::Parser`.
+    /// Returns an `Err` if it fails to build `asm::Parser`.
+    ///
+    /// # Returns
+    ///
+    /// Returns a `Result` containing the newly created `Tracer` instance.
     pub fn new(path: &str) -> Result<Self> {
         Ok(Self {
-            elf: Elf::build(path)?,
+            path: path.to_string(),
             parser: asm::Parser::new()?,
         })
     }
 
     #[must_use]
-    pub fn elf(&self) -> &Elf {
-        &self.elf
+    pub fn path(&self) -> &str {
+        &self.path
     }
 }
 
+/// Traces the execution of a process and prints the instructions being executed.
+///
+/// # Arguments
+///
+/// * `context` - The `Tracer` instance containing the path to the file being traced.
+/// * `process` - The process information.
+/// * `child` - The process ID of the child process.
+/// * `print` - A closure that takes an `asm::Instruction` and prints it.
+///
 /// # Errors
 ///
-/// Will return `Err` upon any failure related to parsing ELF or DWARF format,
-/// as well as issues related to syscalls usage (e.g. ptrace, wait).
-fn trace_with<F>(context: &Tracer, child: Pid, mut print: F) -> Result<()>
+/// Returns an `Err` upon any failure related to parsing ELF or DWARF format, as well as issues related to syscalls usage (e.g. ptrace, wait).
+///
+/// # Returns
+///
+/// Returns a `Result` indicating success or failure.
+fn trace_with<F>(
+    context: &Tracer,
+    process: &process::Info,
+    mut print: F,
+) -> Result<()>
 where
     F: FnMut(&asm::Instruction) -> Result<()>,
 {
+    let child = process.pid();
     let mut breakpoint_mgr = breakpoint::Manager::new(child);
 
     let mut startup_complete = false;
     let mut last_instruction: Option<asm::Instruction> = None;
 
-    wait()?;
-    breakpoint_mgr.set_breakpoint(context.elf.entry())?;
+    breakpoint_mgr.set_breakpoint(process.entry())?;
 
     ptrace::cont(child, None)?;
     loop {
@@ -65,13 +93,17 @@ where
 
                 let rip = regs.rip;
                 if let Some(opcode) =
-                    context.elf.get_opcode_from_section(rip, ".text")?
+                    process.get_opcode_from_section(rip, ".text")?
                 {
                     let instruction =
                         context.parser.get_instruction_from(opcode, rip)?;
                     print(&instruction)?;
                     last_instruction = Some(instruction);
                 } else if let Some(instruction) = last_instruction.as_ref() {
+                    // The purpose of this scope is to skip library execution. This is a
+                    // non-negligible optimization, but the way it is done is a bit hacky.
+                    // We could probably be using a basic block handling mechanism instead.
+
                     if instruction.is_call() {
                         #[allow(clippy::cast_sign_loss)]
                         let ret =
@@ -81,7 +113,7 @@ where
                         // Keep single stepping after the first call as it is
                         // likely to be part of the startup routine so it
                         // might never return.
-                        if context.elf.is_addr_in_section(ret, ".text")
+                        if process.is_addr_in_section(ret, ".text")
                             && startup_complete
                         {
                             breakpoint_mgr.set_breakpoint(ret)?;
@@ -104,11 +136,25 @@ where
     Ok(())
 }
 
+/// Traces the execution of a process and prints the instructions being executed using a simple print function.
+///
+/// # Arguments
+///
+/// * `context` - The `Tracer` instance containing the path to the file being traced.
+/// * `child` - The process ID of the child process.
+///
 /// # Errors
 ///
-/// Will return `Err` upon `trace_with` failure.
-pub fn trace_with_simple_print(context: &Tracer, child: Pid) -> Result<()> {
-    trace_with(context, child, |instruction| {
+/// Returns an `Err` upon any failure related to parsing ELF or DWARF format, as well as issues related to syscalls usage (e.g. ptrace, wait).
+///
+/// # Returns
+///
+/// Returns a `Result` indicating success or failure.
+pub fn trace_with_simple_print(
+    context: &Tracer,
+    process: &process::Info,
+) -> Result<()> {
+    trace_with(context, process, |instruction| {
         println!("{instruction}");
         Ok(())
     })
@@ -141,12 +187,27 @@ impl Cached {
         &self.files
     }
 
+    /// Traces the execution of a child process and updates the coverage information.
+    ///
+    /// # Arguments
+    ///
+    /// * `context` - The tracer context.
+    /// * `child` - The process ID of the child process.
+    ///
     /// # Errors
     ///
-    /// Will return `Err` upon `trace_with` failure.
-    pub fn trace(&mut self, context: &Tracer, child: Pid) -> Result<()> {
-        let dwarf = Dwarf::build(context.elf())?;
-        trace_with(context, child, |instruction| {
+    /// Returns an `Err` if the `trace_with` operation fails.
+    ///
+    /// # Returns
+    ///
+    /// Returns a `Result` indicating success or failure.
+    pub fn trace(
+        &mut self,
+        context: &Tracer,
+        process: &process::Info,
+    ) -> Result<()> {
+        let dwarf = Dwarf::build(process)?;
+        trace_with(context, process, |instruction| {
             let addr = instruction.addr();
             if let Entry::Vacant(_) = self.cache.entry(addr) {
                 let info = dwarf.addr2line(addr)?;
@@ -158,10 +219,12 @@ impl Cached {
                 .get(&addr)
                 .ok_or_else(|| Error::from(Errno::ENODATA))?
             {
-                let key = (line.path(), line.line());
-                *self.coverage.entry(key).or_insert(0) += 1;
-                self.files.insert(line.path());
-                println!("{line}");
+                if Path::new(&line.path()).exists() {
+                    let key = (line.path(), line.line());
+                    *self.coverage.entry(key).or_insert(0) += 1;
+                    self.files.insert(line.path());
+                    println!("{line}");
+                }
             }
 
             Ok(())

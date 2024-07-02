@@ -28,6 +28,8 @@ Usage: `sscov-rs command [args]`
 
 This tool displays all the lines of code corresponding to the addresses covered
 by the instruction pointer during the execution of a binary.
+The binary needs to be compiled with DWARF debug symbols.
+DWARF versions supported : 2, 3, 4.
 
 Usage: `addr2line-rs command [args]`
 
@@ -35,7 +37,8 @@ Usage: `addr2line-rs command [args]`
 
 This tool leverages addr2line to generate a .cov file per source file that maps
 each line of the source file to its coverage count.
-This works only if the binary passed as parameter has been compiled with Dwarf debug
+This works only if the binary passed as parameter has been compiled with DWARF debug
 symbols. If not, gcov-rs will simply behave the same as sscov-rs.
+DWARF versions supported : 2, 3, 4.
 
 Usage: `gcov-rs command [args]`

@@ -4,7 +4,7 @@ use sys_rs::{
     cov,
     diag::Result,
     input::{args, env},
-    trace,
+    process, trace,
 };
 
 struct Wrapper {
@@ -21,8 +21,9 @@ impl Wrapper {
 
 impl trace::Tracer for Wrapper {
     fn trace(&self, child: Pid) -> Result<()> {
+        let process = process::Info::build(self.tracer.path(), child)?;
         let mut cached = cov::Cached::default();
-        cached.trace(&self.tracer, child)
+        cached.trace(&self.tracer, &process)
     }
 }
 

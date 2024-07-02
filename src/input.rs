@@ -23,10 +23,16 @@ fn find_executable_in_path(file_name: &str) -> Option<String> {
     })
 }
 
+/// Parses command line arguments and returns them as a vector of `CString`.
+///
 /// # Errors
 ///
-/// Will return `Err` if no command is provided, if the command is not found, if it
-/// is not executable, or if failing to convert arguments to `CString`.
+/// This function will return an `Err` if no command is provided, if the command is not found,
+/// if it is not executable, or if there is an error converting arguments to `CString`.
+///
+/// # Returns
+///
+/// Returns a `Result` containing a vector of `CString` representing the command line arguments, or an `Err` if there was an error.
 pub fn args() -> Result<Vec<CString>> {
     let mut args_iter = env::args().skip(1);
     let this = env::args()
@@ -55,9 +61,15 @@ pub fn args() -> Result<Vec<CString>> {
     Ok(args)
 }
 
+/// Retrieves environment variables and returns them as a vector of `CString`.
+///
 /// # Errors
 ///
-/// Will return `Err` if failing to convert environment variables to `CString`.
+/// This function will return an `Err` if there is an error converting environment variables to `CString`.
+///
+/// # Returns
+///
+/// Returns a vector of `CString` representing the environment variables.
 pub fn env() -> Result<Vec<CString>> {
     env::vars_os()
         .map(|(key, val)| {
