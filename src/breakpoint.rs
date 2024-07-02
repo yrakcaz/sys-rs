@@ -50,7 +50,7 @@ impl Manager {
     ///
     /// # Arguments
     ///
-    /// * `regs` - A mutable reference to the user_regs_struct containing the register values.
+    /// * `regs` - A mutable reference to the `user_regs_struct` containing the register values.
     ///
     /// # Errors
     ///

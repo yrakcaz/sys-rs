@@ -196,9 +196,9 @@ impl<'a> Dwarf<'a> {
                         gimli::DW_AT_high_pc => match attr.value() {
                             gimli::AttributeValue::Addr(val) => high_pc = Some(val),
                             gimli::AttributeValue::Udata(val) => {
-                                high_pc_offset = Some(val)
+                                high_pc_offset = Some(val);
                             }
-                            _ => Err(Error::from(Errno::ENODATA))?
+                            _ => Err(Error::from(Errno::ENODATA))?,
                         },
                         gimli::DW_AT_ranges => {
                             if let gimli::AttributeValue::RangeListsRef(val) =
@@ -229,7 +229,7 @@ impl<'a> Dwarf<'a> {
             if let Some(offset) = unit_header.offset().as_debug_info_offset() {
                 aranges.insert(offset, unit_ranges);
             } else {
-                Err(Error::from(Errno::ENODATA))?
+                Err(Error::from(Errno::ENODATA))?;
             }
         }
 

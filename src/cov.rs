@@ -45,6 +45,7 @@ impl Tracer {
         })
     }
 
+    #[must_use]
     pub fn path(&self) -> &str {
         &self.path
     }
@@ -149,7 +150,10 @@ where
 /// # Returns
 ///
 /// Returns a `Result` indicating success or failure.
-pub fn trace_with_simple_print(context: &Tracer, process: &process::Info) -> Result<()> {
+pub fn trace_with_simple_print(
+    context: &Tracer,
+    process: &process::Info,
+) -> Result<()> {
     trace_with(context, process, |instruction| {
         println!("{instruction}");
         Ok(())
@@ -197,7 +201,11 @@ impl Cached {
     /// # Returns
     ///
     /// Returns a `Result` indicating success or failure.
-    pub fn trace(&mut self, context: &Tracer, process: &process::Info) -> Result<()> {
+    pub fn trace(
+        &mut self,
+        context: &Tracer,
+        process: &process::Info,
+    ) -> Result<()> {
         let dwarf = Dwarf::build(process)?;
         trace_with(context, process, |instruction| {
             let addr = instruction.addr();

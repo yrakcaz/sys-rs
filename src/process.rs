@@ -45,19 +45,19 @@ impl Info {
         let endianness = elf.header.e_ident[EI_DATA];
         let entry = elf.header.e_entry;
 
-        let pie = match elf.header.e_type {
+        let dynamic = match elf.header.e_type {
             elf::header::ET_DYN => Ok(true),
             elf::header::ET_EXEC => Ok(false),
             _ => Err(Error::from(Errno::ENOEXEC)),
         }?;
 
-        let offset = if pie {
+        let offset = if dynamic {
             Self::get_mem_offset(path, pid)?
         } else {
             0
         };
 
-        let vaddr = if pie {
+        let vaddr = if dynamic {
             elf.program_headers
                 .iter()
                 .find(|ph| {
@@ -116,6 +116,7 @@ impl Info {
         offset.ok_or_else(|| Error::from(Errno::ENODATA))
     }
 
+    #[must_use]
     pub fn pid(&self) -> Pid {
         self.pid
     }
@@ -130,12 +131,14 @@ impl Info {
         self.entry + self.offset - self.vaddr
     }
 
-    pub fn vaddr(&self) -> u64 {
-        self.vaddr
-    }
-
+    #[must_use]
     pub fn offset(&self) -> u64 {
         self.offset
+    }
+
+    #[must_use]
+    pub fn vaddr(&self) -> u64 {
+        self.vaddr
     }
 
     #[must_use]

@@ -4,8 +4,7 @@ use sys_rs::{
     cov,
     diag::Result,
     input::{args, env},
-    process,
-    trace,
+    process, trace,
 };
 
 struct Wrapper {
