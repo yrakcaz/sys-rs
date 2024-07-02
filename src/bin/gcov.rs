@@ -8,6 +8,7 @@ use sys_rs::{
     cov,
     diag::Result,
     input::{args, env},
+    process,
     trace,
 };
 
@@ -61,21 +62,25 @@ fn process_file(path: &str, cached: &cov::Cached) -> Result<()> {
 
             Ok(())
         }
-        Err(_) => Ok(()), // Continue on file creation error
+        Err(_) => {
+            eprintln!("Warning: {out_path}: Could not create file");
+            Ok(())
+        }
     }
 }
 
 impl trace::Tracer for Wrapper {
     fn trace(&self, child: Pid) -> Result<()> {
+        let process = process::Info::build(self.tracer.path(), child)?;
         let mut cached = cov::Cached::default();
-        if let Ok(()) = cached.trace(&self.tracer, child) {
+        if let Ok(()) = cached.trace(&self.tracer, &process) {
             for path in cached.files() {
                 process_file(path, &cached)?;
             }
 
             Ok(())
         } else {
-            cov::trace_with_simple_print(&self.tracer, child)
+            cov::trace_with_simple_print(&self.tracer, &process)
         }
     }
 }

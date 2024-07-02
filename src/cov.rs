@@ -5,7 +5,6 @@ use nix::{
         signal::Signal,
         wait::{wait, WaitStatus},
     },
-    unistd::Pid,
 };
 use std::{
     collections::{hash_map::Entry, HashMap, HashSet},
@@ -51,8 +50,6 @@ impl Tracer {
     }
 }
 
-// FIXME we should check what dwarf version we support and 1) update readme, 2) fail if wrong version.
-
 /// Traces the execution of a process and prints the instructions being executed.
 ///
 /// # Arguments
@@ -72,12 +69,12 @@ impl Tracer {
 fn trace_with<F>(
     context: &Tracer,
     process: &process::Info,
-    child: Pid,
     mut print: F,
 ) -> Result<()>
 where
     F: FnMut(&asm::Instruction) -> Result<()>,
 {
+    let child = process.pid();
     let mut breakpoint_mgr = breakpoint::Manager::new(child);
 
     let mut startup_complete = false;
@@ -102,6 +99,10 @@ where
                     print(&instruction)?;
                     last_instruction = Some(instruction);
                 } else if let Some(instruction) = last_instruction.as_ref() {
+                    // The purpose of this scope is to skip library execution. This is a
+                    // non-negligible optimization, but the way it is done is a bit hacky.
+                    // We could probably be using a basic block handling mechanism instead.
+
                     if instruction.is_call() {
                         #[allow(clippy::cast_sign_loss)]
                         let ret =
@@ -111,9 +112,6 @@ where
                         // Keep single stepping after the first call as it is
                         // likely to be part of the startup routine so it
                         // might never return.
-                        //
-                        // FIXME Not sure whether the code below is actually ran?]
-                        //       Offset doesn't change anything...
                         if process.is_addr_in_section(ret, ".text")
                             && startup_complete
                         {
@@ -151,9 +149,8 @@ where
 /// # Returns
 ///
 /// Returns a `Result` indicating success or failure.
-pub fn trace_with_simple_print(context: &Tracer, child: Pid) -> Result<()> {
-    let process = process::Info::build(context.path(), child)?;
-    trace_with(context, &process, child, |instruction| {
+pub fn trace_with_simple_print(context: &Tracer, process: &process::Info) -> Result<()> {
+    trace_with(context, process, |instruction| {
         println!("{instruction}");
         Ok(())
     })
@@ -200,10 +197,9 @@ impl Cached {
     /// # Returns
     ///
     /// Returns a `Result` indicating success or failure.
-    pub fn trace(&mut self, context: &Tracer, child: Pid) -> Result<()> {
-        let process = process::Info::build(context.path(), child)?;
-        let dwarf = Dwarf::build(&process)?;
-        trace_with(context, &process, child, |instruction| {
+    pub fn trace(&mut self, context: &Tracer, process: &process::Info) -> Result<()> {
+        let dwarf = Dwarf::build(process)?;
+        trace_with(context, process, |instruction| {
             let addr = instruction.addr();
             if let Entry::Vacant(_) = self.cache.entry(addr) {
                 let info = dwarf.addr2line(addr)?;

@@ -9,6 +9,7 @@ const EI_DATA: usize = 5;
 const MAX_OPCODE_SIZE: u64 = 16;
 
 pub struct Info {
+    pid: Pid,
     buffer: Vec<u8>,
     endianness: u8,
     entry: u64,
@@ -82,6 +83,7 @@ impl Info {
             .ok_or_else(|| Error::from(Errno::ENODATA))?;
 
         Ok(Self {
+            pid,
             buffer,
             endianness,
             entry,
@@ -112,6 +114,10 @@ impl Info {
         }
 
         offset.ok_or_else(|| Error::from(Errno::ENODATA))
+    }
+
+    pub fn pid(&self) -> Pid {
+        self.pid
     }
 
     #[must_use]

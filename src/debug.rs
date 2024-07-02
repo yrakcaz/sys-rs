@@ -14,6 +14,8 @@ use crate::{
     process,
 };
 
+const FIRST_UNSUPPORTED_DWARF_VERSION: u16 = 5;
+
 pub struct LineInfo {
     addr: u64,
     path: PathBuf,
@@ -171,6 +173,10 @@ impl<'a> Dwarf<'a> {
         let mut aranges = HashMap::new();
         let mut iter = dwarf.units();
         while let Some(unit_header) = iter.next()? {
+            if unit_header.version() >= FIRST_UNSUPPORTED_DWARF_VERSION {
+                Err(Errno::ENOEXEC)?;
+            }
+
             let mut unit_ranges = Vec::new();
             let unit = dwarf.unit(unit_header)?;
             let mut entries = unit.entries();

@@ -4,6 +4,7 @@ use sys_rs::{
     cov,
     diag::Result,
     input::{args, env},
+    process,
     trace,
 };
 
@@ -21,7 +22,8 @@ impl Wrapper {
 
 impl trace::Tracer for Wrapper {
     fn trace(&self, child: Pid) -> Result<()> {
-        cov::trace_with_simple_print(&self.tracer, child)
+        let process = process::Info::build(self.tracer.path(), child)?;
+        cov::trace_with_simple_print(&self.tracer, &process)
     }
 }
 

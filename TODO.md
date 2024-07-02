@@ -15,12 +15,14 @@
 
 - [x] basics  
 - [x] update README.md  
-- [ ] support dynamically loaded .text (parse /proc)  
+- [x] support PIE  
 
 ### addr2line
 
 - [x] basics  
 - [x] update README.md  
+- [x] support PIE  
+- [ ] support DWARF5  
 
 ### gcov
 
