@@ -100,9 +100,9 @@ where
                     print(&instruction)?;
                     last_instruction = Some(instruction);
                 } else if let Some(instruction) = last_instruction.as_ref() {
-                    // The purpose of this scope is to skip library execution. This is a
-                    // non-negligible optimization, but the way it is done is a bit hacky.
-                    // We could probably be using a basic block handling mechanism instead.
+                    // The purpose of this scope is to prevent single stepping
+                    // through libraries execution as a non-neglible amount of time
+                    // is spent in those.
 
                     if instruction.is_call() {
                         #[allow(clippy::cast_sign_loss)]
