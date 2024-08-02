@@ -61,28 +61,25 @@ impl LineInfo {
         let reader = BufReader::new(file);
 
         let mut lines = reader.lines();
-        if let Some(line) = lines.nth(self.line - 1) {
-            Ok(line?)
-        } else {
-            Err(Error::from(Errno::ENODATA))
-        }
+
+        let line = lines
+            .nth(self.line - 1)
+            .ok_or_else(|| Error::from(Errno::ENODATA))??;
+        Ok(line)
     }
 }
 
 impl fmt::Display for LineInfo {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        if let Ok(line) = self.read() {
-            write!(
-                f,
-                "0x{:x}: {}:{} | {}",
-                self.addr,
-                self.path.display(),
-                self.line,
-                line
-            )
-        } else {
-            Err(fmt::Error)
-        }
+        let line = self.read().map_err(|_| fmt::Error)?;
+        write!(
+            f,
+            "0x{:x}: {}:{} | {}",
+            self.addr,
+            self.path.display(),
+            self.line,
+            line
+        )
     }
 }
 
@@ -226,11 +223,11 @@ impl<'a> Dwarf<'a> {
                 }
             }
 
-            if let Some(offset) = unit_header.offset().as_debug_info_offset() {
-                aranges.insert(offset, unit_ranges);
-            } else {
-                Err(Error::from(Errno::ENODATA))?;
-            }
+            let offset = unit_header
+                .offset()
+                .as_debug_info_offset()
+                .ok_or_else(|| Error::from(Errno::ENODATA))?;
+            aranges.insert(offset, unit_ranges);
         }
 
         Ok(aranges)
@@ -241,18 +238,19 @@ impl<'a> Dwarf<'a> {
         addr: u64,
         unit_header: &gimli::UnitHeader<R>,
     ) -> Result<bool> {
-        if let Some(offset) = unit_header.offset().as_debug_info_offset() {
-            self.aranges
-                .get(&offset)
-                .map(|ranges| {
-                    ranges
-                        .iter()
-                        .any(|(start, end)| (*start..*end).contains(&addr))
-                })
-                .ok_or_else(|| Error::from(Errno::ENODATA))
-        } else {
-            Err(Error::from(Errno::ENODATA))
-        }
+        let offset = unit_header
+            .offset()
+            .as_debug_info_offset()
+            .ok_or_else(|| Error::from(Errno::ENODATA))?;
+
+        self.aranges
+            .get(&offset)
+            .map(|ranges| {
+                ranges
+                    .iter()
+                    .any(|(start, end)| (*start..*end).contains(&addr))
+            })
+            .ok_or_else(|| Error::from(Errno::ENODATA))
     }
 
     fn path_from_row(
@@ -268,29 +266,28 @@ impl<'a> Dwarf<'a> {
             path.push(dir.to_string_lossy().into_owned());
         }
 
-        if let Some(file) = row.file(program_header) {
-            if file.directory_index() != 0 {
-                if let Some(dir) = file.directory(program_header) {
-                    let dir_path = self
-                        .dwarf
-                        .attr_string(&unit, dir)?
-                        .to_string_lossy()
-                        .into_owned();
-                    path.push(dir_path);
-                }
+        let file = row
+            .file(program_header)
+            .ok_or_else(|| Error::from(Errno::ENODATA))?;
+        if file.directory_index() != 0 {
+            if let Some(dir) = file.directory(program_header) {
+                let dir_path = self
+                    .dwarf
+                    .attr_string(&unit, dir)?
+                    .to_string_lossy()
+                    .into_owned();
+                path.push(dir_path);
             }
-
-            let file_path = self
-                .dwarf
-                .attr_string(&unit, file.path_name())?
-                .to_string_lossy()
-                .into_owned();
-            path.push(file_path);
-
-            Ok(path)
-        } else {
-            Err(Error::from(Errno::ENODATA))
         }
+
+        let file_path = self
+            .dwarf
+            .attr_string(&unit, file.path_name())?
+            .to_string_lossy()
+            .into_owned();
+        path.push(file_path);
+
+        Ok(path)
     }
 
     fn info_from_row(
@@ -299,13 +296,11 @@ impl<'a> Dwarf<'a> {
         program_header: &gimli::LineProgramHeader<SectionData<'_>>,
         row: &gimli::LineRow,
     ) -> Result<LineInfo> {
-        if let Some(line) = row.line() {
-            let line = line.get();
-            let path = self.path_from_row(unit_header, program_header, row)?;
-            Ok(LineInfo::new(row.address() + self.offset, path, line)?)
-        } else {
-            Err(Error::from(Errno::ENODATA))
-        }
+        let line = row.line().ok_or_else(|| Error::from(Errno::ENODATA))?;
+
+        let line = line.get();
+        let path = self.path_from_row(unit_header, program_header, row)?;
+        LineInfo::new(row.address() + self.offset, path, line)
     }
 
     fn info_from_unit(
