@@ -5,7 +5,7 @@ use std::{collections::HashMap, fmt};
 
 use crate::diag::{Error, Result};
 
-#[derive(Deserialize)]
+#[derive(Debug, Deserialize, PartialEq)]
 pub enum Type {
     Int,
     Ptr,
@@ -198,5 +198,93 @@ impl Repr {
 impl fmt::Display for Repr {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         write!(f, "{}({}) = {}", self.name, self.args, self.ret_val)
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_entry_default() {
+        let entry = Entry::default();
+        assert_eq!(entry.name(), "unknown");
+        assert_eq!(entry.ret_type(), &Type::Int);
+        assert!(entry.args().is_none());
+    }
+
+    #[test]
+    fn test_entries_new() {
+        let entries = Entries::new();
+        assert!(entries.is_ok());
+    }
+
+    #[test]
+    fn test_entries_get() {
+        let entries = Entries::new().unwrap();
+        let entry = entries.get(1);
+        assert_eq!(entry.name(), "write");
+    }
+
+    #[test]
+    fn test_arg_methods() {
+        let arg = Arg {
+            name: "arg1".to_string(),
+            arg_type: Type::Int,
+        };
+        assert_eq!(arg.name(), "arg1");
+        assert_eq!(arg.arg_type(), &Type::Int);
+    }
+
+    #[test]
+    fn test_entry_methods() {
+        let entry = Entry {
+            name: "test".to_string(),
+            ret_type: Type::Uint,
+            args: Some(vec![Arg {
+                name: "arg1".to_string(),
+                arg_type: Type::Str,
+            }]),
+        };
+        assert_eq!(entry.name(), "test");
+        assert_eq!(entry.ret_type(), &Type::Uint);
+        assert!(entry.args().is_some());
+    }
+
+    #[test]
+    fn test_parse_value() {
+        let pid = Pid::from_raw(1);
+        assert_eq!(parse_value(&Type::Int, 42, pid).unwrap(), "42");
+        assert_eq!(parse_value(&Type::Uint, 42, pid).unwrap(), "42");
+        assert_eq!(parse_value(&Type::Ptr, 0, pid).unwrap(), "NULL");
+        assert_eq!(parse_value(&Type::Ptr, 42, pid).unwrap(), "0x2a");
+        assert_eq!(parse_value(&Type::Str, 0, pid).unwrap(), "?");
+    }
+
+    #[test]
+    fn test_repr_is_exit() {
+        let repr = Repr {
+            name: "exit".to_string(),
+            args: String::new(),
+            ret_val: String::new(),
+        };
+        assert!(repr.is_exit());
+
+        let repr = Repr {
+            name: "open".to_string(),
+            args: String::new(),
+            ret_val: String::new(),
+        };
+        assert!(!repr.is_exit());
+    }
+
+    #[test]
+    fn test_repr_display() {
+        let repr = Repr {
+            name: "open".to_string(),
+            args: "arg1=42".to_string(),
+            ret_val: "0".to_string(),
+        };
+        assert_eq!(format!("{}", repr), "open(arg1=42) = 0");
     }
 }

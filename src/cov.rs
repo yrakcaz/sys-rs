@@ -237,3 +237,45 @@ impl Default for Cached {
         Self::new()
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_tracer_new() {
+        let path = "/path/to/file";
+        let tracer = Tracer::new(path).unwrap();
+        assert_eq!(tracer.path(), path);
+    }
+
+    #[test]
+    fn test_cached_new() {
+        let cached = Cached::new();
+        assert_eq!(cached.coverage.len(), 0);
+        assert_eq!(cached.files.len(), 0);
+    }
+
+    #[test]
+    fn test_cached_coverage() {
+        let mut cached = Cached::new();
+        cached.coverage.insert(("file1".to_string(), 10), 5);
+        cached.coverage.insert(("file2".to_string(), 20), 10);
+
+        assert_eq!(cached.coverage("file1".to_string(), 10), Some(&5));
+        assert_eq!(cached.coverage("file2".to_string(), 20), Some(&10));
+        assert_eq!(cached.coverage("file3".to_string(), 30), None);
+    }
+
+    #[test]
+    fn test_cached_files() {
+        let mut cached = Cached::new();
+        cached.files.insert("file1".to_string());
+        cached.files.insert("file2".to_string());
+
+        assert_eq!(cached.files().len(), 2);
+        assert!(cached.files().contains("file1"));
+        assert!(cached.files().contains("file2"));
+        assert!(!cached.files().contains("file3"));
+    }
+}

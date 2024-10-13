@@ -59,5 +59,9 @@
 
 - [x] apply clippy::pedantic lints  
 - [ ] testing  
-- [x] better documentation, not just what clippy asks for  
+  - [x] unit tests  
+  - [ ] integration tests  
+- [ ] documentation  
+  - [x] basics  
+  - [ ] pub strcuts  
 - [ ] support more architectures  

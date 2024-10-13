@@ -74,3 +74,25 @@ pub fn terminated(status: WaitStatus) -> bool {
         _ => false,
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_terminated_signaled() {
+        let status = WaitStatus::Signaled(
+            Pid::from_raw(1),
+            nix::sys::signal::Signal::SIGKILL,
+            false,
+        );
+        assert!(terminated(status));
+    }
+
+    #[test]
+    fn test_terminated_other() {
+        let status =
+            WaitStatus::Stopped(Pid::from_raw(1), nix::sys::signal::Signal::SIGSTOP);
+        assert!(!terminated(status));
+    }
+}

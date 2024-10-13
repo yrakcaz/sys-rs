@@ -364,3 +364,47 @@ impl<'a> Dwarf<'a> {
         Ok(info)
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    use std::io::Write;
+
+    #[test]
+    fn test_line_info_new() {
+        let path = PathBuf::from("/path/to/file.rs");
+        let line_info = LineInfo::new(0x1234, path.clone(), 42).unwrap();
+        assert_eq!(line_info.addr, 0x1234);
+        assert_eq!(line_info.path, path);
+        assert_eq!(line_info.line, 42);
+    }
+
+    #[test]
+    fn test_line_info_path() {
+        let path = PathBuf::from("/path/to/file.rs");
+        let line_info = LineInfo::new(0x1234, path.clone(), 42).unwrap();
+        assert_eq!(line_info.path(), "/path/to/file.rs");
+    }
+
+    #[test]
+    fn test_line_info_line() {
+        let path = PathBuf::from("/path/to/file.rs");
+        let line_info = LineInfo::new(0x1234, path, 42).unwrap();
+        assert_eq!(line_info.line(), 42);
+    }
+
+    #[test]
+    fn test_line_info_display() {
+        let mut tmpfile = tempfile::NamedTempFile::new().unwrap();
+        for i in 1..100 {
+            writeln!(tmpfile, "line {}", i).unwrap();
+        }
+        let path = tmpfile.path().to_path_buf();
+        let line_info = LineInfo::new(0x1234, path.clone(), 42).unwrap();
+        let display = format!("{}", line_info);
+        assert!(display.contains("0x1234"));
+        assert!(display.contains(path.to_str().unwrap()));
+        assert!(display.contains("42"));
+    }
+}
