@@ -113,6 +113,12 @@ fn trace_str(addr: u64, pid: Pid) -> Result<String> {
         if c == '\0' {
             break;
         }
+        if c == '\n' {
+            ret.push('\\');
+            ret.push('n');
+            offset += 1;
+            continue;
+        }
         ret.push(c);
         offset += 1;
     }

@@ -71,10 +71,12 @@ fn trace_with<F>(
     context: &Tracer,
     process: &process::Info,
     mut print: F,
-) -> Result<()>
+) -> Result<i32>
 where
     F: FnMut(&asm::Instruction) -> Result<()>,
 {
+    let ret;
+
     let child = process.pid();
     let mut breakpoint_mgr = breakpoint::Manager::new(child);
 
@@ -106,17 +108,17 @@ where
 
                     if instruction.is_call() {
                         #[allow(clippy::cast_sign_loss)]
-                        let ret =
+                        let ret_addr =
                             ptrace::read(child, regs.rsp as ptrace::AddressType)?
                                 as u64;
 
                         // Keep single stepping after the first call as it is
                         // likely to be part of the startup routine so it
                         // might never return.
-                        if process.is_addr_in_section(ret, ".text")
+                        if process.is_addr_in_section(ret_addr, ".text")
                             && startup_complete
                         {
-                            breakpoint_mgr.set_breakpoint(ret)?;
+                            breakpoint_mgr.set_breakpoint(ret_addr)?;
                             ptrace::cont(child, None)?;
                             continue;
                         }
@@ -128,12 +130,16 @@ where
                 ptrace::step(child, None)?;
             }
             WaitStatus::Stopped(_, signal) => ptrace::cont(child, signal)?,
-            _ if terminated(status) => break,
-            _ => {}
+            _ => {
+                if let Some(code) = terminated(status) {
+                    ret = code;
+                    break;
+                }
+            }
         }
     }
 
-    Ok(())
+    Ok(ret)
 }
 
 /// Traces the execution of a process and prints the instructions being executed using a simple print function.
@@ -153,9 +159,9 @@ where
 pub fn trace_with_simple_print(
     context: &Tracer,
     process: &process::Info,
-) -> Result<()> {
+) -> Result<i32> {
     trace_with(context, process, |instruction| {
-        println!("{instruction}");
+        eprintln!("{instruction}");
         Ok(())
     })
 }
@@ -205,7 +211,7 @@ impl Cached {
         &mut self,
         context: &Tracer,
         process: &process::Info,
-    ) -> Result<()> {
+    ) -> Result<i32> {
         let dwarf = Dwarf::build(process)?;
         trace_with(context, process, |instruction| {
             let addr = instruction.addr();
@@ -223,7 +229,7 @@ impl Cached {
                     let key = (line.path(), line.line());
                     *self.coverage.entry(key).or_insert(0) += 1;
                     self.files.insert(line.path());
-                    println!("{line}");
+                    eprintln!("{line}");
                 }
             }
 

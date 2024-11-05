@@ -1,4 +1,5 @@
 use nix::unistd::Pid;
+use std::process::exit;
 
 use sys_rs::{
     cov,
@@ -20,7 +21,7 @@ impl Wrapper {
 }
 
 impl trace::Tracer for Wrapper {
-    fn trace(&self, child: Pid) -> Result<()> {
+    fn trace(&self, child: Pid) -> Result<i32> {
         let process = process::Info::build(self.tracer.path(), child)?;
         cov::trace_with_simple_print(&self.tracer, &process)
     }
@@ -28,5 +29,9 @@ impl trace::Tracer for Wrapper {
 
 fn main() -> Result<()> {
     let args = args()?;
-    trace::run::<Wrapper>(&Wrapper::new(args[0].to_str()?)?, &args, &env()?)
+    exit(trace::run::<Wrapper>(
+        &Wrapper::new(args[0].to_str()?)?,
+        &args,
+        &env()?,
+    )?)
 }
