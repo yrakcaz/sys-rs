@@ -106,8 +106,9 @@ mod tests {
 
         let result = env();
         assert!(result.is_ok());
-        let cstrings = result.unwrap();
-        let env_var = CString::new("TEST_ENV_VAR=test_value").unwrap();
+        let cstrings = result.expect("Failed to get environment variables");
+        let env_var = CString::new("TEST_ENV_VAR=test_value")
+            .expect("Failed to create CString");
         assert!(cstrings.contains(&env_var));
 
         env::remove_var("TEST_ENV_VAR");

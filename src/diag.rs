@@ -73,7 +73,7 @@ mod tests {
     fn test_result_ok() {
         let result: Result<u32> = Ok(42);
         assert!(result.is_ok());
-        assert_eq!(result.unwrap(), 42);
+        assert_eq!(result.expect("Expected Ok value"), 42);
     }
 
     #[test]

@@ -227,7 +227,7 @@ mod tests {
 
     #[test]
     fn test_entries_get() {
-        let entries = Entries::new().unwrap();
+        let entries = Entries::new().expect("Failed to create Entries");
         let entry = entries.get(1);
         assert_eq!(entry.name(), "write");
     }
@@ -260,11 +260,26 @@ mod tests {
     #[test]
     fn test_parse_value() {
         let pid = Pid::from_raw(1);
-        assert_eq!(parse_value(&Type::Int, 42, pid).unwrap(), "42");
-        assert_eq!(parse_value(&Type::Uint, 42, pid).unwrap(), "42");
-        assert_eq!(parse_value(&Type::Ptr, 0, pid).unwrap(), "NULL");
-        assert_eq!(parse_value(&Type::Ptr, 42, pid).unwrap(), "0x2a");
-        assert_eq!(parse_value(&Type::Str, 0, pid).unwrap(), "?");
+        assert_eq!(
+            parse_value(&Type::Int, 42, pid).expect("Failed to parse Int value"),
+            "42"
+        );
+        assert_eq!(
+            parse_value(&Type::Uint, 42, pid).expect("Failed to parse Uint value"),
+            "42"
+        );
+        assert_eq!(
+            parse_value(&Type::Ptr, 0, pid).expect("Failed to parse Ptr value"),
+            "NULL"
+        );
+        assert_eq!(
+            parse_value(&Type::Ptr, 42, pid).expect("Failed to parse Ptr value"),
+            "0x2a"
+        );
+        assert_eq!(
+            parse_value(&Type::Str, 0, pid).expect("Failed to parse Str value"),
+            "?"
+        );
     }
 
     #[test]

@@ -231,7 +231,8 @@ mod tests {
     #[test]
     fn test_build_invalid_elf() {
         let pid = Pid::from_raw(1234);
-        let path = create_temp_elf_file().unwrap();
+        let path =
+            create_temp_elf_file().expect("Failed to create temporary ELF file");
         let result = Info::build(&path, pid);
         assert!(result.is_err());
     }

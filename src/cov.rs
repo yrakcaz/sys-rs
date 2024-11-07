@@ -251,7 +251,7 @@ mod tests {
     #[test]
     fn test_tracer_new() {
         let path = "/path/to/file";
-        let tracer = Tracer::new(path).unwrap();
+        let tracer = Tracer::new(path).expect("Failed to create Tracer instance");
         assert_eq!(tracer.path(), path);
     }
 

@@ -1,29 +1,11 @@
 use std::process::Command;
 
+mod testlib;
+
 #[test]
 fn test_strace_no_args() {
     let bin = env!("CARGO_BIN_EXE_strace-rs");
-    let output = Command::new(bin).output().expect("Failed to run binary");
-
-    assert!(
-        !output.status.success(),
-        "Binary execution should have failed"
-    );
-
-    let stdout = String::from_utf8_lossy(&output.stdout);
-    let stderr = String::from_utf8_lossy(&output.stderr);
-
-    assert!(stdout.is_empty(), "stdout: {}", stdout);
-    assert!(
-        stderr.contains(format!("Usage: {} command [args]", bin).as_str()),
-        "stderr: {}",
-        stderr
-    );
-    assert!(
-        stderr.contains("Error: EINVAL: Invalid argument"),
-        "stderr: {}",
-        stderr
-    );
+    testlib::test_no_args(bin);
 }
 
 #[test]
