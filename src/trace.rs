@@ -1,8 +1,6 @@
 use nix::{
-    fcntl::{open, OFlag},
-    libc::{STDERR_FILENO, STDOUT_FILENO},
-    sys::{ptrace, stat::Mode, wait::WaitStatus},
-    unistd::{close, dup2, execve, fork, ForkResult, Pid},
+    sys::{ptrace, wait::WaitStatus},
+    unistd::{execve, fork, ForkResult, Pid},
 };
 use std::ffi::CString;
 
@@ -22,19 +20,14 @@ pub trait Tracer {
     /// # Returns
     ///
     /// Returns `Ok(())` if the tracing is successful.
-    fn trace(&self, child: Pid) -> Result<()>;
+    fn trace(&self, child: Pid) -> Result<i32>;
 }
 
-fn tracee(args: &[CString], env: &[CString]) -> Result<()> {
-    let null = open("/dev/null", OFlag::O_WRONLY, Mode::empty())?;
-    dup2(null, STDERR_FILENO)?;
-    dup2(null, STDOUT_FILENO)?;
-    close(null)?;
-
+fn tracee(args: &[CString], env: &[CString]) -> Result<i32> {
     ptrace::traceme()?;
     execve(&args[0], args, env)?;
 
-    Ok(())
+    Ok(0)
 }
 
 /// Runs the binary inspection program using the specified tracer.
@@ -52,7 +45,7 @@ fn tracee(args: &[CString], env: &[CString]) -> Result<()> {
 /// # Returns
 ///
 /// Returns `Ok(())` if the binary inspection is successful.
-pub fn run<T: Tracer>(tracer: &T, args: &[CString], env: &[CString]) -> Result<()> {
+pub fn run<T: Tracer>(tracer: &T, args: &[CString], env: &[CString]) -> Result<i32> {
     match unsafe { fork() }? {
         ForkResult::Parent { child, .. } => tracer.trace(child),
         ForkResult::Child => tracee(args, env),
@@ -60,17 +53,39 @@ pub fn run<T: Tracer>(tracer: &T, args: &[CString], env: &[CString]) -> Result<(
 }
 
 #[must_use]
-pub fn terminated(status: WaitStatus) -> bool {
+pub fn terminated(status: WaitStatus) -> Option<i32> {
     match status {
         WaitStatus::Signaled(_, signal, coredump) => {
             let coredump_str = if coredump { " (core dumped)" } else { "" };
-            println!("+++ killed by {signal:?}{coredump_str} +++");
-            true
+            eprintln!("+++ killed by {signal:?}{coredump_str} +++");
+            Some(signal as i32)
         }
         WaitStatus::Exited(_, code) => {
-            println!("+++ exited with {code} +++");
-            true
+            eprintln!("+++ exited with {code} +++");
+            Some(code)
         }
-        _ => false,
+        _ => None,
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_terminated_signaled() {
+        let status = WaitStatus::Signaled(
+            Pid::from_raw(1),
+            nix::sys::signal::Signal::SIGKILL,
+            false,
+        );
+        assert!(terminated(status).is_some());
+    }
+
+    #[test]
+    fn test_terminated_other() {
+        let status =
+            WaitStatus::Stopped(Pid::from_raw(1), nix::sys::signal::Signal::SIGSTOP);
+        assert!(terminated(status).is_none());
     }
 }

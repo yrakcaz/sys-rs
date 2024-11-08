@@ -89,3 +89,25 @@ impl Parser {
         ))
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_parser_get_instruction_from() {
+        let parser = Parser::new().expect("Failed to create parser");
+
+        let opcode: [u8; 5] = [0xe8, 0x05, 0x00, 0x00, 0x00];
+        let addr: u64 = 0x1000;
+
+        let instruction = parser
+            .get_instruction_from(&opcode, addr)
+            .expect("Failed to get instruction");
+
+        assert_eq!(instruction.addr(), addr);
+        assert_eq!(instruction.is_call(), true);
+        assert_eq!(instruction.mnemonic, "callq");
+        assert_eq!(instruction.operands, "0x100a");
+    }
+}

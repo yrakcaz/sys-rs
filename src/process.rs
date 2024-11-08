@@ -207,3 +207,40 @@ impl Info {
         })
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    use std::io::Write;
+
+    fn create_temp_elf_file() -> std::io::Result<String> {
+        let path = "/tmp/test.elf";
+        let mut file = File::create(path)?;
+        file.write_all(b"\x7fELF")?;
+        Ok(path.to_string())
+    }
+
+    #[test]
+    fn test_build_invalid_path() {
+        let pid = Pid::from_raw(1234);
+        let result = Info::build("/invalid/path", pid);
+        assert!(result.is_err());
+    }
+
+    #[test]
+    fn test_build_invalid_elf() {
+        let pid = Pid::from_raw(1234);
+        let path =
+            create_temp_elf_file().expect("Failed to create temporary ELF file");
+        let result = Info::build(&path, pid);
+        assert!(result.is_err());
+    }
+
+    #[test]
+    fn test_get_mem_offset_invalid_path() {
+        let pid = Pid::from_raw(1234);
+        let result = Info::get_mem_offset("/invalid/path", pid);
+        assert!(result.is_err());
+    }
+}

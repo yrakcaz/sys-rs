@@ -2,6 +2,7 @@ use nix::unistd::Pid;
 use std::{
     fs::File,
     io::{BufRead, BufReader, Write},
+    process::exit,
 };
 
 use sys_rs::{
@@ -29,7 +30,7 @@ fn write_cov_line(
     i: usize,
     line: &str,
 ) -> std::io::Result<()> {
-    writeln!(out, "{:<10}{i}:{line}", format!("{}:", fmt))
+    writeln!(out, "{fmt:>9}:{i:>5}:{line:<}")
 }
 
 fn process_file(path: &str, cached: &cov::Cached) -> Result<()> {
@@ -65,15 +66,15 @@ fn process_file(path: &str, cached: &cov::Cached) -> Result<()> {
 }
 
 impl trace::Tracer for Wrapper {
-    fn trace(&self, child: Pid) -> Result<()> {
+    fn trace(&self, child: Pid) -> Result<i32> {
         let process = process::Info::build(self.tracer.path(), child)?;
         let mut cached = cov::Cached::default();
-        if let Ok(()) = cached.trace(&self.tracer, &process) {
+        if let Ok(ret) = cached.trace(&self.tracer, &process) {
             for path in cached.files() {
                 process_file(path, &cached)?;
             }
 
-            Ok(())
+            Ok(ret)
         } else {
             cov::trace_with_simple_print(&self.tracer, &process)
         }
@@ -82,5 +83,9 @@ impl trace::Tracer for Wrapper {
 
 fn main() -> Result<()> {
     let args = args()?;
-    trace::run::<Wrapper>(&Wrapper::new(args[0].to_str()?)?, &args, &env()?)
+    exit(trace::run::<Wrapper>(
+        &Wrapper::new(args[0].to_str()?)?,
+        &args,
+        &env()?,
+    )?)
 }

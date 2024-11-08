@@ -7,6 +7,7 @@ use nix::{
     },
     unistd::Pid,
 };
+use std::process::exit;
 
 use sys_rs::{
     diag::Result,
@@ -17,7 +18,8 @@ use sys_rs::{
 struct Tracer;
 
 impl trace::Tracer for Tracer {
-    fn trace(&self, child: Pid) -> Result<()> {
+    fn trace(&self, child: Pid) -> Result<i32> {
+        let ret;
         let syscalls = syscall::Entries::new()?;
 
         let mut status = wait()?;
@@ -34,7 +36,7 @@ impl trace::Tracer for Tracer {
                     if u8::try_from(ptrace::getevent(child)?)?
                         == PTRACE_SYSCALL_INFO_EXIT
                     {
-                        println!("{}", syscall::Repr::build(child, &syscalls)?);
+                        eprintln!("{}", syscall::Repr::build(child, &syscalls)?);
                     }
                     ptrace::syscall(child, None)?;
                 }
@@ -42,29 +44,33 @@ impl trace::Tracer for Tracer {
                     if event == ptrace::Event::PTRACE_EVENT_EXIT as i32 {
                         let syscall = syscall::Repr::build(child, &syscalls)?;
                         if syscall.is_exit() {
-                            println!("{syscall}");
+                            eprintln!("{syscall}");
                         }
                     }
                     ptrace::syscall(child, None)?;
                 }
                 WaitStatus::Stopped(_, Signal::SIGTRAP) => {
-                    println!("{}", syscall::Repr::build(child, &syscalls)?);
+                    eprintln!("{}", syscall::Repr::build(child, &syscalls)?);
                     ptrace::syscall(child, None)?;
                 }
                 WaitStatus::Stopped(_, signal) => {
-                    println!("--- {signal:?} ---");
+                    eprintln!("--- {signal:?} ---");
                     ptrace::cont(child, signal)?;
                 }
-                _ if trace::terminated(status) => break,
-                _ => {}
+                _ => {
+                    if let Some(code) = trace::terminated(status) {
+                        ret = code;
+                        break;
+                    }
+                }
             }
             status = wait()?;
         }
 
-        Ok(())
+        Ok(ret)
     }
 }
 
 fn main() -> Result<()> {
-    trace::run::<Tracer>(&Tracer, &args()?, &env()?)
+    exit(trace::run::<Tracer>(&Tracer, &args()?, &env()?)?)
 }

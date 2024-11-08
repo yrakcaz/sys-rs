@@ -83,3 +83,34 @@ pub fn env() -> Result<Vec<CString>> {
         })
         .collect()
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_is_executable() {
+        assert!(is_executable(Path::new("/bin/ls")));
+        assert!(!is_executable(Path::new("/bin/nonexistent")));
+    }
+
+    #[test]
+    fn test_find_executable_in_path() {
+        assert!(find_executable_in_path("ls").is_some());
+        assert!(find_executable_in_path("nonexistent").is_none());
+    }
+
+    #[test]
+    fn test_env() {
+        env::set_var("TEST_ENV_VAR", "test_value");
+
+        let result = env();
+        assert!(result.is_ok());
+        let cstrings = result.expect("Failed to get environment variables");
+        let env_var = CString::new("TEST_ENV_VAR=test_value")
+            .expect("Failed to create CString");
+        assert!(cstrings.contains(&env_var));
+
+        env::remove_var("TEST_ENV_VAR");
+    }
+}

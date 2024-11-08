@@ -58,6 +58,10 @@
 ## infra
 
 - [x] apply clippy::pedantic lints  
-- [ ] testing  
-- [x] better documentation, not just what clippy asks for  
+- [x] testing  
+  - [x] unit tests  
+  - [x] integration tests  
+- [ ] documentation  
+  - [x] basics  
+  - [ ] pub structs  
 - [ ] support more architectures  

@@ -2887,6 +2887,28 @@
       "ret_type": "Int",
       "args": []
    },
+   "262": {
+      "name": "newfstatat",
+      "ret_type": "Int",
+      "args": [
+         {
+            "name": "dirfd",
+            "arg_type": "Int"
+         },
+         {
+            "name": "pathname",
+            "arg_type": "Str"
+         },
+         {
+            "name": "statbuf",
+            "arg_type": "Ptr"
+         },
+         {
+            "name": "flags",
+            "arg_type": "Int"
+         }
+      ]
+   },
    "263": {
       "name": "unlinkat",
       "ret_type": "Int",
@@ -3252,6 +3274,28 @@
       "ret_type": "Int",
       "args": []
    },
+   "302": {
+      "name": "prlimit64",
+      "ret_type": "Int",
+      "args": [
+         {
+            "name": "pid",
+            "arg_type": "Int"
+         },
+         {
+            "name": "pid",
+            "arg_type": "Int"
+         },
+         {
+            "name": "new_limit",
+            "arg_type": "Ptr"
+         },
+         {
+            "name": "old_limit",
+            "arg_type": "Ptr"
+         }
+      ]
+   },
    "306": {
       "name": "syncfs",
       "ret_type": "Int",
@@ -3334,6 +3378,54 @@
          {
             "name": "flags",
             "arg_type": "Uint"
+         }
+      ]
+   },
+   "332": {
+      "name": "statx",
+      "ret_type": "Int",
+      "args": [
+         {
+            "name": "dirfd",
+            "arg_type": "Int"
+         },
+         {
+            "name": "pathname",
+            "arg_type": "Str"
+         },
+         {
+            "name": "flags",
+            "arg_type": "Int"
+         },
+         {
+            "name": "mask",
+            "arg_type": "Int"
+         },
+         {
+            "name": "statxbuf",
+            "arg_type": "Ptr"
+         }
+      ]
+   },
+   "334": {
+      "name": "rseq",
+      "ret_type": "Int",
+      "args": [
+         {
+            "name": "rseq",
+            "arg_type": "Ptr"
+         },
+         {
+            "name": "rseq_len",
+            "arg_type": "Int"
+         },
+         {
+            "name": "flags",
+            "arg_type": "Int"
+         },
+         {
+            "name": "sig",
+            "arg_type": "Int"
          }
       ]
    }
