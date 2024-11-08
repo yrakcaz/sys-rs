@@ -1,6 +1,6 @@
 use std::process::Command;
 
-mod testlib;
+pub mod testlib;
 
 #[test]
 fn test_strace_no_args() {
@@ -13,14 +13,14 @@ fn test_strace_basic() {
     let bin = env!("CARGO_BIN_EXE_strace-rs");
     let test_bin = "ls";
     let output = Command::new(bin)
-        .arg(test_bin)
+        .arg(&test_bin)
         .output()
         .expect("Failed to run binary");
 
     let stderr = String::from_utf8_lossy(&output.stderr);
 
     let ref_output = Command::new("strace")
-        .arg(test_bin)
+        .arg(&test_bin)
         .output()
         .expect("Failed to run binary");
 

@@ -30,7 +30,7 @@ fn write_cov_line(
     i: usize,
     line: &str,
 ) -> std::io::Result<()> {
-    writeln!(out, "{:<10}{i}:{line}", format!("{}:", fmt))
+    writeln!(out, "{fmt:>9}:{i:>5}:{line:<}")
 }
 
 fn process_file(path: &str, cached: &cov::Cached) -> Result<()> {
