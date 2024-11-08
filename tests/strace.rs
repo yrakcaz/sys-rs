@@ -9,6 +9,12 @@ fn test_strace_no_args() {
 }
 
 #[test]
+fn test_strace_no_exec() {
+    let bin = env!("CARGO_BIN_EXE_strace-rs");
+    testlib::test_no_exec(bin);
+}
+
+#[test]
 fn test_strace_basic() {
     let bin = env!("CARGO_BIN_EXE_strace-rs");
     let test_bin = "ls";

@@ -7,6 +7,12 @@ fn test_sscov_no_args() {
 }
 
 #[test]
+fn test_sscov_no_exec() {
+    let bin = env!("CARGO_BIN_EXE_sscov-rs");
+    testlib::test_no_exec(bin);
+}
+
+#[test]
 fn test_sscov_basic() {
     let bin = env!("CARGO_BIN_EXE_sscov-rs");
     testlib::test_cov(bin);

@@ -4,11 +4,7 @@ use std::{fs, path::Path, process::Command};
 
 pub fn test_no_args(path: &str) {
     let output = Command::new(path).output().expect("Failed to run binary");
-
-    assert!(
-        !output.status.success(),
-        "binary execution should have failed"
-    );
+    assert!(!output.status.success());
 
     let stdout = String::from_utf8_lossy(&output.stdout);
     let stderr = String::from_utf8_lossy(&output.stderr);
@@ -21,6 +17,24 @@ pub fn test_no_args(path: &str) {
     );
     assert!(
         stderr.contains("Error: EINVAL: Invalid argument"),
+        "stderr: {}",
+        stderr
+    );
+}
+
+pub fn test_no_exec(path: &str) {
+    let output = Command::new(path)
+        .arg("bla")
+        .output()
+        .expect("Failed to run binary");
+    assert!(!output.status.success());
+
+    let stdout = String::from_utf8_lossy(&output.stdout);
+    let stderr = String::from_utf8_lossy(&output.stderr);
+
+    assert!(stdout.is_empty(), "stdout: {}", stdout);
+    assert!(
+        stderr.contains("Error: ENOENT: No such file or directory"),
         "stderr: {}",
         stderr
     );
@@ -110,13 +124,13 @@ impl<'a> Drop for Cleanup<'a> {
     }
 }
 
-pub fn build_example() -> (String, String) {
+fn build_example(dwarf_version: &str) -> (String, String) {
     let root = env!("CARGO_MANIFEST_DIR");
     let example_dir = format!("{}/tests/example", root);
     let example_path = format!("{}/example.c", &example_dir);
     let example_bin = format!("{}/example", &example_dir);
     let output = Command::new("gcc")
-        .arg("-gdwarf-4")
+        .arg(&dwarf_version)
         .arg("-no-pie")
         .arg("-o")
         .arg(&example_bin)
@@ -130,4 +144,16 @@ pub fn build_example() -> (String, String) {
     );
 
     (example_path, example_bin)
+}
+
+pub fn build_example_no_dwarf() -> (String, String) {
+    build_example("-g0")
+}
+
+pub fn build_example_gdwarf4() -> (String, String) {
+    build_example("-gdwarf-4")
+}
+
+pub fn build_example_gdwarf5() -> (String, String) {
+    build_example("-gdwarf-5")
 }

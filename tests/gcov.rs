@@ -8,10 +8,15 @@ fn test_gcov_no_args() {
     let bin = env!("CARGO_BIN_EXE_gcov-rs");
     testlib::test_no_args(bin);
 }
+#[test]
+fn test_gcov_no_exec() {
+    let bin = env!("CARGO_BIN_EXE_gcov-rs");
+    testlib::test_no_exec(bin);
+}
 
 #[test]
 fn test_gcov_basic() {
-    let (example_path, example_bin) = testlib::build_example();
+    let (example_path, example_bin) = testlib::build_example_gdwarf4();
     let bin_path = Path::new(&example_bin);
     let _cleanup = testlib::Cleanup { path: bin_path };
 

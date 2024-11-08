@@ -1,3 +1,4 @@
+use serial_test::serial;
 use std::path::Path;
 use std::process::Command;
 
@@ -10,8 +11,59 @@ fn test_addr2line_no_args() {
 }
 
 #[test]
+fn test_addr2line_no_exec() {
+    let bin = env!("CARGO_BIN_EXE_addr2line-rs");
+    testlib::test_no_exec(bin);
+}
+
+#[test]
+#[serial]
+fn test_addr2line_no_dwarf() {
+    let (_, example_bin) = testlib::build_example_no_dwarf();
+    let bin_path = Path::new(&example_bin);
+    let _cleanup = testlib::Cleanup { path: bin_path };
+
+    let bin = env!("CARGO_BIN_EXE_addr2line-rs");
+    let output = Command::new(bin)
+        .arg(&bin_path)
+        .output()
+        .expect("Failed to execute binary");
+    assert!(!output.status.success());
+
+    let stderr = String::from_utf8_lossy(&output.stderr);
+    assert!(
+        stderr.contains("Error: ENODATA: No data available"),
+        "stderr: {}",
+        stderr
+    );
+}
+
+#[test]
+#[serial]
+fn test_addr2line_gdwarf5() {
+    let (_, example_bin) = testlib::build_example_gdwarf5();
+    let bin_path = Path::new(&example_bin);
+    let _cleanup = testlib::Cleanup { path: bin_path };
+
+    let bin = env!("CARGO_BIN_EXE_addr2line-rs");
+    let output = Command::new(bin)
+        .arg(&bin_path)
+        .output()
+        .expect("Failed to execute binary");
+    assert!(!output.status.success());
+
+    let stderr = String::from_utf8_lossy(&output.stderr);
+    assert!(
+        stderr.contains("Error: ENOEXEC: Exec format error"),
+        "stderr: {}",
+        stderr
+    );
+}
+
+#[test]
+#[serial]
 fn test_addr2line_basic() {
-    let (_, example_bin) = testlib::build_example();
+    let (_, example_bin) = testlib::build_example_gdwarf4();
     let bin_path = Path::new(&example_bin);
     let _cleanup = testlib::Cleanup { path: bin_path };
 
