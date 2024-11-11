@@ -5,9 +5,10 @@ description = "Re-writing some of the Linux system tools in Rust as a toy projec
 edition = "2021"
 keywords = ["Linux", "system", "tools"]
 license = "MIT"
+readme = "README.md"
 name = "sys-rs"
 repository = "https://github.com/yrakcaz/sys-rs"
-version = "0.2.0"
+version = "1.0.0"
 
 [[bin]]
 name="addr2line-rs"
