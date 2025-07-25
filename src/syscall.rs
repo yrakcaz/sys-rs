@@ -3,7 +3,10 @@ use nix::{errno::Errno, sys::ptrace, unistd::Pid};
 use serde_derive::Deserialize;
 use std::{collections::HashMap, fmt};
 
-use crate::diag::{Error, Result};
+use crate::{
+    diag::{Error, Result},
+    hwaccess::Registers,
+};
 
 #[derive(Debug, Deserialize, PartialEq)]
 pub enum Type {
@@ -163,11 +166,11 @@ impl Repr {
     ///
     /// Returns a `Result` containing the constructed `Repr` struct on success.
     pub fn build(pid: Pid, infos: &Entries) -> Result<Self> {
-        let regs = ptrace::getregs(pid)?;
-        let info = infos.get(regs.orig_rax);
+        let regs = Registers::read(pid)?;
+        let info = infos.get(regs.orig_rax());
         let name = info.name();
 
-        let reg_vals = [regs.rdi, regs.rsi, regs.rdx, regs.r10, regs.r8, regs.r9];
+        let reg_vals = regs.function_params();
         let args = if let Some(args) = info.args() {
             let mut results = Vec::new();
             for (i, arg) in args.iter().enumerate() {
@@ -182,10 +185,10 @@ impl Repr {
         }?;
 
         #[allow(clippy::cast_possible_wrap)]
-        let ret_val = if regs.rax as i64 == -(Errno::ENOSYS as i64) {
+        let ret_val = if regs.rax() as i64 == -(Errno::ENOSYS as i64) {
             "?".to_string()
         } else {
-            parse_value(info.ret_type(), regs.rax, pid)?
+            parse_value(info.ret_type(), regs.rax(), pid)?
         };
 
         Ok(Self {

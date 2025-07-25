@@ -11,7 +11,7 @@ pub trait Tracer {
     ///
     /// # Arguments
     ///
-    /// * `child` - The process ID of the binary to be traced.
+    /// * `pid` - The process ID of the binary to be traced.
     ///
     /// # Errors
     ///
@@ -20,7 +20,7 @@ pub trait Tracer {
     /// # Returns
     ///
     /// Returns `Ok(())` if the tracing is successful.
-    fn trace(&self, child: Pid) -> Result<i32>;
+    fn trace(&self, pid: Pid) -> Result<i32>;
 }
 
 fn tracee(args: &[CString], env: &[CString]) -> Result<i32> {
@@ -47,7 +47,7 @@ fn tracee(args: &[CString], env: &[CString]) -> Result<i32> {
 /// Returns `Ok(())` if the binary inspection is successful.
 pub fn run<T: Tracer>(tracer: &T, args: &[CString], env: &[CString]) -> Result<i32> {
     match unsafe { fork() }? {
-        ForkResult::Parent { child, .. } => tracer.trace(child),
+        ForkResult::Parent { child: pid, .. } => tracer.trace(pid),
         ForkResult::Child => tracee(args, env),
     }
 }

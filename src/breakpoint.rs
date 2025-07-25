@@ -1,8 +1,7 @@
-use libc::user_regs_struct;
 use nix::{sys::ptrace, unistd::Pid};
 use std::collections::HashMap;
 
-use crate::diag::Result;
+use crate::{diag::Result, hwaccess::Registers};
 
 pub struct Manager {
     pid: Pid,
@@ -59,8 +58,8 @@ impl Manager {
     /// # Returns
     ///
     /// Returns `Ok(())` if the breakpoint is handled successfully.
-    pub fn handle_breakpoint(&mut self, regs: &mut user_regs_struct) -> Result<()> {
-        let addr = regs.rip - 1;
+    pub fn handle_breakpoint(&mut self, regs: &mut Registers) -> Result<()> {
+        let addr = regs.rip() - 1;
         if let Some(instruction) = self.breakpoints.remove(&addr) {
             unsafe {
                 ptrace::write(
@@ -70,8 +69,8 @@ impl Manager {
                 )
             }?;
 
-            regs.rip = addr;
-            ptrace::setregs(self.pid, *regs)?;
+            regs.set_rip(addr);
+            regs.write()?;
         }
 
         Ok(())
