@@ -25,6 +25,11 @@ fn find_executable_in_path(file_name: &str) -> Option<String> {
 
 /// Parses command line arguments and returns them as a vector of `CString`.
 ///
+/// # Arguments
+///
+/// This function does not take parameters; it reads `env::args()` for the
+/// current process command line.
+///
 /// # Errors
 ///
 /// This function will return an `Err` if no command is provided, if the command is not found,
@@ -62,6 +67,10 @@ pub fn args() -> Result<Vec<CString>> {
 }
 
 /// Retrieves environment variables and returns them as a vector of `CString`.
+///
+/// # Arguments
+///
+/// This function does not take parameters; it reads the current process environment.
 ///
 /// # Errors
 ///

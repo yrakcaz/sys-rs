@@ -1,3 +1,4 @@
+use serial_test::serial;
 use std::path::Path;
 use std::process::Command;
 
@@ -15,6 +16,7 @@ fn test_gcov_no_exec() {
 }
 
 #[test]
+#[serial]
 fn test_gcov_basic() {
     let (example_path, example_bin) = testlib::build_example_gdwarf4();
     let bin_path = Path::new(&example_bin);

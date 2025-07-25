@@ -18,13 +18,13 @@ use sys_rs::{
 struct Tracer;
 
 impl trace::Tracer for Tracer {
-    fn trace(&self, child: Pid) -> Result<i32> {
+    fn trace(&self, pid: Pid) -> Result<i32> {
         let ret;
         let syscalls = syscall::Entries::new()?;
 
         let mut status = wait()?;
         ptrace::setoptions(
-            child,
+            pid,
             ptrace::Options::PTRACE_O_TRACESYSGOOD
                 | ptrace::Options::PTRACE_O_TRACEEXEC
                 | ptrace::Options::PTRACE_O_TRACEEXIT,
@@ -33,29 +33,29 @@ impl trace::Tracer for Tracer {
         loop {
             match status {
                 WaitStatus::PtraceSyscall(_) => {
-                    if u8::try_from(ptrace::getevent(child)?)?
+                    if u8::try_from(ptrace::getevent(pid)?)?
                         == PTRACE_SYSCALL_INFO_EXIT
                     {
-                        eprintln!("{}", syscall::Repr::build(child, &syscalls)?);
+                        eprintln!("{}", syscall::Repr::build(pid, &syscalls)?);
                     }
-                    ptrace::syscall(child, None)?;
+                    ptrace::syscall(pid, None)?;
                 }
                 WaitStatus::PtraceEvent(_, _, event) => {
                     if event == ptrace::Event::PTRACE_EVENT_EXIT as i32 {
-                        let syscall = syscall::Repr::build(child, &syscalls)?;
+                        let syscall = syscall::Repr::build(pid, &syscalls)?;
                         if syscall.is_exit() {
                             eprintln!("{syscall}");
                         }
                     }
-                    ptrace::syscall(child, None)?;
+                    ptrace::syscall(pid, None)?;
                 }
                 WaitStatus::Stopped(_, Signal::SIGTRAP) => {
-                    eprintln!("{}", syscall::Repr::build(child, &syscalls)?);
-                    ptrace::syscall(child, None)?;
+                    eprintln!("{}", syscall::Repr::build(pid, &syscalls)?);
+                    ptrace::syscall(pid, None)?;
                 }
                 WaitStatus::Stopped(_, signal) => {
                     eprintln!("--- {signal:?} ---");
-                    ptrace::cont(child, signal)?;
+                    ptrace::cont(pid, signal)?;
                 }
                 _ => {
                     if let Some(code) = trace::terminated(status) {

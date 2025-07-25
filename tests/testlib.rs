@@ -1,6 +1,11 @@
 use capstone::prelude::*;
 use goblin::Object;
-use std::{fs, path::Path, process::Command};
+use std::{
+    fs,
+    io::Write,
+    path::Path,
+    process::{Command, Stdio},
+};
 
 pub fn test_no_args(path: &str) {
     let output = Command::new(path).output().expect("Failed to run binary");
@@ -158,4 +163,29 @@ pub fn build_example_gdwarf4() -> (String, String) {
 
 pub fn build_example_gdwarf5() -> (String, String) {
     build_example("-gdwarf-5")
+}
+
+pub fn run_cli_commands(
+    binary: &str,
+    target: &str,
+    commands: &[&str],
+) -> (String, String, bool) {
+    let mut child = Command::new(binary)
+        .arg(target)
+        .stdin(Stdio::piped())
+        .stdout(Stdio::piped())
+        .stderr(Stdio::piped())
+        .spawn()
+        .expect("Failed to start CLI process");
+
+    let stdin = child.stdin.as_mut().expect("Failed to open stdin");
+    for command in commands {
+        writeln!(stdin, "{}", command).expect("Failed to write to stdin");
+    }
+
+    let output = child.wait_with_output().expect("Failed to read output");
+    let stdout = String::from_utf8_lossy(&output.stdout).to_string();
+    let stderr = String::from_utf8_lossy(&output.stderr).to_string();
+
+    (stdout, stderr, output.status.success())
 }

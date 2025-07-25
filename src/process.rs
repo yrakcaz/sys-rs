@@ -10,6 +10,11 @@ const AT_PHDR: u64 = 3;
 const EI_DATA: usize = 5;
 const MAX_OPCODE_SIZE: u64 = 16;
 
+/// Process metadata and parsed ELF image used by the tracer.
+///
+/// `Info` holds the auxiliary vector, an in-memory copy of the ELF file
+/// contents, parsed headers/sections, and the offsets needed to translate
+/// runtime addresses to file offsets. Construct using `Info::build`.
 pub struct Info {
     pid: Pid,
     auxv: HashMap<u64, u64>,
@@ -134,21 +139,55 @@ impl Info {
     }
 
     #[must_use]
+    /// Return the PID associated with this `Info`.
+    ///
+    /// # Returns
+    ///
+    /// The `Pid` belonging to the traced process.
     pub fn pid(&self) -> Pid {
         self.pid
     }
 
     #[must_use]
+    /// Return the ELF data encoding (endianness) byte (`EI_DATA`).
+    ///
+    /// This value matches the ELF header `e_ident[EI_DATA]` and can be
+    /// compared against `ELFDATA2LSB`/`ELFDATA2MSB` constants.
+    ///
+    /// # Returns
+    ///
+    /// The ELF `e_ident[EI_DATA]` byte as a `u8`.
     pub fn endianness(&self) -> u8 {
         self.header.e_ident[EI_DATA]
     }
 
     #[must_use]
+    /// Return the offset used to translate file addresses to runtime
+    /// addresses (i.e., `mem_offset - load_vaddr`).
+    ///
+    /// # Returns
+    ///
+    /// The computed offset which should be added to file addresses to
+    /// obtain runtime addresses (equal to `mem_offset - load_vaddr`).
     pub fn offset(&self) -> u64 {
         self.mem_offset - self.load_vaddr
     }
 
     #[must_use]
+    /// Return true if `addr` lies within the named ELF section (e.g.
+    /// ".text"). Addresses are compared against the section's runtime
+    /// address (`section.sh_addr` + `mem_offset`).
+    ///
+    /// # Arguments
+    ///
+    /// * `addr` - Runtime address to test.
+    /// * `name` - The section name to check (for example `".text"`).
+    ///
+    /// # Returns
+    ///
+    /// `true` if `addr` falls within the runtime range of the named section
+    /// (computed as `section.sh_addr + mem_offset` .. `+ sh_size`), otherwise
+    /// `false`.
     pub fn is_addr_in_section(&self, addr: u64, name: &str) -> bool {
         self.sections.get(name).is_some_and(|section| {
             let start = section.sh_addr + self.mem_offset;
@@ -234,7 +273,6 @@ mod tests {
         let path =
             create_temp_elf_file().expect("Failed to create temporary ELF file");
         let info = Info::build(&path, pid);
-        // Should fail to build due to invalid ELF, so skip if error
         if let Ok(info) = info {
             let data = info.get_section_data(".invalid");
             assert!(matches!(data, Ok(None)));
@@ -247,7 +285,6 @@ mod tests {
         let path =
             create_temp_elf_file().expect("Failed to create temporary ELF file");
         let info = Info::build(&path, pid);
-        // Should fail to build due to invalid ELF, so skip if error
         if let Ok(info) = info {
             let result = info.get_opcode_from_addr(0xdeadbeef);
             assert!(result.is_err());
@@ -260,7 +297,6 @@ mod tests {
         let path =
             create_temp_elf_file().expect("Failed to create temporary ELF file");
         let info = Info::build(&path, pid);
-        // Should fail to build due to invalid ELF, so skip if error
         if let Ok(info) = info {
             let found = info.is_addr_in_section(0xdeadbeef, ".text");
             assert!(!found);
@@ -273,7 +309,6 @@ mod tests {
         let path =
             create_temp_elf_file().expect("Failed to create temporary ELF file");
         let info = Info::build(&path, pid);
-        // Should fail to build due to invalid ELF, so skip if error
         if let Ok(info) = info {
             let entry = info.entry();
             assert!(entry.is_err());
@@ -301,5 +336,125 @@ mod tests {
         let pid = Pid::from_raw(1234);
         let result = Info::get_mem_offset("/invalid/path", pid);
         assert!(result.is_err());
+    }
+
+    #[test]
+    fn test_get_buffer_and_section_helpers() {
+        let pid = Pid::from_raw(1);
+        let buffer = vec![0u8; 64];
+        let header = elf::Header {
+            e_ident: [0; 16],
+            e_type: 0,
+            e_machine: 0,
+            e_version: 0,
+            e_entry: 0,
+            e_phoff: 0,
+            e_shoff: 0,
+            e_flags: 0,
+            e_ehsize: 0,
+            e_phentsize: 0,
+            e_phnum: 0,
+            e_shentsize: 0,
+            e_shnum: 0,
+            e_shstrndx: 0,
+        };
+        let sections: HashMap<String, elf::SectionHeader> = HashMap::new();
+
+        let info = Info {
+            pid,
+            auxv: HashMap::new(),
+            buffer,
+            header,
+            sections,
+            load_vaddr: 0,
+            load_offset: 0,
+            mem_offset: 0,
+        };
+
+        let data = info.get_buffer_data(0, 16).expect("get_buffer_data failed");
+        assert!(data.is_some());
+
+        let sec = info.get_section_data(".text");
+        assert!(sec.expect("get_section_data returned Err").is_none());
+    }
+
+    #[test]
+    fn test_info_accessors_and_opcode() {
+        let pid = Pid::from_raw(42);
+
+        let mut buffer = vec![0u8; 256];
+        for i in 100..116 {
+            buffer[i] = (i - 100) as u8;
+        }
+
+        let header = elf::Header {
+            e_ident: [0; 16],
+            e_type: 0,
+            e_machine: 0,
+            e_version: 0,
+            e_entry: 0,
+            e_phoff: 20,
+            e_shoff: 0,
+            e_flags: 0,
+            e_ehsize: 0,
+            e_phentsize: 0,
+            e_phnum: 0,
+            e_shentsize: 0,
+            e_shnum: 0,
+            e_shstrndx: 0,
+        };
+
+        let mut sections: HashMap<String, elf::SectionHeader> = HashMap::new();
+        let sh = elf::SectionHeader {
+            sh_name: 0,
+            sh_type: 0,
+            sh_flags: 0,
+            sh_addr: 0x200,
+            sh_offset: 50,
+            sh_size: 10,
+            sh_link: 0,
+            sh_info: 0,
+            sh_addralign: 0,
+            sh_entsize: 0,
+        };
+        sections.insert(".text".to_string(), sh);
+
+        let mut auxv = HashMap::new();
+        auxv.insert(AT_PHDR, 150u64);
+
+        let info = Info {
+            pid,
+            auxv,
+            buffer,
+            header,
+            sections,
+            load_vaddr: 0,
+            load_offset: 0,
+            mem_offset: 0,
+        };
+
+        assert_eq!(info.pid(), pid);
+        assert_eq!(info.endianness(), 0);
+        assert_eq!(info.offset(), 0);
+
+        let addr = 0x200 + 5;
+        assert!(info.is_addr_in_section(addr, ".text"));
+
+        let sec = info
+            .get_section_data(".text")
+            .expect("get_section_data failed");
+        assert!(sec.is_some());
+        let sec = sec.unwrap();
+        assert_eq!(sec.len(), 10);
+
+        let addr_for_opcode = 150u64 - 20u64 + 100u64;
+        let opc = info
+            .get_opcode_from_addr(addr_for_opcode)
+            .expect("get_opcode_from_addr failed")
+            .expect("opcode not found");
+
+        assert_eq!(opc.len(), usize::try_from(MAX_OPCODE_SIZE).unwrap());
+        assert_eq!(opc[0], 0u8);
+        assert_eq!(opc[15], 15u8);
     }
 }

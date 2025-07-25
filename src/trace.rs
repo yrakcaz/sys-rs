@@ -6,21 +6,35 @@ use std::ffi::CString;
 
 use crate::diag::Result;
 
+/// A trait for implementing ptrace-based process tracers.
+///
+/// Types implementing `Tracer` provide the logic to inspect and control a traced
+/// process using the `ptrace` API. The primary extension point is the `trace`
+/// method, which is invoked with the PID of the child process to be traced. This
+/// allows custom tracing logic, such as system call inspection, breakpoint
+/// handling, or binary instrumentation.
 pub trait Tracer {
-    /// Traces the execution of a binary with the given process ID.
+    /// Trace the execution of the process identified by `pid`.
+    ///
+    /// Implementations should drive the ptrace-based inspection loop for the
+    /// child `pid` and return the process's numeric exit/status code. This is
+    /// the primary extension point used by the library to perform binary
+    /// inspection.
     ///
     /// # Arguments
     ///
-    /// * `child` - The process ID of the binary to be traced.
+    /// * `pid` - PID of the traced child process.
     ///
     /// # Errors
     ///
-    /// Returns an `Err` if there is a failure while inspecting the binary.
+    /// Returns `Err` when any ptrace/wait/IO operation fails while tracing.
     ///
     /// # Returns
     ///
-    /// Returns `Ok(())` if the tracing is successful.
-    fn trace(&self, child: Pid) -> Result<i32>;
+    /// Returns `Ok(exit_code)` where `exit_code` is the traced process's
+    /// numeric exit status (or a signal-derived value). On failure an `Err`
+    /// value is returned.
+    fn trace(&self, pid: Pid) -> Result<i32>;
 }
 
 fn tracee(args: &[CString], env: &[CString]) -> Result<i32> {
@@ -30,29 +44,50 @@ fn tracee(args: &[CString], env: &[CString]) -> Result<i32> {
     Ok(0)
 }
 
-/// Runs the binary inspection program using the specified tracer.
+/// Fork and execute the target program, running `tracer` against the
+/// resulting child process.
+///
+/// This helper forks the current process. The child will exec the provided
+/// `args`/`env` and the parent will invoke the supplied `tracer` with the
+/// child's PID.
 ///
 /// # Arguments
 ///
 /// * `tracer` - The tracer implementation to use for binary inspection.
-/// * `args` - The command-line arguments for the binary to be inspected.
-/// * `env` - The environment variables for the binary to be inspected.
+/// * `args` - Command-line arguments for the binary to be inspected (the
+///   first element is the program path).
+/// * `env` - Environment variables for the child process.
 ///
 /// # Errors
 ///
-/// Returns an `Err` if there is a failure during the binary inspection.
+/// Returns `Err` if the fork fails or if the tracer returns an error while
+/// inspecting the child process.
 ///
 /// # Returns
 ///
-/// Returns `Ok(())` if the binary inspection is successful.
+/// Returns `Ok(status)` where `status` is the numeric exit/status code
+/// produced by the tracer (typically `0` for success). On failure an `Err`
+/// is returned.
 pub fn run<T: Tracer>(tracer: &T, args: &[CString], env: &[CString]) -> Result<i32> {
     match unsafe { fork() }? {
-        ForkResult::Parent { child, .. } => tracer.trace(child),
+        ForkResult::Parent { child: pid, .. } => tracer.trace(pid),
         ForkResult::Child => tracee(args, env),
     }
 }
 
 #[must_use]
+/// Inspect a `WaitStatus` and, if it denotes termination, print a
+/// human-readable summary and return the numeric exit or signal code.
+///
+/// # Arguments
+///
+/// * `status` - A `WaitStatus` returned from `wait`/`waitpid`.
+///
+/// # Returns
+///
+/// Returns `Some(code)` when the status represents a process exit or
+/// termination due to a signal. Returns `None` for non-terminating
+/// statuses such as `Stopped`.
 pub fn terminated(status: WaitStatus) -> Option<i32> {
     match status {
         WaitStatus::Signaled(_, signal, coredump) => {
