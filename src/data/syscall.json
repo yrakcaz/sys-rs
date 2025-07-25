@@ -728,7 +728,7 @@
             "arg_type": "Ptr"
          },
          {
-            "name": "child_stack",
+            "name": "pid_stack",
             "arg_type": "Ptr"
          },
          {
