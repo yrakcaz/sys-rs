@@ -2,20 +2,20 @@ use nix::unistd::Pid;
 use std::process::exit;
 
 use sys_rs::{
-    cov,
+    coverage::Cached,
     diag::Result,
     input::{args, env},
-    process, trace,
+    process, profile, trace,
 };
 
 struct Wrapper {
-    tracer: cov::Tracer,
+    tracer: profile::Tracer,
 }
 
 impl Wrapper {
     pub fn new(path: &str) -> Result<Self> {
         Ok(Self {
-            tracer: cov::Tracer::new(path)?,
+            tracer: profile::Tracer::new(path)?,
         })
     }
 }
@@ -23,8 +23,8 @@ impl Wrapper {
 impl trace::Tracer for Wrapper {
     fn trace(&self, child: Pid) -> Result<i32> {
         let process = process::Info::build(self.tracer.path(), child)?;
-        let mut cached = cov::Cached::default();
-        cached.trace(&self.tracer, &process)
+        let mut cached = Cached::default();
+        cached.trace_with_source_print(&self.tracer, &process)
     }
 }
 

@@ -6,20 +6,20 @@ use std::{
 };
 
 use sys_rs::{
-    cov,
+    coverage::Cached,
     diag::Result,
     input::{args, env},
-    process, trace,
+    process, profile, trace,
 };
 
 struct Wrapper {
-    tracer: cov::Tracer,
+    tracer: profile::Tracer,
 }
 
 impl Wrapper {
     pub fn new(path: &str) -> Result<Self> {
         Ok(Self {
-            tracer: cov::Tracer::new(path)?,
+            tracer: profile::Tracer::new(path)?,
         })
     }
 }
@@ -33,7 +33,7 @@ fn write_cov_line(
     writeln!(out, "{fmt:>9}:{i:>5}:{line:<}")
 }
 
-fn process_file(path: &str, cached: &cov::Cached) -> Result<()> {
+fn process_file(path: &str, cached: &Cached) -> Result<()> {
     let file = File::open(path)?;
     let reader = BufReader::new(file);
     let out_path = format!("{path}.cov");
@@ -68,16 +68,12 @@ fn process_file(path: &str, cached: &cov::Cached) -> Result<()> {
 impl trace::Tracer for Wrapper {
     fn trace(&self, child: Pid) -> Result<i32> {
         let process = process::Info::build(self.tracer.path(), child)?;
-        let mut cached = cov::Cached::default();
-        if let Ok(ret) = cached.trace(&self.tracer, &process) {
-            for path in cached.files() {
-                process_file(path, &cached)?;
-            }
-
-            Ok(ret)
-        } else {
-            cov::trace_with_simple_print(&self.tracer, &process)
+        let mut cached = Cached::default();
+        let ret = cached.trace_with_default_progress(&self.tracer, &process)?;
+        for path in cached.files() {
+            process_file(path, &cached)?;
         }
+        Ok(ret)
     }
 }
 
