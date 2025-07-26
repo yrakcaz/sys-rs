@@ -83,7 +83,7 @@ where
     let mut startup_complete = false;
     let mut last_instruction: Option<asm::Instruction> = None;
 
-    breakpoint_mgr.set_breakpoint(process.entry())?;
+    breakpoint_mgr.set_breakpoint(*process.entry()?)?;
 
     ptrace::cont(child, None)?;
     loop {
@@ -94,9 +94,7 @@ where
                 breakpoint_mgr.handle_breakpoint(&mut regs)?;
 
                 let rip = regs.rip;
-                if let Some(opcode) =
-                    process.get_opcode_from_section(rip, ".text")?
-                {
+                if let Some(opcode) = process.get_opcode_from_addr(rip)? {
                     let instruction =
                         context.parser.get_instruction_from(opcode, rip)?;
                     print(&instruction)?;

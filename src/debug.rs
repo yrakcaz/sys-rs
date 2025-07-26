@@ -88,7 +88,7 @@ type DebugArangesMap = HashMap<gimli::DebugInfoOffset, AddressRange>;
 type SectionData<'a> = gimli::EndianSlice<'a, gimli::RunTimeEndian>;
 
 pub struct Dwarf<'a> {
-    dwarf: gimli::Dwarf<SectionData<'a>>,
+    data: gimli::Dwarf<SectionData<'a>>,
     aranges: DebugArangesMap,
     offset: u64,
 }
@@ -123,7 +123,7 @@ impl<'a> Dwarf<'a> {
             endianness,
         );
         let ranges = gimli::RangeLists::new(debug_ranges, debug_rnglists);
-        let dwarf = gimli::Dwarf {
+        let data = gimli::Dwarf {
             debug_abbrev: gimli::DebugAbbrev::new(
                 Self::get_section(".debug_abbrev", process)?,
                 endianness,
@@ -144,11 +144,11 @@ impl<'a> Dwarf<'a> {
             ..Default::default()
         };
 
-        let aranges = Self::build_aranges(&dwarf)?;
-        let offset = process.offset() - process.vaddr();
+        let aranges = Self::build_aranges(&data)?;
+        let offset = process.offset();
 
         Ok(Self {
-            dwarf,
+            data,
             aranges,
             offset,
         })
@@ -159,8 +159,7 @@ impl<'a> Dwarf<'a> {
         process: &'a process::Info,
     ) -> Result<&'a [u8]> {
         process
-            .get_section_data(section_name)
-            .map_err(Error::from)?
+            .get_section_data(section_name)?
             .ok_or_else(|| Error::from(Errno::ENODATA))
     }
 
@@ -204,7 +203,7 @@ impl<'a> Dwarf<'a> {
                                 ranges_offset = Some(val);
                             }
                         }
-                        _ => continue,
+                        _ => {}
                     }
                 }
 
@@ -261,7 +260,7 @@ impl<'a> Dwarf<'a> {
     ) -> Result<PathBuf> {
         let mut path = PathBuf::new();
 
-        let unit = self.dwarf.unit(*unit_header)?;
+        let unit = self.data.unit(*unit_header)?;
         if let Some(dir) = unit.comp_dir {
             path.push(dir.to_string_lossy().into_owned());
         }
@@ -272,7 +271,7 @@ impl<'a> Dwarf<'a> {
         if file.directory_index() != 0 {
             if let Some(dir) = file.directory(program_header) {
                 let dir_path = self
-                    .dwarf
+                    .data
                     .attr_string(&unit, dir)?
                     .to_string_lossy()
                     .into_owned();
@@ -281,7 +280,7 @@ impl<'a> Dwarf<'a> {
         }
 
         let file_path = self
-            .dwarf
+            .data
             .attr_string(&unit, file.path_name())?
             .to_string_lossy()
             .into_owned();
@@ -310,7 +309,7 @@ impl<'a> Dwarf<'a> {
     ) -> Result<Option<LineInfo>> {
         let mut info = None;
 
-        let unit = self.dwarf.unit(*unit_header)?;
+        let unit = self.data.unit(*unit_header)?;
         if let Some(program) = unit.line_program {
             let mut rows = program.rows();
             while let Some((program_header, row)) = rows.next_row()? {
@@ -349,7 +348,7 @@ impl<'a> Dwarf<'a> {
         let addr = addr - self.offset;
 
         let mut info: Option<LineInfo> = None;
-        let mut iter = self.dwarf.units();
+        let mut iter = self.data.units();
         while let Some(unit_header) = iter.next()? {
             if !self.is_addr_in_unit(addr, &unit_header)? {
                 continue;

@@ -8,7 +8,7 @@ license = "MIT"
 readme = "README.md"
 name = "sys-rs"
 repository = "https://github.com/yrakcaz/sys-rs"
-version = "1.0.0"
+version = "1.0.1"
 
 [[bin]]
 name="addr2line-rs"
