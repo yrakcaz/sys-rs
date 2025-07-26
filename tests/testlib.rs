@@ -89,7 +89,9 @@ pub fn test_cov(path: &str) {
 
     let disass = disass(test_bin);
     for line in stderr.lines() {
-        if (line.contains("j") || line.contains("call")) && line.contains("0x") {
+        if (line.contains("j") || line.contains("call") || line.contains("push"))
+            && line.contains("0x")
+        {
             continue;
         }
         if line.contains("+++") || line.contains("---") {
