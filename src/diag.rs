@@ -3,6 +3,10 @@ use std::{
     fmt, result,
 };
 
+/// A lightweight error wrapper used throughout the crate.
+///
+/// `Error` contains a human-readable error message and a captured
+/// backtrace. It's convertible from types that implement `fmt::Display`.
 pub struct Error {
     error: String,
     backtrace: Backtrace,
@@ -34,6 +38,8 @@ impl<E: fmt::Display> From<E> for Error {
     }
 }
 
+/// Result type used across the crate, aliasing `std::result::Result` with
+/// the crate's `Error` type.
 pub type Result<T> = result::Result<T, Error>;
 
 #[cfg(test)]

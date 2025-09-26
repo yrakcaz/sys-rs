@@ -2,9 +2,13 @@ use nix::unistd::Pid;
 use std::process::exit;
 
 use sys_rs::{
+    coverage::Cached,
+    debug::Dwarf,
     diag::Result,
     input::{args, env},
-    process, profile, trace,
+    process, profile,
+    repl::Runner,
+    trace,
 };
 
 struct Wrapper {
@@ -22,7 +26,16 @@ impl Wrapper {
 impl trace::Tracer for Wrapper {
     fn trace(&self, pid: Pid) -> Result<i32> {
         let process = process::Info::build(self.tracer.path(), pid)?;
-        profile::trace_with_default_print(&self.tracer, &process)
+        let dwarf = Dwarf::build(&process);
+        let mut runner = Runner::new()?;
+        let mut cached = Cached::default();
+        cached.trace_with_custom_progress(
+            &self.tracer,
+            &process,
+            dwarf.as_ref().ok(),
+            false,
+            |state| runner.run(state),
+        )
     }
 }
 

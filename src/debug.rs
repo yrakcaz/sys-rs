@@ -16,6 +16,11 @@ use crate::{
 
 const FIRST_UNSUPPORTED_DWARF_VERSION: u16 = 5;
 
+/// Information about a source line mapped from an address.
+///
+/// `LineInfo` contains the instruction address, the source file path, and
+/// the 1-based line number. It provides helpers for retrieving the line's
+/// text and formatting it for display.
 pub struct LineInfo {
     addr: u64,
     path: PathBuf,
@@ -23,21 +28,24 @@ pub struct LineInfo {
 }
 
 impl LineInfo {
-    /// Represents information about a line in a file.
+    /// Create a new `LineInfo` from an address, path and 1-based line number.
     ///
     /// # Arguments
     ///
-    /// * `addr` - The address of the line.
-    /// * `path` - The path to the file.
-    /// * `line` - The line number.
+    /// * `addr` - The instruction address associated with the source line.
+    /// * `path` - The path to the source file.
+    /// * `line` - The 1-based line number in the file.
     ///
     /// # Errors
     ///
-    /// This function may return an error if it fails to convert the line number from `u64` to `usize`.
+    /// Returns an error if the provided `line` cannot be converted to a
+    /// `usize`.
     ///
     /// # Returns
     ///
-    /// Returns a `LineInfo` object on success.
+    /// Returns `Ok(LineInfo)` on success with the provided address, path,
+    /// and converted line number. Returns `Err` if the `line` argument
+    /// cannot be converted to `usize`.
     pub fn new(addr: u64, path: PathBuf, line: u64) -> Result<Self> {
         Ok(Self {
             addr,
@@ -47,11 +55,21 @@ impl LineInfo {
     }
 
     #[must_use]
+    /// Return the source path as a displayable `String`.
+    ///
+    /// # Returns
+    ///
+    /// A `String` containing the display representation of the stored path.
     pub fn path(&self) -> String {
         self.path.display().to_string()
     }
 
     #[must_use]
+    /// Return the 1-based source line number.
+    ///
+    /// # Returns
+    ///
+    /// The 1-based source line number stored in this `LineInfo`.
     pub fn line(&self) -> usize {
         self.line
     }
@@ -74,7 +92,7 @@ impl fmt::Display for LineInfo {
         let line = self.read().map_err(|_| fmt::Error)?;
         write!(
             f,
-            "0x{:x}: {}:{} | {}",
+            "{:#x}: {}:{} | {}",
             self.addr,
             self.path.display(),
             self.line,
@@ -87,6 +105,12 @@ type AddressRange = Vec<(u64, u64)>;
 type DebugArangesMap = HashMap<gimli::DebugInfoOffset, AddressRange>;
 type SectionData<'a> = gimli::EndianSlice<'a, gimli::RunTimeEndian>;
 
+/// DWARF debugging information parsed from an ELF image.
+///
+/// `Dwarf` encapsulates parsed DWARF sections and a mapping from compile
+/// unit offsets to address ranges. It provides helpers to build the DWARF
+/// representation from an executable and resolve addresses to source
+/// locations.
 pub struct Dwarf<'a> {
     data: gimli::Dwarf<SectionData<'a>>,
     aranges: DebugArangesMap,
@@ -368,7 +392,13 @@ impl<'a> Dwarf<'a> {
 mod tests {
     use super::*;
 
-    use std::io::Write;
+    use gimli::{
+        DebugAbbrev, DebugInfo, DebugLine, DebugRanges, DebugRngLists, DebugStr,
+        RangeLists, RunTimeEndian,
+    };
+    use std::{collections::HashMap, io::Write};
+
+    use crate::diag::Result;
 
     #[test]
     fn test_line_info_new() {
@@ -412,5 +442,50 @@ mod tests {
             display.contains(path.to_str().expect("Failed to convert path to str"))
         );
         assert!(display.contains("42"));
+    }
+
+    #[test]
+    fn test_build_aranges_empty() -> Result<()> {
+        let endian = RunTimeEndian::Little;
+        let data = gimli::Dwarf {
+            debug_abbrev: DebugAbbrev::new(&[], endian),
+            debug_info: DebugInfo::new(&[], endian),
+            debug_line: DebugLine::new(&[], endian),
+            debug_str: DebugStr::new(&[], endian),
+            ranges: RangeLists::new(
+                DebugRanges::new(&[], endian),
+                DebugRngLists::new(&[], endian),
+            ),
+            ..Default::default()
+        };
+
+        let map = Dwarf::build_aranges(&data)?;
+        assert!(map.is_empty());
+        Ok(())
+    }
+
+    #[test]
+    fn test_addr2line_empty_returns_none() -> Result<()> {
+        let endian = RunTimeEndian::Little;
+        let data = gimli::Dwarf {
+            debug_abbrev: DebugAbbrev::new(&[], endian),
+            debug_info: DebugInfo::new(&[], endian),
+            debug_line: DebugLine::new(&[], endian),
+            debug_str: DebugStr::new(&[], endian),
+            ranges: RangeLists::new(
+                DebugRanges::new(&[], endian),
+                DebugRngLists::new(&[], endian),
+            ),
+            ..Default::default()
+        };
+
+        let dwarf = Dwarf {
+            data,
+            aranges: HashMap::new(),
+            offset: 0,
+        };
+        let res = dwarf.addr2line(0x1000)?;
+        assert!(res.is_none());
+        Ok(())
     }
 }

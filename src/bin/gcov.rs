@@ -6,20 +6,20 @@ use std::{
 };
 
 use sys_rs::{
-    cov,
+    coverage::Cached,
     diag::Result,
     input::{args, env},
-    process, trace,
+    process, profile, trace,
 };
 
 struct Wrapper {
-    tracer: cov::Tracer,
+    tracer: profile::Tracer,
 }
 
 impl Wrapper {
     pub fn new(path: &str) -> Result<Self> {
         Ok(Self {
-            tracer: cov::Tracer::new(path)?,
+            tracer: profile::Tracer::new(path)?,
         })
     }
 }
@@ -33,7 +33,7 @@ fn write_cov_line(
     writeln!(out, "{fmt:>9}:{i:>5}:{line:<}")
 }
 
-fn process_file(path: &str, cached: &cov::Cached) -> Result<()> {
+fn process_file(path: &str, cached: &Cached) -> Result<()> {
     let file = File::open(path)?;
     let reader = BufReader::new(file);
     let out_path = format!("{path}.cov");
@@ -55,9 +55,10 @@ fn process_file(path: &str, cached: &cov::Cached) -> Result<()> {
 
         #[allow(clippy::cast_precision_loss)]
         let percentage = (f64::from(covered) / i as f64) * 100.0;
-        println!("\nFile: '{path}'");
-        println!("Lines executed: {percentage:.2}% of {i}");
-        println!("Creating '{out_path}'");
+
+        eprintln!("\nFile: '{path}'");
+        eprintln!("Lines executed: {percentage:.2}% of {i}");
+        eprintln!("Creating '{out_path}'");
     } else {
         eprintln!("Warning: {out_path}: Could not create coverage file");
     }
@@ -66,18 +67,14 @@ fn process_file(path: &str, cached: &cov::Cached) -> Result<()> {
 }
 
 impl trace::Tracer for Wrapper {
-    fn trace(&self, child: Pid) -> Result<i32> {
-        let process = process::Info::build(self.tracer.path(), child)?;
-        let mut cached = cov::Cached::default();
-        if let Ok(ret) = cached.trace(&self.tracer, &process) {
-            for path in cached.files() {
-                process_file(path, &cached)?;
-            }
-
-            Ok(ret)
-        } else {
-            cov::trace_with_simple_print(&self.tracer, &process)
+    fn trace(&self, pid: Pid) -> Result<i32> {
+        let process = process::Info::build(self.tracer.path(), pid)?;
+        let mut cached = Cached::default();
+        let ret = cached.trace_with_default_progress(&self.tracer, &process)?;
+        for path in cached.files() {
+            process_file(path, &cached)?;
         }
+        Ok(ret)
     }
 }
 

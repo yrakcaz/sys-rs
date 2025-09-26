@@ -11,22 +11,23 @@ env:
 jobs:
   build:
     runs-on: ubuntu-latest
+    container: debian:12.12
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
 
+      - name: Install dependencies
+        run: |
+          apt-get update
+          apt-get install -y clang gcc libunwind-dev libclang-dev llvm-dev strace wget
+
       - name: Set up Rust
         uses: actions-rs/toolchain@v1
         with:
-          toolchain: stable
+          toolchain: nightly
           override: true
-
-      - name: Install Clippy
-        run: rustup component add clippy
-
-      - name: Install Rustfmt
-        run: rustup component add rustfmt
+          components: clippy, rustfmt
 
       - name: Build
         run: cargo build --verbose
@@ -38,4 +39,4 @@ jobs:
         run: cargo clippy
 
       - name: Run Tests
-        run: cargo test --verbose
+        run: RUST_BACKTRACE=1 cargo test --verbose
