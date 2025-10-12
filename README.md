@@ -1,3 +1,6 @@
+[![Continuous Integration](https://img.shields.io/github/actions/workflow/status/yrakcaz/sys-rs/rust_ci.yml)](https://github.com/yrakcaz/sys-rs/actions)
+[![MIT License](https://img.shields.io/github/license/yrakcaz/sys-rs?color=blue)](./LICENSE-MIT)
+
 # sys-rs
 
 I always wanted to re-write some of the GNU/Linux system tools, just for fun.  
