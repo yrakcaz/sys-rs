@@ -70,4 +70,4 @@
   - [x] basics  
   - [x] pub structs  
 - [ ] support more architectures  
-- [ ] fix build warnings
+- [x] fix build warnings

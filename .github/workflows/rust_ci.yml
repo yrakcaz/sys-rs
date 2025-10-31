@@ -20,7 +20,8 @@ jobs:
       - name: Install dependencies
         run: |
           apt-get update
-          apt-get install -y clang gcc libunwind-dev libclang-dev llvm-dev strace wget
+          apt-get install -y clang gcc libunwind-dev libclang-dev llvm-dev strace wget \
+            autoconf automake libtool make pkg-config build-essential git
 
       - name: Set up Rust
         uses: actions-rs/toolchain@v1
