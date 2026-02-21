@@ -24,13 +24,8 @@ impl Wrapper {
     }
 }
 
-fn write_cov_line(
-    out: &mut File,
-    fmt: &str,
-    i: usize,
-    line: &str,
-) -> std::io::Result<()> {
-    writeln!(out, "{fmt:>9}:{i:>5}:{line:<}")
+fn write_cov_line(out: &mut File, fmt: &str, i: usize, line: &str) -> Result<()> {
+    Ok(writeln!(out, "{fmt:>9}:{i:>5}:{line:<}")?)
 }
 
 fn process_file(path: &str, cached: &Cached) -> Result<()> {
@@ -39,25 +34,26 @@ fn process_file(path: &str, cached: &Cached) -> Result<()> {
     let out_path = format!("{path}.cov");
 
     if let Ok(mut out) = File::create(&out_path) {
-        let mut i = 0;
-        let mut covered = 0;
-
-        for line in reader.lines() {
-            i += 1;
-            let line = line?;
-            if let Some(count) = cached.coverage(path.to_string(), i) {
-                write_cov_line(&mut out, &format!("{count}"), i, &line)?;
-                covered += 1;
-            } else {
-                write_cov_line(&mut out, "-", i, &line)?;
-            }
-        }
+        let (total_lines, covered) = reader.lines().enumerate().try_fold(
+            (0usize, 0usize),
+            |(_, covered), (idx, line)| -> Result<(usize, usize)> {
+                let i = idx + 1;
+                let line = line?;
+                if let Some(count) = cached.coverage(path.to_string(), i) {
+                    write_cov_line(&mut out, &format!("{count}"), i, &line)?;
+                    Ok((i, covered + 1))
+                } else {
+                    write_cov_line(&mut out, "-", i, &line)?;
+                    Ok((i, covered))
+                }
+            },
+        )?;
 
         #[allow(clippy::cast_precision_loss)]
-        let percentage = (f64::from(covered) / i as f64) * 100.0;
+        let percentage = (covered as f64 / total_lines as f64) * 100.0;
 
         eprintln!("\nFile: '{path}'");
-        eprintln!("Lines executed: {percentage:.2}% of {i}");
+        eprintln!("Lines executed: {percentage:.2}% of {total_lines}");
         eprintln!("Creating '{out_path}'");
     } else {
         eprintln!("Warning: {out_path}: Could not create coverage file");
@@ -71,9 +67,10 @@ impl trace::Tracer for Wrapper {
         let process = process::Info::build(self.tracer.path(), pid)?;
         let mut cached = Cached::default();
         let ret = cached.trace_with_default_progress(&self.tracer, &process)?;
-        for path in cached.files() {
-            process_file(path, &cached)?;
-        }
+        cached
+            .files()
+            .iter()
+            .try_for_each(|path| process_file(path, &cached))?;
         Ok(ret)
     }
 }

@@ -3,10 +3,7 @@ use nix::{errno::Errno, sys::ptrace, unistd::Pid};
 use serde_derive::Deserialize;
 use std::{collections::HashMap, fmt};
 
-use crate::{
-    diag::{Error, Result},
-    hwaccess::Registers,
-};
+use crate::{diag::Result, hwaccess::Registers};
 
 #[derive(Debug, Deserialize, PartialEq)]
 /// Representation of a syscall argument or return value type.
@@ -236,14 +233,14 @@ impl<'a> Repr<'a> {
 
         let reg_vals = regs.function_params();
         let args = if let Some(args) = info.args() {
-            let mut results = Vec::new();
-            for (i, arg) in args.iter().enumerate() {
-                let mut ret = arg.name().to_owned();
-                ret.push('=');
-                ret.push_str(&parse_value(arg.arg_type(), reg_vals[i], pid)?);
-                results.push(ret);
-            }
-            Ok::<String, Error>(results.join(", "))
+            args.iter()
+                .enumerate()
+                .map(|(i, arg)| {
+                    parse_value(arg.arg_type(), reg_vals[i], pid)
+                        .map(|val| format!("{}={}", arg.name(), val))
+                })
+                .collect::<Result<Vec<_>>>()
+                .map(|v| v.join(", "))
         } else {
             Ok(String::new())
         }?;

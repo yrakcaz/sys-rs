@@ -236,23 +236,17 @@ pub trait Extend<'a> {
 
 impl<'a> Extend<'a> for [Value<'a>] {
     fn extend(&self, first: &'a str, rest: &'a [&'a str]) -> Vec<Value<'a>> {
-        let mut out = Vec::with_capacity(self.len() + 1 + rest.len());
-        for v in self {
-            out.push(match v {
+        self.iter()
+            .map(|v| match v {
                 Value::Address(addr) => Value::Address(*addr),
                 Value::Format(fmt) => Value::Format(fmt.clone()),
                 Value::Id(id) => Value::Id(*id),
                 Value::Size(size) => Value::Size(*size),
                 Value::String(s) => Value::String(s),
-            });
-        }
-
-        out.push(Value::String(first));
-        for &s in rest {
-            out.push(Value::String(s));
-        }
-
-        out
+            })
+            .chain(std::iter::once(Value::String(first)))
+            .chain(rest.iter().map(|&s| Value::String(s)))
+            .collect()
     }
 }
 

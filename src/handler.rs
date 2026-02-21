@@ -186,13 +186,12 @@ pub fn do_examine(args: &[Value], state: &mut State) -> Result<()> {
                     break;
                 };
 
-                for i in 0..word_size {
-                    if offset >= buf.len() {
-                        break;
-                    }
-                    buf[offset] = u8::try_from((word >> (i * 8)) & 0xff)?;
-                    offset += 1;
-                }
+                let bytes_to_write = word_size.min(buf.len() - offset);
+                (0..bytes_to_write).try_for_each(|i| -> Result<()> {
+                    buf[offset + i] = u8::try_from((word >> (i * 8)) & 0xff)?;
+                    Ok(())
+                })?;
+                offset += bytes_to_write;
             }
 
             format.bytes(&buf, *addr)

@@ -1,7 +1,7 @@
 use std::collections::BTreeMap;
 
 use crate::{
-    diag::Result,
+    diag::{Error, Result},
     handler::{self, CommandFn},
     param::{Extend, Join, Type, Value},
     progress::State,
@@ -154,15 +154,11 @@ impl Registry {
         param_types: &[Type],
         params: &'a [&'a str],
     ) -> Vec<Value<'a>> {
-        let mut parsed = Vec::new();
-
-        for (i, param_type) in param_types.iter().enumerate() {
-            if let Ok(value) = Value::new(param_type, params[i]) {
-                parsed.push(value);
-            }
-        }
-
-        parsed
+        param_types
+            .iter()
+            .enumerate()
+            .filter_map(|(i, param_type)| Value::new(param_type, params[i]).ok())
+            .collect()
     }
 
     fn handle_command(
@@ -290,11 +286,15 @@ impl Registry {
         match args.split_first() {
             Some((first, rest)) => match self.nodes.get(*first) {
                 Some(nodes) => {
-                    let mut handled = false;
-                    for node in nodes {
-                        handled |=
-                            self.handle_node(node, path, first, rest, state)?;
-                    }
+                    let handled =
+                        nodes.iter().try_fold(false, |handled, node| {
+                            Ok::<bool, Error>(
+                                handled
+                                    | self.handle_node(
+                                        node, path, first, rest, state,
+                                    )?,
+                            )
+                        })?;
                     if !handled {
                         let path = path.extend(first, &[]);
                         let args = format!("{}: {}", path.join(" "), rest.join(" "));

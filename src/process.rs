@@ -115,21 +115,18 @@ impl Info {
         let process = Process::new(pid.into())?;
         let maps = process.maps()?;
 
-        let mut offset = None;
-        for map in maps {
-            if map.perms.contains(MMPermissions::READ)
-                && map.perms.contains(MMPermissions::EXECUTE)
-            {
-                if let MMapPath::Path(buf) = &map.pathname {
-                    if buf == &absolute_path {
-                        offset = Some(map.address.0);
-                        break;
-                    }
+        maps.into_iter()
+            .find_map(|map| match &map.pathname {
+                MMapPath::Path(buf)
+                    if buf == &absolute_path
+                        && map.perms.contains(MMPermissions::READ)
+                        && map.perms.contains(MMPermissions::EXECUTE) =>
+                {
+                    Some(map.address.0)
                 }
-            }
-        }
-
-        offset.ok_or_else(|| Error::from(Errno::ENODATA))
+                _ => None,
+            })
+            .ok_or_else(|| Error::from(Errno::ENODATA))
     }
 
     fn get_buffer_data(&self, offset: u64, len: u64) -> Result<Option<&[u8]>> {
