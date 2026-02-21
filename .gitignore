@@ -21,4 +21,4 @@ a.out
 *.cov
 
 # Core files
-core
+core*

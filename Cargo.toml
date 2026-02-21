@@ -1,14 +1,15 @@
 [package]
 authors = ["yrakcaz <zackaryayoun@gmail.com>"]
-categories = ["Development tools", "Operating systems"]
-description = "Re-writing some of the Linux system tools in Rust as a toy project"
+categories = ["development-tools", "os::unix-apis"]
+description = "ptrace-based Linux system tool reimplementations: strace, gcov, addr2line, debugger"
 edition = "2021"
-keywords = ["Linux", "system", "tools"]
+keywords = ["linux", "ptrace", "debugger", "strace", "tracing"]
 license = "MIT"
 readme = "README.md"
 name = "sys-rs"
 repository = "https://github.com/yrakcaz/sys-rs"
-version = "1.1.1"
+documentation = "https://docs.rs/sys-rs"
+version = "0.1.0"
 
 [[bin]]
 name = "addr2line-rs"
