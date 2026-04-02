@@ -9,7 +9,7 @@ readme = "README.md"
 name = "sys-rs"
 repository = "https://github.com/yrakcaz/sys-rs"
 documentation = "https://docs.rs/sys-rs"
-version = "0.1.0"
+version = "0.1.1"
 
 [[bin]]
 name = "addr2line-rs"

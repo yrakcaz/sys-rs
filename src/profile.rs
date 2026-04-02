@@ -254,7 +254,7 @@ pub fn trace_with(
             }
 
             match status {
-                WaitStatus::Stopped(_, Signal::SIGTRAP) => {
+                WaitStatus::Stopped(_, Signal::SIGTRAP)
                     if handle_sigtrap(
                         context,
                         process,
@@ -263,10 +263,11 @@ pub fn trace_with(
                         &mut last_instr,
                         &mut startup_complete,
                         &mut print,
-                    )? {
-                        continue;
-                    }
+                    )? =>
+                {
+                    continue;
                 }
+                WaitStatus::Stopped(_, Signal::SIGTRAP) => {}
                 WaitStatus::Stopped(_, signal) => {
                     ptrace::cont(pid, signal)?;
                     state.set_execution(Execution::Run);

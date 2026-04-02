@@ -1,7 +1,7 @@
 [![CI](https://github.com/yrakcaz/sys-rs/actions/workflows/rust_ci.yml/badge.svg)](https://github.com/yrakcaz/sys-rs/actions/workflows/rust_ci.yml)
 [![Crates.io](https://img.shields.io/crates/v/sys-rs)](https://crates.io/crates/sys-rs)
 [![Documentation](https://img.shields.io/badge/docs-sys--rs-purple)](https://docs.rs/sys-rs)
-[![MIT License](https://img.shields.io/github/license/yrakcaz/sys-rs?color=blue)](./LICENSE-MIT)
+[![MIT License](https://img.shields.io/github/license/yrakcaz/sys-rs?color=blue)](./LICENSE)
 
 # sys-rs
 
