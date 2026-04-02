@@ -5,6 +5,11 @@ Update this file when project practices change or guidelines become outdated.
 
 ## Code Style
 
+### Comments
+- Do not add comments to explain what code does — the code should be clear enough to read on its own
+- Only add a comment when there is a specific reason to believe the logic will not be self-evident to a reader (e.g. a non-obvious algorithm, an intentional workaround, or an external constraint)
+- Never add boilerplate or redundant comments such as `// initialize`, `// return result`, or anything that merely restates the code
+
 ### Functional over Imperative
 - Prefer functional style over imperative
 - Avoid using `return` statements — use expression-based returns instead
