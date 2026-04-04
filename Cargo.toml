@@ -1,7 +1,7 @@
 [package]
 authors = ["yrakcaz <zackaryayoun@gmail.com>"]
 categories = ["development-tools", "os::unix-apis"]
-description = "ptrace-based Linux system tool reimplementations: strace, gcov, addr2line, debugger"
+description = "Ptrace-based Linux system tool reimplementations: strace, gcov, addr2line, debugger."
 edition = "2021"
 keywords = ["linux", "ptrace", "debugger", "strace", "tracing"]
 license = "MIT"
