@@ -52,7 +52,7 @@ Update this file when project practices change or guidelines become outdated.
 - Do not add dependencies that duplicate capabilities already provided by existing ones
 
 ### CI/CD Workflow
-- The CI workflow (`.github/workflows/rust_ci.yml`) runs: format check, build, clippy, and tests
+- The CI workflow (`.github/workflows/ci.yml`) runs: format check, build, clippy, and tests
 - CI runs on Debian 12 with nightly Rust
 - All clippy warnings are denied — fix them before committing
 - Tests use `serial_test` for serialization since ptrace operations are exclusive; do not run ptrace tests in parallel

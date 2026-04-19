@@ -1,0 +1,8 @@
+{
+    "name": "sys-rs",
+    "image": "mcr.microsoft.com/devcontainers/base:debian",
+    "features": {
+        "ghcr.io/devcontainers/features/sshd:1": { "version": "latest" }
+    },
+    "onCreateCommand": "sudo apt-get update && sudo apt-get install -y libunwind-dev libclang-dev llvm-dev strace wget autoconf automake libtool pkg-config && curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y --default-toolchain nightly --no-modify-path && ~/.cargo/bin/rustup component add clippy rustfmt"
+}
