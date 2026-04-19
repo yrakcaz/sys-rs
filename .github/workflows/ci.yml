@@ -11,7 +11,7 @@ env:
 jobs:
   build:
     runs-on: ubuntu-latest
-    container: debian:12.12
+    container: debian:stable
 
     steps:
       - name: Checkout code
